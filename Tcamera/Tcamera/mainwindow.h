@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+#include "cv.h"
+#include "highgui.h"
+
 namespace Ui {
 class MainWindow;
 }
