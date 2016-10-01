@@ -23,6 +23,11 @@ MainWindow::MainWindow(QWidget *parent) :
         srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
         theTimer.start(33);
     }
+    else if(videoCap.open(0))
+    {
+        srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
+        theTimer.start(33);
+    }
     imageLabel = new QLabel(this);
     ui->verticalLayout->addWidget(imageLabel);
 }
