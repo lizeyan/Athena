@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //catch vedio from camera
 
-    if(videoCap.open(0))
+    if(videoCap.open(1))
     {
         srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
         theTimer.start(33);
@@ -34,10 +34,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *e)
 {
+    /*
     //显示方法一
     QPainter painter(this);
     QImage image1 = QImage((uchar*)(srcImage.data), srcImage.cols, srcImage.rows, QImage::Format_RGB888);
-    painter.drawImage(QPoint(20,20), image1);
+    painter.drawImage(QPoint(20,20), image1);*/
     //显示方法二
     QImage image2 = QImage((uchar*)(srcImage.data), srcImage.cols, srcImage.rows, QImage::Format_RGB888);
     imageLabel->setPixmap(QPixmap::fromImage(image2));
