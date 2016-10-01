@@ -24,15 +24,15 @@ INCLUDEPATH+=D:\OpenCV\build\install\include\opencv\
                     D:\OpenCV\build\install\include\opencv2\
                     D:\OpenCV\build\install\include
 
-LIBS+=D:\OpenCV\build\lib\libopencv_calib3d2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_contrib2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_core2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_features2d2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_flann2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_gpu2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_highgui2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_imgproc2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_legacy2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_ml2413.dll.a\
-        D:\OpenCV\build\lib\libopencv_objdetect2413.dll.a\
-       D:\OpenCV\build\lib\libopencv_video2413.dll.a
+LIBS+=D:\OpenCV\build\install\x86\mingw\lib\libopencv_calib3d2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_contrib2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_core2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_features2d2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_flann2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_gpu2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_highgui2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_imgproc2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_legacy2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_ml2413.dll.a\
+        D:\OpenCV\build\install\x86\mingw\lib\libopencv_objdetect2413.dll.a\
+       D:\OpenCV\build\install\x86\mingw\lib\libopencv_video2413.dll.a

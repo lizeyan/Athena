@@ -25,17 +25,17 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();/*
+    ~MainWindow();
     void paintEvent(QPaintEvent *);
 
 public slots:
     void updateImage();
-*/
+
 private:
 
     QTimer theTimer;
     Mat srcImage;
-    //VideoCapture videoCap;
+    VideoCapture videoCap;
     QLabel *imageLabel;
 
     Ui::MainWindow *ui;

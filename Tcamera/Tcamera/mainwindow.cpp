@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("monitor");
-/*
+
     connect(&theTimer, &QTimer::timeout, this, &MainWindow::updateImage);
 
     //catch vedio from camera
@@ -24,14 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
         theTimer.start(33);
     }
     imageLabel = new QLabel(this);
-    ui->verticalLayout->addWidget(imageLabel);*/
+    ui->verticalLayout->addWidget(imageLabel);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-/*
+
 void MainWindow::paintEvent(QPaintEvent *e)
 {
     //显示方法一
@@ -54,4 +54,4 @@ void MainWindow::updateImage()
         this->update();  //发送刷新消息
     }
 }
-*/
+
