@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QHBoxLayout>
+#include <QMenu>
 
 #include "cv.h"
 #include "highgui.h"
@@ -18,18 +19,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //catch vedio from camera
 
-    if(videoCap.open(1))
+    const int updateDelay=33;   // the time between two update
+
+    if(videoCap.open(1))    //check the camera exist
     {
         srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
-        theTimer.start(33);
+        theTimer.start(updateDelay);
     }
-    else if(videoCap.open(0))
+    else if(videoCap.open(0))   //check the camera exist
     {
         srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
-        theTimer.start(33);
+        theTimer.start(updateDelay);
     }
     imageLabel = new QLabel(this);
     ui->verticalLayout->addWidget(imageLabel);
+    createMenu();
 }
 
 MainWindow::~MainWindow()
@@ -40,15 +44,16 @@ MainWindow::~MainWindow()
 void MainWindow::paintEvent(QPaintEvent *e)
 {
     /*
-    //显示方法一
+    // the first way to show the picture
     QPainter painter(this);
     QImage image1 = QImage((uchar*)(srcImage.data), srcImage.cols, srcImage.rows, QImage::Format_RGB888);
     painter.drawImage(QPoint(20,20), image1);*/
-    //显示方法二
+    // the second way show the picture
     QImage image2 = QImage((uchar*)(srcImage.data), srcImage.cols, srcImage.rows, QImage::Format_RGB888);
     imageLabel->setPixmap(QPixmap::fromImage(image2));
     imageLabel->resize(image2.size());
     imageLabel->show();
+
 }
 
 void MainWindow::updateImage()
@@ -61,3 +66,33 @@ void MainWindow::updateImage()
     }
 }
 
+
+void MainWindow::createMenu()
+{
+    QMenu *menuOfWindow=this->menuBar()->addMenu(tr("&Settings"));
+    QAction *actionConnectToService=new QAction(tr("&Connect"),this);
+    QAction *actionChangePassword=new QAction(tr("&Password"),this);
+    QAction *actionExit=new QAction(tr("&Exit"),this);
+
+    menuOfWindow->addAction(actionConnectToService);
+    menuOfWindow->addAction(actionChangePassword);
+    menuOfWindow->addAction(actionExit);
+
+    connect(actionConnectToService,SIGNAL(triggered(bool)),this,SLOT(connectToService()));
+    connect(actionChangePassword,SIGNAL(triggered(bool)),this,SLOT(changePassword()));
+    connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(closeMonitor()));
+}
+
+void MainWindow::connectToService()
+{
+}
+
+void MainWindow::changePassword()
+{
+
+}
+
+void MainWindow::closeMonitor()
+{
+    this->close();
+}

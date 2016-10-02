@@ -30,6 +30,9 @@ public:
 
 public slots:
     void updateImage();
+    void changePassword();
+    void connectToService();
+    void closeMonitor();
 
 private:
 
@@ -38,7 +41,11 @@ private:
     VideoCapture videoCap;
     QLabel *imageLabel;
 
+    QString password;
+
     Ui::MainWindow *ui;
+
+    void createMenu();
 };
 
 #endif // MAINWINDOW_H
