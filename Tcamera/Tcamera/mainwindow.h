@@ -33,6 +33,7 @@ public slots:
     void changePassword();
     void connectToService();
     void closeMonitor();
+    void catchFace();
 
 private:
 

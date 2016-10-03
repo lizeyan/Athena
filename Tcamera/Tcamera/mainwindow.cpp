@@ -6,6 +6,7 @@
 
 #include "cv.h"
 #include "highgui.h"
+#include "cv_face.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -61,6 +62,7 @@ void MainWindow::updateImage()
     videoCap>>srcImage;
     if(srcImage.data)
     {
+        catchFace();
         cvtColor(srcImage, srcImage, CV_BGR2RGB);//Qt中支持的是RGB图像, OpenCV中支持的是BGR
         this->update();  //发送刷新消息
     }
@@ -81,6 +83,43 @@ void MainWindow::createMenu()
     connect(actionConnectToService,SIGNAL(triggered(bool)),this,SLOT(connectToService()));
     connect(actionChangePassword,SIGNAL(triggered(bool)),this,SLOT(changePassword()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(closeMonitor()));
+}
+
+void MainWindow::catchFace()
+{
+    printf("finished!");
+    cv_handle_t handle_detect=NULL;
+    cv_result_t cv_result=CV_OK;
+    cv_face_t *p_face=NULL;
+    int face_count=0;
+    int config = CV_DETECT_ENABLE_ALIGN_21;
+    do
+    {
+        cv_result = cv_face_create_detector(&handle_detect, NULL, config);
+        if (cv_result != CV_OK) {
+            fprintf(stderr, "cv_face_create_detector failed, error code %d\n", cv_result);
+            break;
+        }
+
+        /*
+         * test get and set threshold
+         */
+        float default_threshold;
+        cv_result = cv_face_detect_get_threshold(handle_detect, &default_threshold);
+        if (cv_result != CV_OK) {
+            fprintf(stderr, "cv_face_detect_get_threshold failed, error code %d\n", cv_result);
+            break;
+        }
+        fprintf(stderr, "default threshold : %f\n", default_threshold);
+
+        cv_result = cv_face_detect_set_threshold(handle_detect, default_threshold);
+        if (cv_result != CV_OK) {
+            fprintf(stderr, "cv_face_detect_set_threshold failed, error code %d\n", cv_result);
+            break;
+        }
+        fprintf(stderr, "threshold set : %f\n", default_threshold);
+    }while(1+1!=2);
+
 }
 
 void MainWindow::connectToService()
