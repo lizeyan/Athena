@@ -1,1 +1,5 @@
+#OS files in Mac
 .DS_Store
+
+#PyCharm .idea dir
+CloudService/.idea
