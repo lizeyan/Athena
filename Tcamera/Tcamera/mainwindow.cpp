@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     imageLabel = new QLabel(this);
     ui->verticalLayout->addWidget(imageLabel);
     createMenu();
+    videoCap>>srcImage;
 }
 
 MainWindow::~MainWindow()
@@ -64,6 +65,8 @@ void MainWindow::updateImage()
     {
         catchFace();
         cvtColor(srcImage, srcImage, CV_BGR2RGB);//Qt中支持的是RGB图像, OpenCV中支持的是BGR
+        cvtColor(bgr_image, bgr_image, CV_BGR2RGB);
+        srcImage=bgr_image.clone();
         this->update();  //发送刷新消息
     }
 }
@@ -87,15 +90,34 @@ void MainWindow::createMenu()
 
 void MainWindow::catchFace()
 {
-    printf("finished!");
-    cv_handle_t handle_detect=NULL;
-    cv_result_t cv_result=CV_OK;
-    cv_face_t *p_face=NULL;
-    int face_count=0;
-    int config = CV_DETECT_ENABLE_ALIGN_21;
+    int points_size = 21;
+    int config;
+    if (points_size == 21) {
+        config = CV_DETECT_ENABLE_ALIGN_21;
+    }
+    else if (points_size == 106) {
+        config = CV_DETECT_ENABLE_ALIGN_106;
+    }
+    else {
+        fprintf(stderr, "alignment point size error, must be 21 or 106\n");
+        return;
+    }
+
+    // load image
+    bgr_image =srcImage.clone();             // CV_PIX_FMT_BGR888
+    if (!bgr_image.data) {
+        fprintf(stderr, "fail to read\n");//%s\n", input_image_path);
+        return;
+    }
+
+
+    // init detect handle
+    cv_handle_t handle_detect = NULL;
+    cv_result_t cv_result = CV_OK;
+    cv_face_t* p_face = NULL;
+    int face_count = 0;
     do
     {
-        Mat bgr_image=srcImage.clone();
         cv_result = cv_face_create_detector(&handle_detect, NULL, config);
         if (cv_result != CV_OK) {
             fprintf(stderr, "cv_face_create_detector failed, error code %d\n", cv_result);
@@ -122,11 +144,11 @@ void MainWindow::catchFace()
 
 
         // detect
-        //__TIC__();
+
         cv_result = cv_face_detect(handle_detect, bgr_image.data, CV_PIX_FMT_BGR888,
             bgr_image.cols, bgr_image.rows, bgr_image.step,
             CV_FACE_UP, &p_face, &face_count);
-        //__TOC__();
+
         if (cv_result != CV_OK) {
             fprintf(stderr, "cv_face_detect error %d\n", cv_result);
             break;
@@ -156,20 +178,21 @@ void MainWindow::catchFace()
                 fprintf(stderr, "\n");
             }
             // save image
-            imwrite("D:\Qt\face.png", bgr_image);
+            //imwrite(output_image_path, bgr_image);
         }
         else {
-            fprintf(stderr, "can't find face in image");
+            fprintf(stderr, "can't find face in image\n");// %s", input_image_path);
         }
 
-    }while(1+1!=2);
+    } while (0);
+
+
     // release the memory of face
     cv_face_release_detector_result(p_face, face_count);
     // destroy detect handle
     cv_face_destroy_detector(handle_detect);
 
     fprintf(stderr, "test finish!\n");
-
 }
 
 void MainWindow::connectToService()

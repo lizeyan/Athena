@@ -38,7 +38,7 @@ public slots:
 private:
 
     QTimer theTimer;
-    Mat srcImage;
+    Mat srcImage,bgr_image;
     VideoCapture videoCap;
     QLabel *imageLabel;
 
