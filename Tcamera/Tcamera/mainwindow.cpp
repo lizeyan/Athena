@@ -95,6 +95,7 @@ void MainWindow::catchFace()
     int config = CV_DETECT_ENABLE_ALIGN_21;
     do
     {
+        Mat bgr_image=srcImage.clone();
         cv_result = cv_face_create_detector(&handle_detect, NULL, config);
         if (cv_result != CV_OK) {
             fprintf(stderr, "cv_face_create_detector failed, error code %d\n", cv_result);
@@ -118,7 +119,56 @@ void MainWindow::catchFace()
             break;
         }
         fprintf(stderr, "threshold set : %f\n", default_threshold);
+
+
+        // detect
+        //__TIC__();
+        cv_result = cv_face_detect(handle_detect, bgr_image.data, CV_PIX_FMT_BGR888,
+            bgr_image.cols, bgr_image.rows, bgr_image.step,
+            CV_FACE_UP, &p_face, &face_count);
+        //__TOC__();
+        if (cv_result != CV_OK) {
+            fprintf(stderr, "cv_face_detect error %d\n", cv_result);
+            break;
+        }
+
+        if (face_count > 0) {
+            // draw result
+            for (int i = 0; i < face_count; i++) {
+                rectangle(bgr_image, Point(p_face[i].rect.left, p_face[i].rect.top),
+                    Point(p_face[i].rect.right, p_face[i].rect.bottom),
+                    Scalar(0, 255, 0), 2, 8, 0);
+                fprintf(stderr, "face number: %d\n", i + 1);
+                fprintf(stderr, "face rect: [%d, %d, %d, %d]\n", p_face[i].rect.top,
+                    p_face[i].rect.left,
+                    p_face[i].rect.right, p_face[i].rect.bottom);
+                fprintf(stderr, "score: %f\n", p_face[i].score);
+                fprintf(stderr, "face pose: [yaw: %.2f, pitch: %.2f, roll: %.2f, eye distance: %.2f]\n",
+                    p_face[i].yaw,
+                    p_face[i].pitch, p_face[i].roll, p_face[i].eye_dist);
+                fprintf(stderr, "face algin:\n");
+                for (unsigned int j = 0; j < p_face[i].points_count; j++) {
+                    float x = p_face[i].points_array[j].x;
+                    float y = p_face[i].points_array[j].y;
+                    fprintf(stderr, "(%.2f, %.2f)\n", x, y);
+                    circle(bgr_image, Point2f(x, y), 2, Scalar(0, 0, 255), -1);
+                }
+                fprintf(stderr, "\n");
+            }
+            // save image
+            imwrite("D:\Qt\face.png", bgr_image);
+        }
+        else {
+            fprintf(stderr, "can't find face in image");
+        }
+
     }while(1+1!=2);
+    // release the memory of face
+    cv_face_release_detector_result(p_face, face_count);
+    // destroy detect handle
+    cv_face_destroy_detector(handle_detect);
+
+    fprintf(stderr, "test finish!\n");
 
 }
 
