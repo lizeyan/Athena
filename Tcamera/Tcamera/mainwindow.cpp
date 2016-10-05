@@ -64,7 +64,7 @@ void MainWindow::updateImage()
     if(srcImage.data)
     {
         catchFace();
-        cvtColor(srcImage, srcImage, CV_BGR2RGB);//Qt中支持的是RGB图像, OpenCV中支持的是BGR
+        //cvtColor(srcImage, srcImage, CV_BGR2RGB);//Qt中支持的是RGB图像, OpenCV中支持的是BGR
         cvtColor(bgr_image, bgr_image, CV_BGR2RGB);
         srcImage=bgr_image.clone();
         this->update();  //发送刷新消息
@@ -130,14 +130,14 @@ void MainWindow::catchFace()
         float default_threshold;
         cv_result = cv_face_detect_get_threshold(handle_detect, &default_threshold);
         if (cv_result != CV_OK) {
-            fprintf(stderr, "cv_face_detect_get_threshold failed, error code %d\n", cv_result);
+            //fprintf(stderr, "cv_face_detect_get_threshold failed, error code %d\n", cv_result);
             break;
         }
-        fprintf(stderr, "default threshold : %f\n", default_threshold);
+        //fprintf(stderr, "default threshold : %f\n", default_threshold);
 
         cv_result = cv_face_detect_set_threshold(handle_detect, default_threshold);
         if (cv_result != CV_OK) {
-            fprintf(stderr, "cv_face_detect_set_threshold failed, error code %d\n", cv_result);
+            //fprintf(stderr, "cv_face_detect_set_threshold failed, error code %d\n", cv_result);
             break;
         }
         fprintf(stderr, "threshold set : %f\n", default_threshold);
@@ -150,7 +150,7 @@ void MainWindow::catchFace()
             CV_FACE_UP, &p_face, &face_count);
 
         if (cv_result != CV_OK) {
-            fprintf(stderr, "cv_face_detect error %d\n", cv_result);
+            //fprintf(stderr, "cv_face_detect error %d\n", cv_result);
             break;
         }
 
@@ -160,22 +160,22 @@ void MainWindow::catchFace()
                 rectangle(bgr_image, Point(p_face[i].rect.left, p_face[i].rect.top),
                     Point(p_face[i].rect.right, p_face[i].rect.bottom),
                     Scalar(0, 255, 0), 2, 8, 0);
-                fprintf(stderr, "face number: %d\n", i + 1);
-                fprintf(stderr, "face rect: [%d, %d, %d, %d]\n", p_face[i].rect.top,
+                //fprintf(stderr, "face number: %d\n", i + 1);
+                /*fprintf(stderr, "face rect: [%d, %d, %d, %d]\n", p_face[i].rect.top,
                     p_face[i].rect.left,
-                    p_face[i].rect.right, p_face[i].rect.bottom);
-                fprintf(stderr, "score: %f\n", p_face[i].score);
-                fprintf(stderr, "face pose: [yaw: %.2f, pitch: %.2f, roll: %.2f, eye distance: %.2f]\n",
+                    p_face[i].rect.right, p_face[i].rect.bottom);*/
+                //fprintf(stderr, "score: %f\n", p_face[i].score);
+                /*fprintf(stderr, "face pose: [yaw: %.2f, pitch: %.2f, roll: %.2f, eye distance: %.2f]\n",
                     p_face[i].yaw,
-                    p_face[i].pitch, p_face[i].roll, p_face[i].eye_dist);
-                fprintf(stderr, "face algin:\n");
+                    p_face[i].pitch, p_face[i].roll, p_face[i].eye_dist);*/
+                //fprintf(stderr, "face algin:\n");
                 for (unsigned int j = 0; j < p_face[i].points_count; j++) {
                     float x = p_face[i].points_array[j].x;
                     float y = p_face[i].points_array[j].y;
-                    fprintf(stderr, "(%.2f, %.2f)\n", x, y);
+                    //fprintf(stderr, "(%.2f, %.2f)\n", x, y);
                     circle(bgr_image, Point2f(x, y), 2, Scalar(0, 0, 255), -1);
                 }
-                fprintf(stderr, "\n");
+                //fprintf(stderr, "\n");
             }
             // save image
             //imwrite(output_image_path, bgr_image);

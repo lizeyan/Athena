@@ -11,6 +11,7 @@
 
 #include "cv.h"
 #include "highgui.h"
+#include "catchfacethread.h"
 #include "opencv.hpp"
 
 using namespace cv;
@@ -43,6 +44,8 @@ private:
     QLabel *imageLabel;
 
     QString password;
+
+    CatchFaceThread catchFaceThread;
 
     Ui::MainWindow *ui;
 
