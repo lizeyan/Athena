@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     catchfacethread.cpp \
-    catchfacedetect.cpp
+    catchfacedetect.cpp \
+    catchfacetrack.cpp
 
 HEADERS  += mainwindow.h \
     catchfacethread.h \
-    catchfacedetect.h
+    catchfacedetect.h \
+    catchfacetrack.h
 
 FORMS    += mainwindow.ui
 

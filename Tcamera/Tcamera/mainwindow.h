@@ -15,6 +15,7 @@
 
 #include "catchfacethread.h"
 #include "catchfacedetect.h"
+#include "catchfacetrack.h"
 
 using namespace cv;
 
@@ -52,11 +53,14 @@ private:
 
     CatchFaceThread catchFaceThread;
 
+    CatchFaceDetect catchFaceDetect;
+
+    CatchFaceTrack catchFaceTrack;
+
     int catchFaceCounter;
 
     int catchFaceFlag;
 
-    CatchFaceDetect catchFaceDetect;
 
     QString cameraID;
 

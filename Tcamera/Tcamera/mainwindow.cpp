@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
+    catchFaceTrack.catchFace();
+
     ui->setupUi(this);
     this->setWindowTitle("monitor");
 
