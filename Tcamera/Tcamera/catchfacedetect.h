@@ -12,7 +12,7 @@ class CatchFaceDetect
 public:
     CatchFaceDetect();
 
-    void catchFace(Mat&);
+    int catchFace(Mat&);
 
 };
 

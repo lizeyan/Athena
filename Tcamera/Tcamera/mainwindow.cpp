@@ -38,6 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     lock=new QMutex();
     catchFaceThread.setLock(lock);
+    //catchFaceThread.start();
+
+    catchFaceCounter=catchFaceFlag=0;
 
     videoCap>>srcImage;
 }
@@ -68,10 +71,15 @@ void MainWindow::updateImage()
     if(srcImage.data)
     {
         bgr_image=srcImage;
-        //catchFaceDetect.catchFace(bgr_image);
-        catchFaceThread.add(bgr_image);
-        //catchFace(bgr_image);
+
         //cvtColor(srcImage, srcImage, CV_BGR2RGB);//Qt中支持的是RGB图像, OpenCV中支持的是BGR
+        if(catchFaceFlag>0||catchFaceCounter>40)
+        {
+            catchFaceFlag=catchFaceDetect.catchFace(bgr_image);
+            catchFaceCounter=0;
+        }
+        else
+            ++catchFaceCounter;
         cvtColor(bgr_image, bgr_image, CV_BGR2RGB);
         //srcImage=bgr_image.clone();
         this->update();  //发送刷新消息
@@ -93,6 +101,11 @@ void MainWindow::createMenu()
     connect(actionConnectToService,SIGNAL(triggered(bool)),this,SLOT(connectToService()));
     connect(actionChangePassword,SIGNAL(triggered(bool)),this,SLOT(changePassword()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(closeMonitor()));
+}
+
+void MainWindow::getCameraID()
+{
+
 }
 
 void MainWindow::connectToService()

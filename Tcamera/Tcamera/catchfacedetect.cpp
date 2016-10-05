@@ -8,9 +8,9 @@ CatchFaceDetect::CatchFaceDetect()
 
 }
 
-void CatchFaceDetect::catchFace(Mat&bgr_image)
+int CatchFaceDetect::catchFace(Mat&bgr_image)
 {
-
+    int res=0;
     int points_size = 21;
     int config;
     if (points_size == 21) {
@@ -21,14 +21,14 @@ void CatchFaceDetect::catchFace(Mat&bgr_image)
     }
     else {
         fprintf(stderr, "alignment point size error, must be 21 or 106\n");
-        return;
+        return -1;
     }
 
     // load image
     //bgr_image =srcImage.clone();             // CV_PIX_FMT_BGR888
     if (!bgr_image.data) {
         fprintf(stderr, "fail to read\n");//%s\n", input_image_path);
-        return;
+        return -1;
     }
 
 
@@ -75,6 +75,8 @@ void CatchFaceDetect::catchFace(Mat&bgr_image)
             break;
         }
 
+        res=face_count;
+
         if (face_count > 0) {
             // draw result
             for (int i = 0; i < face_count; i++) {
@@ -114,4 +116,5 @@ void CatchFaceDetect::catchFace(Mat&bgr_image)
     cv_face_destroy_detector(handle_detect);
 
     fprintf(stderr, "test finish!\n");
+    return res;
 }

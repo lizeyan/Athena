@@ -30,6 +30,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void paintEvent(QPaintEvent *);
+    void getCameraID();
 
 public slots:
     void updateImage();
@@ -49,11 +50,15 @@ private:
 
     QMutex *lock;
 
-    QString password;
-
     CatchFaceThread catchFaceThread;
 
+    int catchFaceCounter;
+
+    int catchFaceFlag;
+
     CatchFaceDetect catchFaceDetect;
+
+    QString cameraID;
 
     Ui::MainWindow *ui;
 

@@ -13,6 +13,7 @@ using namespace cv;
 
 class CatchFaceThread : public QThread
 {
+
 public:
     CatchFaceThread();
 
