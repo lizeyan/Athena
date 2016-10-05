@@ -68,7 +68,8 @@ void MainWindow::updateImage()
     if(srcImage.data)
     {
         bgr_image=srcImage;
-        catchFaceDetect.catchFace(bgr_image);
+        //catchFaceDetect.catchFace(bgr_image);
+        catchFaceThread.add(bgr_image);
         //catchFace(bgr_image);
         //cvtColor(srcImage, srcImage, CV_BGR2RGB);//Qt中支持的是RGB图像, OpenCV中支持的是BGR
         cvtColor(bgr_image, bgr_image, CV_BGR2RGB);
