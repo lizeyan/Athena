@@ -11,8 +11,10 @@
 
 #include "cv.h"
 #include "highgui.h"
-#include "catchfacethread.h"
 #include "opencv.hpp"
+
+#include "catchfacethread.h"
+#include "catchfacedetect.h"
 
 using namespace cv;
 
@@ -34,18 +36,24 @@ public slots:
     void changePassword();
     void connectToService();
     void closeMonitor();
-    void catchFace();
 
 private:
 
     QTimer theTimer;
+
     Mat srcImage,bgr_image;
+
     VideoCapture videoCap;
+
     QLabel *imageLabel;
+
+    QMutex *lock;
 
     QString password;
 
     CatchFaceThread catchFaceThread;
+
+    CatchFaceDetect catchFaceDetect;
 
     Ui::MainWindow *ui;
 
