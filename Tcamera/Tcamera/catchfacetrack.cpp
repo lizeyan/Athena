@@ -8,6 +8,7 @@ CatchFaceTrack::CatchFaceTrack()
 
 CatchFaceTrack::~CatchFaceTrack()
 {
+    // destroy track handle
     cv_face_destroy_tracker(handle_track);
 }
 
@@ -70,48 +71,45 @@ int CatchFaceTrack::catchFace(Mat&bgr_frame)
 
     cv_face_t *p_face = NULL;
     int face_count = 0;
-    //while (capture.read(bgr_frame)) {       // CV_PIX_FMT_BGR888
-        capture>>bgr_frame;
-        // realtime track
-        face_count = 0;
-        cv_result = cv_face_track(handle_track, bgr_frame.data, CV_PIX_FMT_BGR888,
-            bgr_frame.cols, bgr_frame.rows, bgr_frame.step,
-            CV_FACE_UP, &p_face, &face_count);
-        if (cv_result != CV_OK) {
-            fprintf(stderr, "cv_face_track failed, error : %d\n", cv_result);
-            cv_face_release_tracker_result(p_face, face_count);
-            return 0;
-        }
-
-        for (int i = 0; i < face_count; i++) {
-            fprintf(stderr, "face: %d-----[%d, %d, %d, %d]-----id: %d\n", i,
-                p_face[i].rect.left, p_face[i].rect.top,
-                p_face[i].rect.right, p_face[i].rect.bottom, p_face[i].ID);
-            fprintf(stderr, "face pose: [yaw: %.2f, pitch: %.2f, roll: %.2f, eye distance: %.2f]\n",
-                p_face[i].yaw,
-                p_face[i].pitch, p_face[i].roll, p_face[i].eye_dist);
-
-            // draw the video
-            Scalar scalar_color = CV_RGB(p_face[i].ID * 53 % 256,
-                p_face[i].ID * 93 % 256,
-                p_face[i].ID * 143 % 256);
-            rectangle(bgr_frame, Point2f(static_cast<float>(p_face[i].rect.left),
-                static_cast<float>(p_face[i].rect.top)),
-                Point2f(static_cast<float>(p_face[i].rect.right),
-                static_cast<float>(p_face[i].rect.bottom)), scalar_color, 2);
-            for (int j = 0; j < p_face[i].points_count; j++) {
-                circle(bgr_frame, Point2f(p_face[i].points_array[j].x,
-                    p_face[i].points_array[j].y), 1, Scalar(0, 255, 0));
-            }
-        }
-
-        // release the memory of face
+    capture>>bgr_frame;
+    // realtime track
+    face_count = 0;
+    cv_result = cv_face_track(handle_track, bgr_frame.data, CV_PIX_FMT_BGR888,
+        bgr_frame.cols, bgr_frame.rows, bgr_frame.step,
+        CV_FACE_UP, &p_face, &face_count);
+    if (cv_result != CV_OK) {
+        fprintf(stderr, "cv_face_track failed, error : %d\n", cv_result);
         cv_face_release_tracker_result(p_face, face_count);
-        //imshow("TrackingTest", bgr_frame);
-        /*if (waitKey(1) != -1)
-            break;*/
-    //}
+        return 0;
+    }
 
-    // destroy track handle
+    for (int i = 0; i < face_count; i++) {
+        //fprintf(stderr, "face: %d-----[%d, %d, %d, %d]-----id: %d\n", i,
+        //    p_face[i].rect.left, p_face[i].rect.top,
+        //    p_face[i].rect.right, p_face[i].rect.bottom, p_face[i].ID);
+        //fprintf(stderr, "face pose: [yaw: %.2f, pitch: %.2f, roll: %.2f, eye distance: %.2f]\n",
+        //    p_face[i].yaw,
+        //    p_face[i].pitch, p_face[i].roll, p_face[i].eye_dist);
+
+        // draw the video
+        Scalar scalar_color = CV_RGB(p_face[i].ID * 53 % 256,
+            p_face[i].ID * 93 % 256,
+            p_face[i].ID * 143 % 256);
+        rectangle(bgr_frame, Point2f(static_cast<float>(p_face[i].rect.left),
+            static_cast<float>(p_face[i].rect.top)),
+            Point2f(static_cast<float>(p_face[i].rect.right),
+            static_cast<float>(p_face[i].rect.bottom)), scalar_color, 2);
+        for (int j = 0; j < p_face[i].points_count; j++) {
+            circle(bgr_frame, Point2f(p_face[i].points_array[j].x,
+                p_face[i].points_array[j].y), 1, Scalar(0, 255, 0));
+        }
+    }
+
+    // release the memory of face
+    cv_face_release_tracker_result(p_face, face_count);
+    //imshow("TrackingTest", bgr_frame);
+    /*if (waitKey(1) != -1)
+        break;*/
+
     return face_count;
 }

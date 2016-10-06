@@ -43,7 +43,7 @@ private:
 
     QTimer theTimer;
 
-    Mat srcImage,bgr_image;
+    Mat bgr_image;
 
     QLabel *imageLabel;
 

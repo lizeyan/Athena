@@ -55,7 +55,10 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
 void MainWindow::updateImage()
 {
-    catchFaceTrack.catchFace(bgr_image);
+    int face_count=catchFaceTrack.catchFace(bgr_image);
+    fprintf(stderr, "catch face number : %d\n", face_count);
+    if(face_count>0)
+        imwrite("face.jpg",bgr_image);
     if(bgr_image.data)
     {
         //bgr_image=srcImage;
