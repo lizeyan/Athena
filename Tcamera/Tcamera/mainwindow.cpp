@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
-    catchFaceTrack.catchFace();
-
     ui->setupUi(this);
     this->setWindowTitle("monitor");
 
@@ -23,29 +21,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //catch vedio from camera
 
-    const int updateDelay=33;   // the time between two update
+    const int updateDelay=33;
 
-    if(videoCap.open(1))    //check the camera exist
+    if(catchFaceTrack.open(bgr_image))
     {
-        srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
         theTimer.start(updateDelay);
     }
-    else if(videoCap.open(0))   //check the camera exist
-    {
-        srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
-        theTimer.start(updateDelay);
-    }
+
     imageLabel = new QLabel(this);
     ui->verticalLayout->addWidget(imageLabel);
     createMenu();
 
     lock=new QMutex();
     catchFaceThread.setLock(lock);
-    //catchFaceThread.start();
 
     catchFaceCounter=catchFaceFlag=0;
-
-    videoCap>>srcImage;
 }
 
 MainWindow::~MainWindow()
@@ -55,12 +45,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *e)
 {
-    /*
-    // the first way to show the picture
-    QPainter painter(this);
-    QImage image1 = QImage((uchar*)(srcImage.data), srcImage.cols, srcImage.rows, QImage::Format_RGB888);
-    painter.drawImage(QPoint(20,20), image1);*/
-    // the second way show the picture
+    // show the picture
     QImage image2 = QImage((uchar*)(bgr_image.data), bgr_image.cols, bgr_image.rows, QImage::Format_RGB888);
     imageLabel->setPixmap(QPixmap::fromImage(image2));
     imageLabel->resize(image2.size());
@@ -70,19 +55,10 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
 void MainWindow::updateImage()
 {
-    videoCap>>srcImage;
-    if(srcImage.data)
+    catchFaceTrack.catchFace(bgr_image);
+    if(bgr_image.data)
     {
-        bgr_image=srcImage;
-
-        //cvtColor(srcImage, srcImage, CV_BGR2RGB);//Qt中支持的是RGB图像, OpenCV中支持的是BGR
-        if(catchFaceFlag>0||catchFaceCounter>40)
-        {
-            catchFaceFlag=catchFaceDetect.catchFace(bgr_image);
-            catchFaceCounter=0;
-        }
-        else
-            ++catchFaceCounter;
+        //bgr_image=srcImage;
         cvtColor(bgr_image, bgr_image, CV_BGR2RGB);
         //srcImage=bgr_image.clone();
         this->update();  //发送刷新消息

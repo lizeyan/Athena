@@ -45,8 +45,6 @@ private:
 
     Mat srcImage,bgr_image;
 
-    VideoCapture videoCap;
-
     QLabel *imageLabel;
 
     QMutex *lock;
