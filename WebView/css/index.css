@@ -20,14 +20,43 @@ body {
 }
 /*设置导航栏上元素的分配*/
 .navbar-nav {
+    padding-left: 0.5em;
     padding-right: 1.5em;
     font-size: 1.2em;
 }
 .navbar-btn {
-    margin-left: 1em;
-    margin-right: 1em;
-    padding: 0.5em 1.4em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding: 0.5em 1.5em;
 }
-#top-nav-inner {
-    max-width: 1024px;
+
+#top-nav-inner, #main-jumbotron-inner {
+    max-width: 1086px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/******************************************************************************/
+#main-jumbotron {
+    background: url("../img/index/classroom_blured.jpg") no-repeat;
+    background-size: cover;
+    height: 520px;
+    margin: 0;
+}
+
+#main-jumbotron-inner {
+    margin-top: auto;
+}
+
+#main-jumbotron-slogan * {
+    font-weight: bold;
+    color: white;
+}
+
+#main-jumbotron-signup {
+}
+
+#main-jumbotron-signup input {
+    margin: 2em 0;
+    padding: 1.3em;
 }
