@@ -1,0 +1,32 @@
+/*通用设置*/
+* {
+    font-family: "Microsoft YaHei", "Hiragino Sans GB", "文泉驿微米黑", "WenQuanYi Micro Hei", "sans-serif";
+}
+/*为了让顶部的导航栏不和其他元素重叠，需要给body设置足够大的padding*/
+body {
+    padding: 0;
+}
+/*设置导航栏的高度*/
+.navbar {
+    padding: 1em 0;
+}
+/*设置导航栏上Logo的大小*/
+.navbar-brand {
+    padding: 0;
+}
+.navbar-brand > img {
+    height: 100%;
+    width: auto;
+}
+/*设置导航栏上元素的分配*/
+.navbar-nav {
+    padding-right: 1.5em;
+    font-size: 1.2em;
+}
+.navbar-btn {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+#top-nav-inner {
+    max-width: 1024px;
+}
