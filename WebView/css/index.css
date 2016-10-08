@@ -3,9 +3,10 @@
     font-family: "Microsoft YaHei", "Hiragino Sans GB", "文泉驿微米黑", "WenQuanYi Micro Hei", "sans-serif";
 }
 /*为了让顶部的导航栏不和其他元素重叠，需要给body设置足够大的padding*/
+/*改到JS中进行设置*/
 body {
-    padding: 0;
 }
+
 /*设置导航栏的高度*/
 .navbar {
     padding: 1em 0;
@@ -48,7 +49,6 @@ body {
 }
 
 #main-jumbotron-slogan * {
-    font-weight: bold;
     color: white;
 }
 
@@ -65,4 +65,10 @@ body {
 #main-jumbotron-signup-btn {
     padding: 1em 0.5em;
     margin: 1em auto;
+}
+
+/*****************************************************************/
+.slogan-text {
+    font-weight: bold;
+    font-size: 1.2em;
 }
