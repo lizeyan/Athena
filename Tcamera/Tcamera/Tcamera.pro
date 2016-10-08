@@ -29,7 +29,9 @@ FORMS    += mainwindow.ui
 INCLUDEPATH+=D:\OpenCV\build\install\include\opencv\
              D:\OpenCV\build\install\include\opencv2\
              D:\OpenCV\build\install\include\
-             D:\OpenCV\st_face-6.2.0-detect_p1-windows-6c0c82f\include
+             D:\OpenCV\st_face-6.2.0-detect_p1-windows-6c0c82f\include\
+             D:\OpenCV\curl-7.50.3\include
+
 
 LIBS+=D:\OpenCV\build\install\x86\mingw\lib\libopencv_calib3d2413.dll.a\
       D:\OpenCV\build\install\x86\mingw\lib\libopencv_contrib2413.dll.a\
@@ -43,4 +45,6 @@ LIBS+=D:\OpenCV\build\install\x86\mingw\lib\libopencv_calib3d2413.dll.a\
       D:\OpenCV\build\install\x86\mingw\lib\libopencv_ml2413.dll.a\
       D:\OpenCV\build\install\x86\mingw\lib\libopencv_objdetect2413.dll.a\
       D:\OpenCV\build\install\x86\mingw\lib\libopencv_video2413.dll.a\
-      D:\OpenCV\st_face-6.2.0-detect_p1-windows-6c0c82f\libs\windows-x86\cvface_api.lib
+      D:\OpenCV\st_face-6.2.0-detect_p1-windows-6c0c82f\libs\windows-x86\cvface_api.lib\
+      D:\OpenCV\curl-7.50.3\lib\libcurldll.a
+

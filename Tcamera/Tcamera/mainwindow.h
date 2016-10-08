@@ -14,6 +14,7 @@
 #include "cv.h"
 #include "highgui.h"
 #include "opencv.hpp"
+#include "curl/curl.h"
 
 #include "catchfacetrack.h"
 
@@ -51,6 +52,10 @@ private:
     Mat bgr_image;
 
     QLabel *imageLabel;
+
+    CURL* curl;
+
+    CURLcode ret;
 
     QTextEdit *imageInfo;
 

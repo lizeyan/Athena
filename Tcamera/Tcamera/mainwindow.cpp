@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     testButton->setText(tr("clicked this button to test program"));
 
     this->setCentralWidget(widget);
+    curl = curl_easy_init();
 }
 
 MainWindow::~MainWindow()
