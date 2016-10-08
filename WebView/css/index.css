@@ -12,7 +12,7 @@ body {
 }
 /*设置导航栏上Logo的大小*/
 .navbar-brand {
-    padding: 0;
+    padding: 0 0 0 1em;
 }
 .navbar-brand > img {
     height: 100%;
@@ -45,7 +45,6 @@ body {
 }
 
 #main-jumbotron-inner {
-    margin-top: auto;
 }
 
 #main-jumbotron-slogan * {
@@ -54,9 +53,16 @@ body {
 }
 
 #main-jumbotron-signup {
+    padding: 3em;
+    margin: auto 0;
 }
 
 #main-jumbotron-signup input {
-    margin: 2em 0;
-    padding: 1.3em;
+    margin: 1em 0 0 0;
+    padding: 1.5em;
+}
+
+#main-jumbotron-signup-btn {
+    padding: 1em 0.5em;
+    margin: 1em auto;
 }

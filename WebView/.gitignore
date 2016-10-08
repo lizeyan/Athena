@@ -1,2 +1,4 @@
-#IDE files
+#IDE filedeps
 /.idea
+
+deploy.bash
