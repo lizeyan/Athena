@@ -2,7 +2,9 @@
 #include "ui_mainwindow.h"
 
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QMenu>
+#include <QPushButton>
 
 #include "cv.h"
 #include "highgui.h"
@@ -29,18 +31,11 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     imageLabel = new QLabel(this);
-    imageInfo = new QLabel(this);
-    QPalette pa;
-    pa.setColor(QPalette::WindowText,Qt::red);
-    imageInfo->setPalette(pa);
+    imageInfo = new QTextEdit(this);
+
     imageInfo->setText(tr("此处将显示与图片相关的文字信息"));
 
-    ui->verticalLayout->addWidget(imageLabel);
-    ui->verticalLayout->addWidget(imageInfo);
-
-    ui->testButton->setEnabled(true);
-
-    connect(ui->testButton,SIGNAL(clicked()),this,SLOT(testButtonClick()));
+    imageInfo->setReadOnly(true);
 
     createMenu();
 
@@ -49,6 +44,26 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //catchFaceCounter=catchFaceFlag=0;
     catchFaceCounter=0;
+
+    QPushButton *testButton=new QPushButton();
+
+    QVBoxLayout *vLayout=new QVBoxLayout();
+    QWidget *widget=new QWidget(this);
+    widget->setLayout(vLayout);
+
+    QWidget *hWidget=new QWidget(widget);
+    QHBoxLayout *hLayout=new QHBoxLayout();
+    hWidget->setLayout(hLayout);
+
+    hLayout->addWidget(imageLabel);
+    hLayout->addWidget(imageInfo);
+
+    vLayout->addWidget(hWidget);
+    vLayout->addWidget(testButton);
+
+    testButton->setText(tr("clicked this button to test program"));
+
+    this->setCentralWidget(widget);
 }
 
 MainWindow::~MainWindow()

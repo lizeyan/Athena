@@ -9,6 +9,7 @@
 #include <QImage>
 #include <QLabel>
 #include <QMutex>
+#include <QTextEdit>
 
 #include "cv.h"
 #include "highgui.h"
@@ -49,7 +50,9 @@ private:
 
     Mat bgr_image;
 
-    QLabel *imageLabel,*imageInfo;
+    QLabel *imageLabel;
+
+    QTextEdit *imageInfo;
 
     QMutex *lock;
 
