@@ -66,12 +66,17 @@ int CatchFaceTrack::open(Mat&bgr_frame)
     return 1;
 }
 
-int CatchFaceTrack::catchFace(Mat&bgr_frame)
+int CatchFaceTrack::catchFace(Mat&bgr_frame,bool saved)
 {
 
     cv_face_t *p_face = NULL;
     int face_count = 0;
     capture>>bgr_frame;
+
+    //save image
+    if(saved)
+        imwrite("D:\\face\\face.jpg",bgr_frame);
+
     // realtime track
     face_count = 0;
     cv_result = cv_face_track(handle_track, bgr_frame.data, CV_PIX_FMT_BGR888,

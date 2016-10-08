@@ -13,7 +13,7 @@ class CatchFaceTrack
 public:
     CatchFaceTrack();
     int open(Mat&);
-    int catchFace(Mat&);
+    int catchFace(Mat&,bool);
     ~CatchFaceTrack();
 
 private:

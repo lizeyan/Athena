@@ -8,13 +8,12 @@
 #include <QPixmap>
 #include <QImage>
 #include <QLabel>
+#include <QMutex>
 
 #include "cv.h"
 #include "highgui.h"
 #include "opencv.hpp"
 
-#include "catchfacethread.h"
-#include "catchfacedetect.h"
 #include "catchfacetrack.h"
 
 using namespace cv;
@@ -31,40 +30,44 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void paintEvent(QPaintEvent *);
-    void getCameraID();
 
 public slots:
     void updateImage();
-    void changePassword();
+    void getCameraID();
     void connectToService();
     void closeMonitor();
+    void sendImageToService();
+    void testButtonClick();
 
 private:
+
+    void createMenu();
+
+    int updateDelay;
 
     QTimer theTimer;
 
     Mat bgr_image;
 
-    QLabel *imageLabel;
+    QLabel *imageLabel,*imageInfo;
 
     QMutex *lock;
 
-    CatchFaceThread catchFaceThread;
+//    CatchFaceThread catchFaceThread;
 
-    CatchFaceDetect catchFaceDetect;
+//    CatchFaceDetect catchFaceDetect;
 
     CatchFaceTrack catchFaceTrack;
 
     int catchFaceCounter;
 
-    int catchFaceFlag;
+//    int catchFaceFlag;
 
 
     QString cameraID;
 
     Ui::MainWindow *ui;
 
-    void createMenu();
 };
 
 #endif // MAINWINDOW_H

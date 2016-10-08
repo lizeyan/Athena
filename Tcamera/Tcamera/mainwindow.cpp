@@ -15,13 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     ui->setupUi(this);
-    this->setWindowTitle("monitor");
+    this->setWindowTitle(tr("monitor"));
 
     connect(&theTimer, &QTimer::timeout, this, &MainWindow::updateImage);
 
     //catch vedio from camera
 
-    const int updateDelay=33;
+    updateDelay=33;
 
     if(catchFaceTrack.open(bgr_image))
     {
@@ -29,13 +29,26 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     imageLabel = new QLabel(this);
+    imageInfo = new QLabel(this);
+    QPalette pa;
+    pa.setColor(QPalette::WindowText,Qt::red);
+    imageInfo->setPalette(pa);
+    imageInfo->setText(tr("此处将显示与图片相关的文字信息"));
+
     ui->verticalLayout->addWidget(imageLabel);
+    ui->verticalLayout->addWidget(imageInfo);
+
+    ui->testButton->setEnabled(true);
+
+    connect(ui->testButton,SIGNAL(clicked()),this,SLOT(testButtonClick()));
+
     createMenu();
 
     lock=new QMutex();
-    catchFaceThread.setLock(lock);
+    //catchFaceThread.setLock(lock);
 
-    catchFaceCounter=catchFaceFlag=0;
+    //catchFaceCounter=catchFaceFlag=0;
+    catchFaceCounter=0;
 }
 
 MainWindow::~MainWindow()
@@ -55,10 +68,16 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
 void MainWindow::updateImage()
 {
-    int face_count=catchFaceTrack.catchFace(bgr_image);
-    fprintf(stderr, "catch face number : %d\n", face_count);
-    if(face_count>0)
-        imwrite("face.jpg",bgr_image);
+    ++catchFaceCounter;
+    int face_count;
+    if(catchFaceCounter*updateDelay<500)
+        face_count=catchFaceTrack.catchFace(bgr_image,false);
+    else
+    {
+        face_count=catchFaceTrack.catchFace(bgr_image,false);
+        sendImageToService();
+    }
+    //fprintf(stderr, "catch face number : %d\n", face_count);
     if(bgr_image.data)
     {
         //bgr_image=srcImage;
@@ -73,15 +92,12 @@ void MainWindow::createMenu()
 {
     QMenu *menuOfWindow=this->menuBar()->addMenu(tr("&Settings"));
     QAction *actionConnectToService=new QAction(tr("&Connect"),this);
-    QAction *actionChangePassword=new QAction(tr("&Password"),this);
     QAction *actionExit=new QAction(tr("&Exit"),this);
 
     menuOfWindow->addAction(actionConnectToService);
-    menuOfWindow->addAction(actionChangePassword);
     menuOfWindow->addAction(actionExit);
 
     connect(actionConnectToService,SIGNAL(triggered(bool)),this,SLOT(connectToService()));
-    connect(actionChangePassword,SIGNAL(triggered(bool)),this,SLOT(changePassword()));
     connect(actionExit,SIGNAL(triggered(bool)),this,SLOT(closeMonitor()));
 }
 
@@ -92,14 +108,29 @@ void MainWindow::getCameraID()
 
 void MainWindow::connectToService()
 {
-}
-
-void MainWindow::changePassword()
-{
-
+    getCameraID();
 }
 
 void MainWindow::closeMonitor()
 {
     this->close();
+}
+
+void MainWindow::sendImageToService()
+{
+
+}
+
+void MainWindow::testButtonClick()
+{
+    imageInfo->setText(tr("test"));
+    catchFaceTrack.catchFace(bgr_image,true);
+    if(bgr_image.data)
+    {
+        //bgr_image=srcImage;
+        cvtColor(bgr_image, bgr_image, CV_BGR2RGB);
+        //srcImage=bgr_image.clone();
+        this->update();  //发送刷新消息
+        sendImageToService();
+    }
 }
