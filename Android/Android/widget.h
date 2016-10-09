@@ -2,21 +2,22 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include "highgui.h"
+#include "cv.h"
 
-namespace Ui {
-class Widget;
-}
+using namespace cv;
 
 class Widget : public QWidget
 {
     Q_OBJECT
 
 public:
+
+    Mat bgrImage;
+
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
-private:
-    Ui::Widget *ui;
 };
 
 #endif // WIDGET_H
