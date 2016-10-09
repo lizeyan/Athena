@@ -16,14 +16,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     catchfacethread.cpp \
     catchfacedetect.cpp \
-    catchfacetrack.cpp
+    catchfacetrack.cpp \
+    addperson.cpp
 
 HEADERS  += mainwindow.h \
     catchfacethread.h \
     catchfacedetect.h \
-    catchfacetrack.h
+    catchfacetrack.h \
+    addperson.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 
 INCLUDEPATH+=D:\OpenCV\build\install\include\opencv\

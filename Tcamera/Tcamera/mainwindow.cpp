@@ -12,11 +12,9 @@
 
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
 
-    ui->setupUi(this);
     this->setWindowTitle(tr("monitor"));
 
     connect(&theTimer, &QTimer::timeout, this, &MainWindow::updateImage);
@@ -64,12 +62,14 @@ MainWindow::MainWindow(QWidget *parent) :
     testButton->setText(tr("clicked this button to test program"));
 
     this->setCentralWidget(widget);
-    curl = curl_easy_init();
+
+    AddPerson addPerson;
+    addPerson.addPerson();
+
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
@@ -90,7 +90,7 @@ void MainWindow::updateImage()
         face_count=catchFaceTrack.catchFace(bgr_image,false);
     else
     {
-        face_count=catchFaceTrack.catchFace(bgr_image,false);
+        face_count=catchFaceTrack.catchFace(bgr_image,true);
         sendImageToService();
     }
     //fprintf(stderr, "catch face number : %d\n", face_count);

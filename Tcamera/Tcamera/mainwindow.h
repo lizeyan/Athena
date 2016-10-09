@@ -14,9 +14,9 @@
 #include "cv.h"
 #include "highgui.h"
 #include "opencv.hpp"
-#include "curl/curl.h"
 
 #include "catchfacetrack.h"
+#include "addperson.h"
 
 using namespace cv;
 
@@ -53,10 +53,6 @@ private:
 
     QLabel *imageLabel;
 
-    CURL* curl;
-
-    CURLcode ret;
-
     QTextEdit *imageInfo;
 
     QMutex *lock;
@@ -73,8 +69,6 @@ private:
 
 
     QString cameraID;
-
-    Ui::MainWindow *ui;
 
 };
 
