@@ -34,3 +34,12 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+
+/*******************************************************************************/
+
+.pin-activity {
+    border: 0.1em grey solid;
+    padding: 1em;
+    margin: 1em;
+}

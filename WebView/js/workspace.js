@@ -38,6 +38,7 @@ var account = new Account();
 var userList = new UserList();
 //获得一个用户用来调试用户界面
 var testUser = new User();
+var testProfile = new Profile ();
 userList.listenTo(account, 'change:users', function () {
     this.url = account.get('users');
     this.fetch({
@@ -46,4 +47,5 @@ userList.listenTo(account, 'change:users', function () {
         }
     });
 });
+var testProfile = new Profile ();
 //

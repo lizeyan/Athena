@@ -34,7 +34,10 @@
 <div id="profile" class="container">
     <div class="row clearfix">
         <div class="col-md-3">
+            <img id="img-avator" class="img-responsive img-thumbnail" src="img/face.png"/>
             <div id="namecard">
+                <p class="label-username">lizeyan</p>
+                <p class="label-realname">李则言</p>
             </div>
             <button class="btn btn-default btn-block">修改个人页面</button>
             <ul class="details list-unstyled">
@@ -45,20 +48,55 @@
             </ul>
         </div>
         <div class="col-md-8">
-
+            <div id="recent-activities">
+                <h2>最近的活动</h2>
+                <div class="row" id="recent-activities-row">
+                    <div class="col-md-4 pin-activity">
+                        <p>计算机组成原理</p>
+                        <p>星期五</p>
+                        <p>出勤率:100%</p>
+                    </div>
+                    <div class="col-md-4 pin-activity">
+                        <p>计算机组成原理</p>
+                        <p>星期五</p>
+                        <p>历史出勤率:100%</p>
+                    </div>
+                    <div class="col-md-4 pin-activity">
+                        <p>计算机组成原理</p>
+                        <p>星期五</p>
+                        <p>出勤率:100%</p>
+                    </div>
+                    <div class="col-md-4 pin-activity">
+                        <p>计算机组成原理</p>
+                        <p>星期五</p>
+                        <p>出勤率:100%</p>
+                    </div>
+                    <div class="col-md-4 pin-activity">
+                        <p>计算机组成原理</p>
+                        <p>星期五</p>
+                        <p>出勤率:100%</p>
+                    </div>
+                    <div class="col-md-4 pin-activity">
+                        <p>计算机组成原理</p>
+                        <p>星期五</p>
+                        <p>出勤率:100%</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<!--用来显示左边的用户名片-->
+<script type="text/template" id="tmplt-namecard">
+    <p class="username"><%= user %></p>
+    <p class="realname"><%= real_name %></p>
+</script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="js/underscore-min.js"></script>
 <script src="js/backbone-min.js"></script>
 <script src="js/workspace.js"></script>
 <script src="js/user.js"></script>
-<script type="text/template" id="tmplt-namecard">
-    <p class="username"><%= user %></p>
-    <p class="realname"><%= real_name %></p>
-</script>
 
 
 </body>
