@@ -1,16 +1,19 @@
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import mixins
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
+from rest_framework.viewsets import GenericViewSet
+
 from account.interface import *
 from account.models import Profile, Face
 from account.serializers import ProfileSerializer, FaceSerializer
 from django.contrib.auth.models import User
 from account.serializers import UserSerializer
 from rest_framework import permissions
-from account.permissions import IsOwnerOrReadOnly, AllowPost
+from account.permissions import AllowPost, IsOwnerOrCanNotGet
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
@@ -28,10 +31,9 @@ def api_root(request, format=None):
 
 @csrf_exempt
 def do_register(request):
+    responseMess = {}
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        responseMess = {}
-
         new_account = {}
         try:
             username = data['username']
@@ -44,13 +46,14 @@ def do_register(request):
             password = data['password']
             if not check_style(password_regex, password):
                 responseMess['status'] = 'PASSWORD_STYLE_ERROR'
-                responseMess['suggestion'] = '用户名由字母和数字组成，长度在2-20之间'
+                responseMess['suggestion'] = '密码长度在6-20之间'
                 return JSONResponse(responseMess, status=400)
             new_account['password'] = password
 
             email = data['email']
             if not check_email_style(email):
                 responseMess['status'] = 'EMAIL_STYLE_ERROR'
+                responseMess['suggestion'] = '需要符合邮箱格式'
                 return JSONResponse(responseMess, status=400)
             new_account['email'] = email
 
@@ -58,13 +61,16 @@ def do_register(request):
 
         except Exception as e:
             print(e)
-            responseMess['error'] = 'style error'
+            responseMess['status'] = 'INPUT_STYLE_ERROR'
+            responseMess['suggestion'] = '请输入至少由username, password, email, real_name四项组成的JSON代码'
             return JSONResponse(responseMess, status=400)
 
         if 'tel' in data:
             tel = data['tel']
             if not check_style(tel_regex, tel):
-                return HttpResponse('failed')
+                responseMess['status'] = 'TEL_STYLE_ERROR'
+                responseMess['suggestion'] = '电话应由数字组成，长度在0-30之间'
+                return JSONResponse(responseMess, status=400)
             new_account['tel'] = tel
 
         try:
@@ -75,12 +81,19 @@ def do_register(request):
             profile.person_id = person_id_temp
             profile.save()
         except IntegrityError:
-            responseMess['error'] = 'username has existed'
+            responseMess['status'] = 'USERNAME_ALREADY_EXIST'
+            responseMess['suggestion'] = '用户名已经存在，请更换用户名'
             return JSONResponse(responseMess, status=400)
         except TypeError:
-            responseMess['error'] = 'type wrong'
+            responseMess['status'] = 'STYLE_ERROR'
+            responseMess['suggestion'] = '请检查输入格式'
             return JSONResponse(responseMess, status=400)
-        return JSONResponse({}, status=201)
+        responseMess['status'] = 'CREATED'
+        return JSONResponse(responseMess, status=201)
+    else:
+        responseMess['status'] = 'METHOD_NOT_ALLOW'
+        responseMess['suggestion'] = 'Only POST is supported'
+        return JSONResponse(responseMess, status=405)
 
 
 class JSONResponse(HttpResponse):
@@ -94,14 +107,32 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
+class AthenaModelViewSet(mixins.RetrieveModelMixin,
+                         mixins.UpdateModelMixin,
+                         mixins.DestroyModelMixin,
+                         mixins.ListModelMixin,
+                         GenericViewSet):
     """
-        This viewset automatically provides `list`, `create`, `retrieve`,
+    A viewset that provides default `retrieve()`, `update()`,
+    `partial_update()`, `destroy()` and `list()` actions.
+    """
+    pass
+
+
+class ProfileViewSet(AthenaModelViewSet):
+    """
+        This viewset automatically provides `list`, `retrieve`,
         `update` and `destroy` actions.
     """
-    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrCanNotGet,)
+
+    def get_queryset(self):
+        if self.request.user.is_superuser == 1:
+            return Profile.objects.all()
+        else:
+            queryset = Profile.objects.filter(user=self.request.user)
+            return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -111,17 +142,31 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
     """
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        if self.request.user.is_superuser == 1:
+            return User.objects.all()
+        else:
+            queryset = User.objects.filter(id=self.request.user.id)
+            return queryset
 
 
 class FaceViewSet(viewsets.ModelViewSet):
     """
         This viewset automatically provides `list` and `detail` actions.
     """
-    queryset = Face.objects.all()
     serializer_class = FaceSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, AllowPost)
+    permission_classes = (permissions.IsAuthenticated, AllowPost)
+
+    def get_queryset(self):
+        if self.request.user.is_superuser == 1:
+            return Face.objects.all()
+        else:
+            profile = Profile.objects.get(user=self.request.user)
+            queryset = Face.objects.filter(profile_id=profile.id)
+            return queryset
 
     def perform_create(self, serializer):
         profile_temp = Profile.objects.get(user=self.request.user)
