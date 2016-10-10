@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
 
+
+
     this->setWindowTitle(tr("monitor"));
 
     connect(&theTimer, &QTimer::timeout, this, &MainWindow::updateImage);
@@ -64,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setCentralWidget(widget);
 
     AddPerson addPerson;
-    addPerson.addPerson();
+    addPerson.test();
 
 }
 
@@ -90,7 +92,7 @@ void MainWindow::updateImage()
         face_count=catchFaceTrack.catchFace(bgr_image,false);
     else
     {
-        face_count=catchFaceTrack.catchFace(bgr_image,true);
+        face_count=catchFaceTrack.catchFace(bgr_image,false);
         sendImageToService();
     }
     //fprintf(stderr, "catch face number : %d\n", face_count);

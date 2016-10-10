@@ -1,15 +1,29 @@
 #ifndef ADDPERSON_H
 #define ADDPERSON_H
 
-#include <cstring>
-#include <string>
+#include <QObject>
+#include <QtNetwork/QNetworkReply>
 
-class AddPerson
+class AddPerson : public QObject
 {
+    Q_OBJECT
 public:
-    AddPerson();
-    size_t callback(char *ptr, size_t size, size_t nmemb, std::string &stream);
-    int addPerson();
+    explicit AddPerson(QObject *parent = 0);
+
+    int test();
+
+    QString api_ID;
+    QString api_secret;
+
+    QNetworkReply*reply;
+
+signals:
+
+public slots:
+
+    void replyFinish(QNetworkReply*);
+
+    void onReadyRead();
 };
 
 #endif // ADDPERSON_H
