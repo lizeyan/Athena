@@ -1,5 +1,5 @@
-#ifndef HTTPGET_H
-#define HTTPGET_H
+#ifndef HTTPPOST_H
+#define HTTPPOST_H
 
 #include <QObject>
 #include <QtNetwork/QNetworkAccessManager>
@@ -11,11 +11,11 @@
 #include <QByteArray>
 
 //http请求类
-class HttpGet : public QObject
+class HttpPost : public QObject
 {
     Q_OBJECT
 public:
-    explicit HttpGet(QObject *parent = 0);
+    explicit HttpPost(QObject *parent = 0);
     void sendRequest(const QString& strUrl);//根据url发起http请求
 signals:
     void signal_requestFinished(bool bSuccess,const QString& strResult); //http请求结束
@@ -30,4 +30,4 @@ private:
     QString m_strUrl; //记录当前请求的url
 };
 
-#endif // HTTPGET_H
+#endif // HTTPPOST_H

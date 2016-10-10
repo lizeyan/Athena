@@ -6,6 +6,9 @@
 #include <QJsonObject>
 #include <QtNetwork/QNetworkReply>
 
+#include "HttpGet.h"
+#include "httppost.h"
+
 #include<iostream>
 using namespace std;
 
@@ -28,5 +31,7 @@ int AddPerson::test()
 
     HttpGet*httpGet=new HttpGet();
     httpGet->sendRequest(qurl);
+    HttpPost*httpPost=new HttpPost();
+    httpPost->sendRequest(qurl);
     return 0;
 }

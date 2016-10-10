@@ -2,9 +2,6 @@
 #define ADDPERSON_H
 
 #include <QObject>
-#include <QtNetwork/QNetworkReply>
-
-#include "HttpGet.h"
 
 class AddPerson : public QObject
 {

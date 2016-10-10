@@ -19,14 +19,16 @@ SOURCES += main.cpp\
     catchfacedetect.cpp \
     catchfacetrack.cpp \
     addperson.cpp \
-    HttpFun.cpp
+    httppost.cpp \
+    HttpGet.cpp
 
 HEADERS  += mainwindow.h \
     catchfacethread.h \
     catchfacedetect.h \
     catchfacetrack.h \
     addperson.h \
-    HttpGet.h
+    HttpGet.h \
+    httppost.h
 
 FORMS    +=
 
