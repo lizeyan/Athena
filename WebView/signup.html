@@ -68,9 +68,11 @@
         <div class="col-md-6 col-md-offset-1">
             <form class="form-horizontal form-signup slim-form" role="form" id="form-signup">
                 <input class="form-control form-signup-inner" type="text" id="input-username" placeholder="用户名">
-                <input class="form-control form-signup-inner" type="password" id="input-passward" placeholder="密码">
+                <input class="form-control form-signup-inner" type="text" id="input-realname" placeholder="真实姓名">
+                <input class="form-control form-signup-inner" type="password" id="input-password" placeholder="密码">
                 <input class="form-control form-signup-inner" type="email" id="input-email" placeholder="电子邮件">
-                <button class="btn-lg btn-success btn-block" id="btn-signup">注册</button>
+                <!--设置button的type，默认的是submit，但是这里我要手写提交的过程-->
+                <button type="button" class="btn-lg btn-success btn-block" id="btn-signup">注册</button>
             </form>
         </div>
         <div class="col-md-4" id="right-slogan">

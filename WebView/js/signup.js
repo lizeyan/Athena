@@ -20,15 +20,28 @@ var SignupForm = Backbone.View.extend ({
     el: $('#form-signup'),
     events: {
         "click #btn-signup": 'signup',
-        "keypress .form-signup-inner": 'onKeyPressed'
     },
     signup: function () {
         alert ('sign up');
+        userLibrary.create(
+            {
+                username: $('#input-username').val(),
+                real_name: $('#input-realname').val(),
+                password: $('#input-password').val(),
+                email: $('#input-email').val()
+            },  {
+                wait: true,
+                success: function () {
+                    alert ('success');
+                },
+                error: function () {
+                    signupForm.parseError();
+                }
+            }
+        );
     },
-    onKeyPressed: function (e) {
-        if (e.keyCode == 13)
-        {
-        }
+    parseError: function (response) {
+        alert ('error');
     }
 });
 var signupForm = new SignupForm;

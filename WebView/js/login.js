@@ -30,13 +30,13 @@ var ErrorBox = Backbone.View.extend ({
 var LoginForm = Backbone.View.extend ({
     el: $('#login-main'),
     events: {
-        "click #btn-login": 'signin',
+        "click #btn-login": 'signin'
     },
     signin: function () {
         tokenLib.create(
             {
                 username: $('#input-username').val(), 
-                password: $('#input-passward').val()
+                password: $('#input-password').val()
             },  {
                 wait: true,
                 success: function (model, response) {
@@ -52,3 +52,9 @@ var LoginForm = Backbone.View.extend ({
     }
 });
 var loginForm = new LoginForm;
+var Document = Backbone.View.extend ({
+    el: $(document),
+    events: {
+        "keydown": 'onKeyPressed'
+    },
+})
