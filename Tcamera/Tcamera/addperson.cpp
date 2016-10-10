@@ -24,41 +24,9 @@ int AddPerson::test()
                  QString("?api_id=")+api_ID+
                  QString("&api_secret=")+api_secret;
 
-    //qurl=QString("https://www.baidu.com/");
-
-    QNetworkRequest request;
-
     cout<<qurl.toStdString()<<endl;
 
-    request.setUrl(qurl);
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinish(QNetworkReply*)));
-
-    reply=manager->get(request);
-
-    connect(reply,SIGNAL(readyRead()),this,SLOT(onReadyRead()));
-
+    HttpGet*httpGet=new HttpGet();
+    httpGet->sendRequest(qurl);
     return 0;
-}
-
-
-void AddPerson::replyFinish(QNetworkReply* reply)
-{
-    QByteArray res=reply->readAll();
-    char *str=res.data();
-    QString re=QString(str);
-    cout<<"stupid"<<endl;
-    cout<<re.toStdString()<<endl;
-
-}
-
-void AddPerson::onReadyRead()
-{
-    QByteArray res=reply->readAll();
-    char *str=res.data();
-    QString re=QString(str);
-    cout<<"stupid"<<endl;
-    cout<<re.toStdString()<<endl;
 }

@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QtNetwork/QNetworkReply>
 
+#include "HttpGet.h"
+
 class AddPerson : public QObject
 {
     Q_OBJECT
@@ -15,15 +17,11 @@ public:
     QString api_ID;
     QString api_secret;
 
-    QNetworkReply*reply;
 
 signals:
 
 public slots:
 
-    void replyFinish(QNetworkReply*);
-
-    void onReadyRead();
 };
 
 #endif // ADDPERSON_H
