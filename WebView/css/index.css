@@ -1,41 +1,3 @@
-/*通用设置*/
-* {
-    font-family: "Microsoft YaHei", "Hiragino Sans GB", "文泉驿微米黑", "WenQuanYi Micro Hei", "sans-serif";
-}
-/*为了让顶部的导航栏不和其他元素重叠，需要给body设置足够大的padding*/
-/*改到JS中进行设置*/
-body {
-}
-
-/*设置导航栏的高度*/
-.navbar {
-    padding: 1em 0;
-}
-/*设置导航栏上Logo的大小*/
-.navbar-brand {
-    padding: 0 0 0 1em;
-}
-.navbar-brand > img {
-    height: 100%;
-    width: auto;
-}
-/*设置导航栏上元素的分配*/
-.navbar-nav {
-    padding-left: 0.5em;
-    padding-right: 1.5em;
-    font-size: 1.2em;
-}
-.navbar-btn {
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    padding: 0.5em 1.5em;
-}
-
-#top-nav-inner, #main-jumbotron-inner {
-    max-width: 1086px;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 /******************************************************************************/
 #main-jumbotron {
@@ -62,7 +24,7 @@ body {
     padding: 1.5em;
 }
 
-#main-jumbotron-signup-btn {
+#btn-signup {
     padding: 1em 0.5em;
     margin: 1em auto;
 }

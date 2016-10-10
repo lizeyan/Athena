@@ -1,9 +1,10 @@
 /**
  * Created by zy-li14 on 16-10-9.
  */
+var testProfile = new Profile();
 testUser.on('change', function () {
-    testProfile.fetch({url:testUser.profile});
-    alert (testUser.profile);
+    alert(testUser.get('profile'));
+    testProfile.set({url: testUser.get('profile')});
 });
 
 var NameCardView = Backbone.View.extend ({

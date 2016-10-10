@@ -1,27 +1,24 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--移动设备缩放控制-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="The index page of the check-in system.">
     <meta name="author" content="zy-li14@hotmail.com">
-
     <title>Athena</title>
-
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/topnav.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-<!--这是一个顶部导航栏-->
 <nav id='top-nav' class="navbar navbar-default" role="navigation">
     <div class="container" id="top-nav-inner">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="index.html">
                 <img id="img-brand" alt="签到" src="img/index/dragon.png">
             </a>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -58,38 +55,34 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-
-<!--一个巨幕-->
-<div class="jumbotron" id="main-jumbotron">
-    <div class="container row" id="main-jumbotron-inner">
-        <div id="main-jumbotron-slogan" class="slogan-text col-md-5">
-            <h1 class="page-header">人们都如何管理出勤</h1>
-            <p>无数人使用Athena管理他们的活动出勤情况，在线注册，立即查看.</p>
-        </div>
-
-        <div id="main-jumbotron-signup" class="col-md-5">
-            <form id="main-jumbotron-signup-form" class="form-horizontal">
-                <input id='input-username' type="text" placeholder="选择一个用户名" class="form-control"/>
-                <input id='input-email' type="email" placeholder="你的邮件地址" class="form-control"/>
-                <input id='input-password' type="password" placeholder="创建一个密码" class="form-control"/>
-                <button id="btn-signup" class="btn-lg btn-success btn-block">立即加入</button>
-            </form>
-        </div>
+<div class="container" id="main-container">
+    <div class="page-header text-center">
+        <h1>登入Athena</h1>
+    </div>
+    <div id='login-main' class="slim-center well well-login">
+        <form class="form-horizontal form-login" role="form">
+            <input class="form-control form-login-inner" type="text" id="input-username" placeholder="用户名">
+            <input class="form-control form-login-inner" type="password" id="input-passward" placeholder="密码">
+            <button class="btn-lg btn-success btn-block" id="btn-login">登录</button>
+        </form>
+    </div>
+    <div class="slim-center well well-login">
+        <p class="text-center">还没有加入Athena？<a href="signup.html">现在注册</a></p>
     </div>
 </div>
-
-<div class="container-fluid">
-    <div class="well well-lg slogan-text">
-        <h1 class="text-center">Athena，定义未来的考勤管理模式</h1>
-        <p class="text-center">利用现代化的人工智能技术，即时识别每一张经过的人脸，随时同步考勤信息。</p>
+<script type="text/template" id="tmplt-box-error">
+    <div class="alert alert-danger alert-dismissible slim-center" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <strong>出错了！</strong>请确认你的输入是否正确
     </div>
-</div>
-
-<!-- Bootstrap core JavaScript
-    ================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
+</script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/js-cookie.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
-<script src="js/index.js"></script>
+<script src="js/underscore-min.js"></script>
+<script src="js/backbone-min.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/login.js"></script>
 </body>
 </html>
