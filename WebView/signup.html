@@ -66,6 +66,9 @@
     </div>
     <div class="row center-block">
         <div class="col-md-6 col-md-offset-1">
+            <div id="error-list-box">
+
+            </div>
             <form class="form-horizontal form-signup slim-form" role="form" id="form-signup">
                 <input class="form-control form-signup-inner" type="text" id="input-username" placeholder="用户名">
                 <input class="form-control form-signup-inner" type="text" id="input-realname" placeholder="真实姓名">
@@ -103,7 +106,7 @@
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
                 class="sr-only">Close</span></button>
         <strong>出错了！</strong>
-        请确认你的输入是否正确
+        <%= suggestion %>
     </div>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>

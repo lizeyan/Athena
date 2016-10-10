@@ -27,12 +27,14 @@ var ErrorBox = Backbone.View.extend ({
         return this;
     }
 });
+var errorListBox = $('#error-list-box');
 var LoginForm = Backbone.View.extend ({
     el: $('#login-main'),
     events: {
         "click #btn-login": 'signin'
     },
     signin: function () {
+        errorListBox.empty();
         tokenLib.create(
             {
                 username: $('#input-username').val(), 
@@ -45,7 +47,7 @@ var LoginForm = Backbone.View.extend ({
                     alert ('cookie set:' + Cookies.get('token'));
                 },
                 error: function () {
-                    loginForm.$el.before((new ErrorBox).render().$el.html());
+                    errorListBox.append((new ErrorBox).render().$el.html());
                 }
             }
         );
