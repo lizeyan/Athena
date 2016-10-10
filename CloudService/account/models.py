@@ -13,6 +13,14 @@ class Profile(models.Model):
     tel = models.CharField(max_length=20, blank=True, default='')
     role = models.CharField(max_length=30, blank=False, default='')
     user = models.OneToOneField(User, related_name='profile', unique=True)
+    icon_image = models.ImageField(upload_to="icon_image/%Y/%m/%d", blank=True)
+    person_id = models.CharField(max_length=50, default='', blank=True)
 
     class Meta:
         permissions = (('account.look', '查看全部User'), )
+
+
+class Face(models.Model):
+    face_image = models.ImageField(upload_to="face_image/%Y/%m/%d", blank=True)
+    face_id = models.CharField(max_length=50, default='', blank=True)
+    profile = models.ForeignKey('Profile', related_name='face')
