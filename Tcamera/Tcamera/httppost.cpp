@@ -31,27 +31,27 @@ void HttpPost::sendRequest(const QString &strUrl)
         netRequest.setSslConfiguration(sslConfig);
     }
     //QString strBody=QString(""); //http body部分，可封装参数信息
-    QString api_ID=QString("332cc3d4d63e404693589ca02da83600");
-    QString api_secret=QString("72e68c866c34405c8491839da7ffd4d0");
+    //QString api_ID=QString("332cc3d4d63e404693589ca02da83600");
+    //QString api_secret=QString("72e68c866c34405c8491839da7ffd4d0");
     QByteArray contentByteArray ;//= strBody.toLatin1();//转成二进制
-    contentByteArray.append("api_id="+api_ID+"&");
+    /*contentByteArray.append("api_id="+api_ID+"&");
     contentByteArray.append("api_secret="+api_secret+"&");
     QString filePath=QString("D:\\face\\face.jpg");
 
     QFile file(filePath);
 
 
-    //读取所有文件
+    读取所有文件
     QByteArray fileContent = file.readAll();
-    //边界的时候这里加两杠
+    边界的时候这里加两杠
     QString boundary = "----weasdashDsdesd";
-    //起始边界
+    起始边界
     QString startBoundary = "--" + boundary;
-    //结束边界
+    结束边界
     QString endBoundary = "\r\n--" + boundary + "--\r\n";
-    //设置传输类型
+    设置传输类型
     QString qContentType = "multipart/form-data; boundary=" + boundary;
-    //要发送的内容
+    要发送的内容
     QByteArray content;
 
     QString tempStr = startBoundary;
@@ -63,7 +63,8 @@ void HttpPost::sendRequest(const QString &strUrl)
 
     contentByteArray.append("file=");
     contentByteArray.append(content);
-
+*/
+    contentByteArray.append("url=http://pic1.ooopic.com/uploadfilepic/sheying/2008-08-26/OOOPIC_vipvip_20080826094224dbb9150eaac77daa130.jpg");
     m_pNetworkReply = m_pNetworkManager->post(netRequest,contentByteArray);//发起post请求
 
     connect(m_pNetworkReply,SIGNAL(finished()),this,SLOT(slot_requestFinished())); //请求完成信号
