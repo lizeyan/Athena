@@ -73,7 +73,13 @@ int FaceDetection::test()
           return -1;
         }
         cout<<"HTTP Status Code:"<<code<<endl;
-        cout<<res_data<<endl;
+        //cout<<res_data<<endl;
+
+        Json::FastWriter writer;
+        writer.write(res_data);
+
+        string strResult=writer.write(res_data);
+        cout<<strResult<<endl;
         curl_easy_cleanup(curl);
     }
       curl_global_cleanup();

@@ -10,7 +10,9 @@
 #include "highgui.h"
 #include "cv_face.h"
 #include "infoapi.h"
+
 #include "facedetection.h"
+#include "faceidentification.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -67,11 +69,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setCentralWidget(widget);
 
-    InfoAPI infoApi;
-    infoApi.test();
+    //InfoAPI infoApi;
+    //infoApi.test();
 
     FaceDetection faceDetection;
     faceDetection.test();
+
+    FaceIdentification faceIdentification;
+    faceIdentification.test();
+
 
 }
 

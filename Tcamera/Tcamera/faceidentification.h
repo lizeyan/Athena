@@ -12,6 +12,7 @@ public:
 signals:
 
 public slots:
+    int test();
 };
 
 #endif // FACEIDENTIFICATION_H
