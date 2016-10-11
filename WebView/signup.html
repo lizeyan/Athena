@@ -70,12 +70,12 @@
 
             </div>
             <form class="form-horizontal form-signup slim-form" role="form" id="form-signup">
-                <input class="form-control form-signup-inner" type="text" id="input-username" placeholder="用户名">
-                <input class="form-control form-signup-inner" type="text" id="input-realname" placeholder="真实姓名">
-                <input class="form-control form-signup-inner" type="password" id="input-password" placeholder="密码">
-                <input class="form-control form-signup-inner" type="email" id="input-email" placeholder="电子邮件">
+                <input class="form-control form-signup-inner" type="text" id="input-username" placeholder="用户名" pattern="[0-9A-Za-z]{2,20}" required title="数字或字母，长度在2～20之间">
+                <input class="form-control form-signup-inner" type="text" id="input-realname" placeholder="真实姓名" required>
+                <input class="form-control form-signup-inner" type="password" id="input-password" placeholder="密码" pattern=".{6,20}" required title="长度在6～20之间">
+                <input class="form-control form-signup-inner" type="email" id="input-email" placeholder="电子邮件" required title="任何有效的电子邮件地址">
                 <!--设置button的type，默认的是submit，但是这里我要手写提交的过程-->
-                <button type="button" class="btn-lg btn-success btn-block" id="btn-signup">注册</button>
+                <button type="submit" class="btn-lg btn-success btn-block" id="btn-signup">注册</button>
             </form>
         </div>
         <div class="col-md-4" id="right-slogan">

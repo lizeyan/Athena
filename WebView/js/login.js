@@ -29,11 +29,13 @@ var ErrorBox = Backbone.View.extend ({
 });
 var errorListBox = $('#error-list-box');
 var LoginForm = Backbone.View.extend ({
-    el: $('#login-main'),
+    el: $('#form-signin'),
     events: {
-        "click #btn-login": 'signin'
+        "submit": 'signin'
     },
-    signin: function () {
+    signin: function (event) {
+        //取消掉默认的处理方式
+        event.preventDefault();
         errorListBox.empty();
         tokenLib.create(
             {
@@ -54,9 +56,3 @@ var LoginForm = Backbone.View.extend ({
     }
 });
 var loginForm = new LoginForm;
-var Document = Backbone.View.extend ({
-    el: $(document),
-    events: {
-        "keydown": 'onKeyPressed'
-    },
-})

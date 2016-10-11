@@ -24,12 +24,17 @@ var ErrorBox = Backbone.View.extend ({
     }
 });
 var errorListBox = $('#error-list-box');
+var usernameRegExp = new RegExp('[0-9A-Za-z]{2,20}');
+var passwordRegExp = new RegExp('.{6,20}');
+var emailRegExp = new RegExp('');
 var SignupForm = Backbone.View.extend ({
     el: $('#form-signup'),
     events: {
-        "click #btn-signup": 'signup',
+        "submit": 'signup'
     },
-    signup: function () {
+    signup: function (event) {
+        //取消掉默认的处理方式
+        event.preventDefault();
         errorListBox.empty();
         userLibrary.create(
             {
