@@ -1,10 +1,3 @@
-$(function () {
-    Cookies.remove('username');
-    Cookies.remove('realname');
-    Cookies.remove('password');
-    Cookies.remove('email');
-    Cookies.remove('typed-signup-msg');
-});
 var RegisterUser = Backbone.Model.extend({
     default: function () {
         return {
@@ -50,10 +43,12 @@ var SignupForm = Backbone.View.extend({
                 password: $('#input-password').val(),
                 email: $('#input-email').val()
             }, {
-                wait: true,
                 //注意成功和错误返回的response的解析方式是不一样的
                 success: function (model, response) {
-                    alert('success');
+                    Cookies.set('username', $('#input-username').val());
+                    Cookies.set('password', $('#input-password').val());
+                    Cookies.set('typed-signin-msg', true);
+                    window.location = 'login.html';
                 },
                 error: function (model, response) {
                     signupForm.parseError(response);
@@ -89,4 +84,13 @@ if (Cookies.get('email')) {
 }
 if (Cookies.get('typed-signup-msg'))
     $('#btn-signup').trigger('click');
-
+else
+    $('body').css('display', 'block');
+$(function () {
+    Cookies.remove('username');
+    Cookies.remove('realname');
+    Cookies.remove('password');
+    Cookies.remove('email');
+    Cookies.remove('typed-signup-msg');
+    Cookies.remove('typed-signin-msg');
+});

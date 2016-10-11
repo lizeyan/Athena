@@ -42,11 +42,9 @@ var LoginForm = Backbone.View.extend ({
                 username: $('#input-username').val(), 
                 password: $('#input-password').val()
             },  {
-                wait: true,
                 success: function (model, response) {
                     Cookies.set('token', response.token);
-                    alert ('token is:' + response.token);
-                    alert ('cookie set:' + Cookies.get('token'));
+                    window.location = 'user.html';
                 },
                 error: function () {
                     errorListBox.append((new ErrorBox).render().$el.html());
@@ -56,3 +54,21 @@ var LoginForm = Backbone.View.extend ({
     }
 });
 var loginForm = new LoginForm;
+if (Cookies.get('username')) {
+    $('#input-username').val(Cookies.get('username'));
+}
+if (Cookies.get('password')) {
+    $('#input-password').val(Cookies.get('password'));
+}
+if (Cookies.get('typed-signin-msg'))
+    $('#btn-login').trigger('click');
+else
+    $('body').css('display', 'block');
+$(function () {
+    Cookies.remove('username');
+    Cookies.remove('realname');
+    Cookies.remove('password');
+    Cookies.remove('email');
+    Cookies.remove('typed-signin-msg');
+    Cookies.remove('typed-signup-msg');
+});
