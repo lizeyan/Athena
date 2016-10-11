@@ -2,6 +2,10 @@
     font-family: "Microsoft YaHei", "Hiragino Sans GB", "文泉驿微米黑", "WenQuanYi Micro Hei", "sans-serif";
 }
 
+body {
+    display: none;
+}
+
 .navbar {
     padding: 1em 0;
 }

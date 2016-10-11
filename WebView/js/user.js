@@ -1,13 +1,23 @@
 /**
  * Created by zy-li14 on 16-10-9.
  */
-var testProfile = new Profile();
-testUser.on('change', function () {
-    alert(testUser.get('profile'));
-    testProfile.set({url: testUser.get('profile')});
+//验证token是否有效，无效则返回登录界面
+function gobackLogin() {
+    window.location = 'login.html';
+}
+var token = Cookies.get('token');
+if (!token)
+    gobackLogin();
+var TokenValidator = Backbone.Model.extend({
+    url: API_ROOT + '/api-token-verify/'
+});
+tokenValidator = new TokenValidator;
+tokenValidator.save({'token': token}, {
+    wait: true, error: function () {
+        gobackLogin();
+    }, success: function () {
+        $('body').css('display', 'block');
+    }
 });
 
-var NameCardView = Backbone.View.extend ({
-    el: $('#namecard'),
-});
-var nameCardView = new NameCardView;
+//正文
