@@ -58,6 +58,10 @@ def do_register(request):
             new_account['email'] = email
 
             new_account['real_name'] = data['real_name']
+            if data['real_name'] == '':
+                responseMess['status'] = 'REAL_NAME_STYLE_ERROR'
+                responseMess['suggestion'] = '真实姓名不可以为空'
+                return JSONResponse(responseMess, status=400)
 
         except Exception as e:
             print(e)
