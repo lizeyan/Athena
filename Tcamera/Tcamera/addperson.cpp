@@ -31,6 +31,11 @@ int AddPerson::test()
 
     HttpGet*httpGet=new HttpGet();
     httpGet->sendRequest(qurl);
+
+
+    qurl=QString("https://v1-api.visioncloudapi.com/face/detection");
+
+        cout<<qurl.toStdString()<<endl;
     HttpPost*httpPost=new HttpPost();
     httpPost->sendRequest(qurl);
     return 0;
