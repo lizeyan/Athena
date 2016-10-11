@@ -7,7 +7,7 @@
 #include <json/json.h>
 
 using namespace std;
-size_t callback_0(char *ptr, size_t size, size_t nmemb, string &stream){
+static size_t callback(char *ptr, size_t size, size_t nmemb, string &stream){
 
   size_t sizes = size*nmemb;
   string temp(ptr,sizes);
@@ -49,7 +49,7 @@ int FaceDetection::test()
 
         curl_easy_setopt(curl, CURLOPT_URL, "https://v1-api.visioncloudapi.com/face/detection");
         curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback_0);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &stream);
 
         #ifdef SKIP_PEER_VERIFICATION

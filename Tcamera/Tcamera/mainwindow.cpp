@@ -72,11 +72,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //InfoAPI infoApi;
     //infoApi.test();
 
-    FaceDetection faceDetection;
-    faceDetection.test();
+    //FaceDetection faceDetection;
+    //faceDetection.test();
 
-    FaceIdentification faceIdentification;
-    faceIdentification.test();
+    //FaceIdentification faceIdentification;
+    //faceIdentification.test();
 
 
 }

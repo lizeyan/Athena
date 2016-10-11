@@ -9,7 +9,7 @@
 
 using namespace std;
 
-size_t callback(char *ptr, size_t size, size_t nmemb, string &stream){
+static size_t callback(char *ptr, size_t size, size_t nmemb, string &stream){
 
   size_t sizes = size*nmemb;
   string temp(ptr,sizes);
