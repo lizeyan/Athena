@@ -75,7 +75,7 @@ int CatchFaceTrack::catchFace(Mat&bgr_frame,bool saved)
 
     //save image
     if(saved)
-        imwrite("D:\\face\\face.jpg",bgr_frame);
+        imwrite("face.jpg",bgr_frame);
 
     // realtime track
     face_count = 0;

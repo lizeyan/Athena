@@ -18,40 +18,47 @@ SOURCES += main.cpp\
     catchfacethread.cpp \
     catchfacedetect.cpp \
     catchfacetrack.cpp \
-    addperson.cpp \
-    httppost.cpp \
-    HttpGet.cpp
+    infoapi.cpp \
+    json/jsoncpp.cpp \
+    facedetection.cpp \
+    faceidentification.cpp
 
 HEADERS  += mainwindow.h \
     catchfacethread.h \
     catchfacedetect.h \
     catchfacetrack.h \
-    addperson.h \
-    HttpGet.h \
-    httppost.h
+    infoapi.h \
+    json/json.h \
+    json/json-forwards.h \
+    facedetection.h \
+    faceidentification.h
 
 FORMS    +=
 
 
-INCLUDEPATH+=D:\OpenCV\build\install\include\opencv\
-             D:\OpenCV\build\install\include\opencv2\
-             D:\OpenCV\build\install\include\
+INCLUDEPATH+=D:\OpenCV\OpenCV\install\include\opencv\
+             D:\OpenCV\OpenCV\install\include\opencv2\
+             D:\OpenCV\OpenCV\install\include\
              D:\OpenCV\st_face-6.2.0-detect_p1-windows-6c0c82f\include\
-             D:\OpenCV\curl-7.50.3\include
+             D:\OpenCV\curl-7.50.3-win32-mingw\include
 
 
-LIBS+=D:\OpenCV\build\install\x86\mingw\lib\libopencv_calib3d2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_contrib2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_core2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_features2d2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_flann2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_gpu2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_highgui2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_imgproc2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_legacy2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_ml2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_objdetect2413.dll.a\
-      D:\OpenCV\build\install\x86\mingw\lib\libopencv_video2413.dll.a\
+LIBS+=D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_calib3d2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_contrib2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_core2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_features2d2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_flann2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_gpu2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_highgui2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_imgproc2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_legacy2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_ml2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_objdetect2413.dll.a\
+      D:\OpenCV\OpenCV\install\x86\mingw\lib\libopencv_video2413.dll.a\
       D:\OpenCV\st_face-6.2.0-detect_p1-windows-6c0c82f\libs\windows-x86\cvface_api.lib\
-      D:\OpenCV\curl-7.50.3\lib\libcurldll.a
+      D:\OpenCV\curl-7.50.3-win32-mingw\lib\libcurldll.a\
+      D:\OpenCV\curl-7.50.3-win32-mingw\lib\libcurl.a\
+
+
+
 

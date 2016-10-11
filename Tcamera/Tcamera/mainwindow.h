@@ -16,7 +16,6 @@
 #include "opencv.hpp"
 
 #include "catchfacetrack.h"
-#include "addperson.h"
 
 using namespace cv;
 
