@@ -43,7 +43,7 @@ var LoginForm = Backbone.View.extend ({
                 password: $('#input-password').val()
             },  {
                 success: function (model, response) {
-                    Cookies.set('token', response.token);
+                    Cookies.set('token', response.token, {expires: 7});
                     window.location = 'user.html';
                 },
                 error: function () {

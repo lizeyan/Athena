@@ -3,14 +3,15 @@
 <head>
     <!--感谢 http://glyphicons.com/ 提供的图标资源-->
     <meta charset="UTF-8">
-    <title>LinkFace智能签到系统</title>
+    <title>Athena</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/user.css">
+    <link rel="stylesheet" href="css/signedin-navbar.css">
 </head>
 <body>
 <nav id='top-nav' class="navbar navbar-default" role="navigation">
-    <div class="container" id="top-nav-inner">
+    <div class="container central-inner-control" id="top-nav-inner">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
@@ -31,19 +32,15 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div id="profile" class="container">
+<div id="profile" class="container central-inner-control">
     <div class="row clearfix">
         <div class="col-md-3">
-            <img id="img-avator" class="img-responsive img-thumbnail" src="img/face.png"/>
             <div id="namecard">
-                <p class="label-username">lizeyan</p>
-                <p class="label-realname">李则言</p>
             </div>
-            <button class="btn btn-default btn-block">修改个人页面</button>
-            <ul class="details list-unstyled">
-                <li class="detail-email">
+            <button id="btn-setting" class="btn btn-default btn-block" onclick="window.location='settings.html'">设置</button>
+            <ul id="contact" class="list-unstyled list-group">
+                <li id='contact-email' class="list-group-item">
                     <span class="glyphicon glyphicon-envelope"></span>
-                    <a>zy-li14@hotmail.com</a>
                 </li>
             </ul>
         </div>
@@ -88,8 +85,12 @@
 </div>
 <!--用来显示左边的用户名片-->
 <script type="text/template" id="tmplt-namecard">
-    <p class="username"><%= user %></p>
-    <p class="realname"><%= real_name %></p>
+    <img id="img-avator" src="<%= image? image: 'img/face.png' %>"/>
+    <span id="label-realname"><p><%= realname %></p></span>
+    <span id="label-username"><p><%= username %></p></span>
+</script>
+<script type="text/template" id="tmlpt-email">
+    <a href="mailto:<%= email %>"><%= email %></a>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>

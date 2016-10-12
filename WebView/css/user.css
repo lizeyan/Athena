@@ -1,44 +1,3 @@
-* {
-    font-family: "Microsoft YaHei", "Hiragino Sans GB", "文泉驿微米黑", "WenQuanYi Micro Hei", "sans-serif";
-}
-
-body {
-    display: none;
-}
-
-.navbar {
-    padding: 1em 0;
-}
-
-/*设置导航栏上Logo的大小*/
-.navbar-brand {
-    padding: 0 0 0 1em;
-}
-
-.navbar-brand > img {
-    height: 100%;
-    width: auto;
-}
-
-/*设置导航栏上元素的分配*/
-.navbar-nav {
-    padding-left: 0.5em;
-    padding-right: 1.5em;
-    font-size: 1.2em;
-}
-
-.navbar-btn {
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    padding: 0.5em 1.5em;
-}
-
-#top-nav-inner, #profile {
-    max-width: 1086px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 
 /*******************************************************************************/
 
@@ -46,4 +5,25 @@ body {
     border: 0.1em grey solid;
     padding: 1em;
     margin: 1em;
+}
+#img-avator {
+    width: 16em;
+    height: auto;
+}
+
+#label-realname {
+    font-weight: bold;
+    font-size: 2em;
+}
+
+#label-username {
+    font-size: 1.5em;
+}
+
+#btn-setting {
+}
+
+#contact {
+    margin: 1em 0;
+    border: none;
 }
