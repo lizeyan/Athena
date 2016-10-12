@@ -5,6 +5,12 @@ from django.contrib.auth.models import User
 from information.serializers import ActivityGroupForProfileSerializer, RegisterLogForProfileSerializer
 
 
+class UserForProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'pk', 'username', 'email')
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = serializers.HyperlinkedRelatedField(view_name='profile-detail', read_only=True)
 
@@ -14,12 +20,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.ReadOnlyField(read_only=True, source='user.username')
+    user = UserForProfileSerializer(many=False, read_only=True)
     face = serializers.HyperlinkedRelatedField(many=True, view_name='face-detail', read_only=True)
     person_ID = serializers.ReadOnlyField(source='person_id')
-    # admin_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
-    # normal_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
-    # register_log = RegisterLogForProfileSerializer(many=True, read_only=True)
+    admin_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
+    normal_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
+    register_log = RegisterLogForProfileSerializer(many=True, read_only=True)
 
     class Meta:
         model = Profile

@@ -9,7 +9,7 @@ router = DefaultRouter(schema_title='Pastebin API')
 router.register(r'users', views.UserViewSet, base_name='user')
 router.register(r'profile', views.ProfileViewSet, base_name='profile')
 router.register(r'face', views.FaceViewSet, base_name='face')
-router.register(r'activity_group', information.views.ActivityGroupViewSet)
+router.register(r'activity_group', information.views.ActivityGroupViewSet, base_name='activitygroup')
 router.register(r'activity', information.views.ActivityViewSet)
 router.register(r'register_log', information.views.RegisterLogViewSet)
 
