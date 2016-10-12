@@ -14,7 +14,6 @@ api_secret = '72e68c866c34405c8491839da7ffd4d0'
 group_id = '6c59b4c08e4d41d884118f3afc8fdb1b'
 params = '?api_id=' + api_id + '&api_secret=' + api_secret
 
-
 def check_style(pattern, text):
     regex = re.compile(pattern)
     rst = regex.search(text)

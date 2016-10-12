@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.viewsets import GenericViewSet
-
 from account.interface import *
 from account.models import Profile, Face
 from account.serializers import ProfileSerializer, FaceSerializer
@@ -26,6 +25,9 @@ def api_root(request, format=None):
         'user': reverse('user-list', request=request, format=format),
         'profile': reverse('profile-list', request=request, format=format),
         'face': reverse('face-list', request=request, format=format),
+        'activity_group': reverse('information.views.activitygroup-list', request=request, format=format),
+        'activity': reverse('information.views.activity-list', request=request, format=format),
+        'register_log': reverse('information.views.registerlog-list', request=request, format=format),
     })
 
 

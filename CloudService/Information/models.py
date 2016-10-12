@@ -1,21 +1,22 @@
 from django.db import models
+from django.utils import timezone
 from account.models import Profile
-from django.contrib.auth.models import User
+
 
 # Create your models here.
 
 
 class ActivityGroup(models.Model):
-    group_id = models.CharField(max_length=64, blank=True)
-    activity_group_name = models.CharField(max_length=100, blank=True)
-    admin_user = models.ManyToManyField(Profile, related_name='activity_group_admin_set')
-    normal_user = models.ManyToManyField(Profile, related_name='activity_group_normal_set')
+    group_id = models.CharField(max_length=64, blank=True, default='')
+    activity_group_name = models.CharField(max_length=100, blank=True, default='')
+    admin_user = models.ManyToManyField(Profile, related_name='admin_activity_group')
+    normal_user = models.ManyToManyField(Profile, related_name='normal_activity_group')
 
 
 class Activity(models.Model):
-    location = models.CharField(max_length=100, blank=True)
-    begin_time = models.DateField(blank=True)
-    end_time = models.DateField(blank=True)
+    location = models.CharField(max_length=100, blank=True, default='')
+    begin_time = models.DateTimeField(blank=True, default=timezone.now)
+    end_time = models.DateTimeField(blank=True, default=timezone.now)
     activity_group = models.ForeignKey(ActivityGroup, related_name='activity')
 
 
