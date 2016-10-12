@@ -20,8 +20,19 @@ FaceDetection::FaceDetection(QObject *parent) : QObject(parent)
 
 }
 
+void FaceDetection::setApi_id(QString id)
+{
+    api_id=id;
+}
+
+void FaceDetection::setApi_secret(QString secret)
+{
+    api_secret=secret;
+}
+
 int FaceDetection::test()
 {
+    result=QString("stupidMethod");
     CURL *curl;
     CURLM *multi_handle;
     CURLcode res;
@@ -41,9 +52,9 @@ int FaceDetection::test()
       if( curl ){
 
         curl_formadd(&formpost,&lastptr,CURLFORM_COPYNAME,"api_id",
-                    CURLFORM_COPYCONTENTS, "332cc3d4d63e404693589ca02da83600",CURLFORM_END);
+                    CURLFORM_COPYCONTENTS, api_id.toStdString().c_str(),CURLFORM_END);
         curl_formadd(&formpost,&lastptr,CURLFORM_COPYNAME,"api_secret",
-                    CURLFORM_COPYCONTENTS, "72e68c866c34405c8491839da7ffd4d0",CURLFORM_END);
+                    CURLFORM_COPYCONTENTS, api_secret.toStdString().c_str(),CURLFORM_END);
         curl_formadd(&formpost,&lastptr,CURLFORM_COPYNAME,"file",
                     CURLFORM_FILE, filePath, CURLFORM_END);
 
@@ -80,6 +91,9 @@ int FaceDetection::test()
 
         string strResult=writer.write(res_data);
         cout<<strResult<<endl;
+
+        result=QString(strResult.c_str());
+
         curl_easy_cleanup(curl);
     }
       curl_global_cleanup();

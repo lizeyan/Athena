@@ -9,6 +9,15 @@ class FaceIdentification : public QObject
 public:
     explicit FaceIdentification(QObject *parent = 0);
 
+    QString api_id,api_secret,group_id,face_id;
+
+    QString result;
+
+    void setApi_id(QString);
+    void setApi_secret(QString);
+    void setGroup_id(QString);
+    void setFace_id(QString);
+
 signals:
 
 public slots:

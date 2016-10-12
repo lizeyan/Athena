@@ -15,6 +15,8 @@
 #include "highgui.h"
 #include "opencv.hpp"
 
+
+#include "detectionthread.h"
 #include "catchfacetrack.h"
 
 using namespace cv;
@@ -68,6 +70,8 @@ private:
 
 
     QString cameraID;
+
+    DetectionThread detectionThread;
 
 };
 

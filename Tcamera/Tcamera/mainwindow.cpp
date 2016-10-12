@@ -9,10 +9,7 @@
 #include "cv.h"
 #include "highgui.h"
 #include "cv_face.h"
-#include "infoapi.h"
 
-#include "facedetection.h"
-#include "faceidentification.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -69,14 +66,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setCentralWidget(widget);
 
-    //InfoAPI infoApi;
-    //infoApi.test();
-
-    //FaceDetection faceDetection;
-    //faceDetection.test();
-
-    //FaceIdentification faceIdentification;
-    //faceIdentification.test();
+    detectionThread.api_id=QString("332cc3d4d63e404693589ca02da83600");
+    detectionThread.api_secret=QString("72e68c866c34405c8491839da7ffd4d0");
+    detectionThread.start();
 
 
 }
@@ -99,11 +91,11 @@ void MainWindow::updateImage()
 {
     ++catchFaceCounter;
     int face_count;
-    if(catchFaceCounter*updateDelay<500)
+    if(catchFaceCounter*updateDelay<1000)
         face_count=catchFaceTrack.catchFace(bgr_image,false);
     else
     {
-        face_count=catchFaceTrack.catchFace(bgr_image,false);
+        face_count=catchFaceTrack.catchFace(bgr_image,true);
         sendImageToService();
     }
     //fprintf(stderr, "catch face number : %d\n", face_count);

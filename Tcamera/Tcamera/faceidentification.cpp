@@ -19,8 +19,29 @@ FaceIdentification::FaceIdentification(QObject *parent) : QObject(parent)
 
 }
 
+void FaceIdentification::setApi_id(QString id)
+{
+    api_id=id;
+}
+
+void FaceIdentification::setApi_secret(QString secret)
+{
+    api_secret=secret;
+}
+
+void FaceIdentification::setFace_id(QString _face_id)
+{
+    face_id=_face_id;
+}
+
+void FaceIdentification::setGroup_id(QString _group_id)
+{
+    group_id=_group_id;
+}
+
 int FaceIdentification::test()
 {
+    result=QString("stupidMethod");
     CURL *curl;
     CURLcode res;
     curl_slist *list;
@@ -28,10 +49,10 @@ int FaceIdentification::test()
     long code;
     // set params
     Json::Value params;
-    params["api_id"] = "332cc3d4d63e404693589ca02da83600";
-    params["api_secret"] = "72e68c866c34405c8491839da7ffd4d0";
-    params["face_id"] = "ff7e13742b5b4021a943daf88793d1da";
-    params["group_id"] = "6c59b4c08e4d41d884118f3afc8fdb1b";
+    params["api_id"] = api_id.toStdString().c_str();
+    params["api_secret"] = api_secret.toStdString().c_str();
+    params["face_id"] = face_id.toStdString().c_str();
+    params["group_id"] = group_id.toStdString().c_str();
     string data = params.toStyledString();
     try
     {
@@ -89,7 +110,7 @@ int FaceIdentification::test()
 
         char *p=(char*)strResult.data();
 
-        QString testcode=QString::fromUtf8(p);
+        result =QString::fromUtf8(p);
 
         // End the libcurl easy handle
 
