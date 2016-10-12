@@ -106,7 +106,7 @@ int FaceIdentification::test()
 
         string strResult=writer.write(res_json);
 
-        cout<<strResult<<endl;
+        //cout<<strResult<<endl;
 
         char *p=(char*)strResult.data();
 
@@ -118,6 +118,7 @@ int FaceIdentification::test()
 
       }
       curl_global_cleanup();
+      return code;
     }catch(exception ex){
       cout<<"curl exception "<<ex.what()<<endl;
     }

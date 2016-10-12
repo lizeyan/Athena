@@ -97,6 +97,7 @@ int FaceDetection::test()
         curl_easy_cleanup(curl);
     }
       curl_global_cleanup();
+      return code;
 
     }catch(exception &ex){
       cout<<"curl exception:"<<ex.what()<<endl;

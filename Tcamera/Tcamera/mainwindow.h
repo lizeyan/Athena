@@ -39,8 +39,8 @@ public slots:
     void getCameraID();
     void connectToService();
     void closeMonitor();
-    void sendImageToService();
     void testButtonClick();
+    void changeText(QString);
 
 private:
 
@@ -56,7 +56,6 @@ private:
 
     QTextEdit *imageInfo;
 
-    QMutex *faceLock;
 
 //    CatchFaceThread catchFaceThread;
 

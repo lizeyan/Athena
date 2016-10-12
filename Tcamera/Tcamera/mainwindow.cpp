@@ -40,9 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createMenu();
 
-    faceLock=new QMutex();
-
-    detectionThread.faceLock=faceLock;
     //catchFaceThread.setLock(lock);
 
     //catchFaceCounter=catchFaceFlag=0;
@@ -67,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent) :
     testButton->setText(tr("clicked this button to test program"));
 
     this->setCentralWidget(widget);
+
+    connect(&detectionThread,SIGNAL(newPerson(QString)),this,SLOT(changeText(QString)));
 
     detectionThread.api_id=QString("332cc3d4d63e404693589ca02da83600");
     detectionThread.api_secret=QString("72e68c866c34405c8491839da7ffd4d0");
@@ -97,10 +96,19 @@ void MainWindow::updateImage()
         face_count=catchFaceTrack.catchFace(bgr_image,false);
     else
     {
-        faceLock->lock();
-        face_count=catchFaceTrack.catchFace(bgr_image,true);
-        sendImageToService();
-        faceLock->unlock();
+        detectionThread.writingLock.lock();
+        if(!detectionThread.isWriting)
+        {
+            detectionThread.faceLock.lock();
+            face_count=catchFaceTrack.catchFace(bgr_image,true);
+            detectionThread.faceLock.unlock();
+            detectionThread.isWriting=false;
+        }
+        else
+        {
+            face_count=catchFaceTrack.catchFace(bgr_image,false);
+        }
+        detectionThread.writingLock.unlock();
     }
     //fprintf(stderr, "catch face number : %d\n", face_count);
     if(bgr_image.data)
@@ -141,10 +149,6 @@ void MainWindow::closeMonitor()
     this->close();
 }
 
-void MainWindow::sendImageToService()
-{
-
-}
 
 void MainWindow::testButtonClick()
 {
@@ -156,6 +160,10 @@ void MainWindow::testButtonClick()
         cvtColor(bgr_image, bgr_image, CV_BGR2RGB);
         //srcImage=bgr_image.clone();
         this->update();  //发送刷新消息
-        sendImageToService();
     }
+}
+
+void MainWindow::changeText(QString text)
+{
+    imageInfo->setText(text);
 }

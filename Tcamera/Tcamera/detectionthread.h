@@ -14,11 +14,14 @@ public:
     QString api_id;
     QString api_secret;
 
-    QMutex*faceLock;
+    QMutex faceLock,writingLock;
 
     void run();
 
+    bool isWriting;
+
 signals:
+    void newPerson(QString);
 
 public slots:
 };
