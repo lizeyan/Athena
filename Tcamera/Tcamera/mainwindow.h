@@ -56,7 +56,7 @@ private:
 
     QTextEdit *imageInfo;
 
-    QMutex *lock;
+    QMutex *faceLock;
 
 //    CatchFaceThread catchFaceThread;
 

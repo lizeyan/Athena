@@ -40,7 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createMenu();
 
-    lock=new QMutex();
+    faceLock=new QMutex();
+
+    detectionThread.faceLock=faceLock;
     //catchFaceThread.setLock(lock);
 
     //catchFaceCounter=catchFaceFlag=0;
@@ -95,8 +97,10 @@ void MainWindow::updateImage()
         face_count=catchFaceTrack.catchFace(bgr_image,false);
     else
     {
+        faceLock->lock();
         face_count=catchFaceTrack.catchFace(bgr_image,true);
         sendImageToService();
+        faceLock->unlock();
     }
     //fprintf(stderr, "catch face number : %d\n", face_count);
     if(bgr_image.data)

@@ -15,7 +15,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    catchfacethread.cpp \
     catchfacedetect.cpp \
     catchfacetrack.cpp \
     infoapi.cpp \
@@ -25,7 +24,6 @@ SOURCES += main.cpp\
     detectionthread.cpp
 
 HEADERS  += mainwindow.h \
-    catchfacethread.h \
     catchfacedetect.h \
     catchfacetrack.h \
     infoapi.h \

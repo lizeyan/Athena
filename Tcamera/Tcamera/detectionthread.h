@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QMutex>
 
 class DetectionThread : public QThread
 {
@@ -12,6 +13,8 @@ public:
 
     QString api_id;
     QString api_secret;
+
+    QMutex*faceLock;
 
     void run();
 

@@ -90,7 +90,7 @@ int FaceDetection::test()
         writer.write(res_data);
 
         string strResult=writer.write(res_data);
-        cout<<strResult<<endl;
+        //cout<<strResult<<endl;
 
         result=QString(strResult.c_str());
 
