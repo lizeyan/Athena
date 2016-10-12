@@ -9,6 +9,9 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.user.is_superuser == 1:
+            return True
+
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -26,6 +29,9 @@ class AllowPost(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.user.is_superuser == 1:
+            return True
+
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -37,6 +43,9 @@ class IsOwnerOrCanNotGet(permissions.BasePermission):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         # Write permissions are only allowed to the owner of the snippet.
+        if request.user.is_superuser == 1:
+            return True
+
         if request.method == 'POST' or request.method == 'DELETE':
             return False
         return obj.user == request.user
