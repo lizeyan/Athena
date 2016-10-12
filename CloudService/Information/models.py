@@ -23,4 +23,5 @@ class Activity(models.Model):
 class RegisterLog(models.Model):
     register_user = models.ForeignKey(Profile, related_name='register_log')
     activity = models.ForeignKey(Activity, related_name='register_log')
+    register_time = models.DateTimeField(blank=True, auto_created=True, default='2016-10-12T00:00:00Z')
 
