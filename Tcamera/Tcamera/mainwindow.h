@@ -57,16 +57,9 @@ private:
     QTextEdit *imageInfo;
 
 
-//    CatchFaceThread catchFaceThread;
-
-//    CatchFaceDetect catchFaceDetect;
-
     CatchFaceTrack catchFaceTrack;
 
     int catchFaceCounter;
-
-//    int catchFaceFlag;
-
 
     QString cameraID;
 

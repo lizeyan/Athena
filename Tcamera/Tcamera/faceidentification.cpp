@@ -93,11 +93,6 @@ int FaceIdentification::test()
               return -1;
         }
 
-        //string stupid=res_json.asString();
-
-        //char*data=(char*)stupid.data();
-
-        //QString now=QString::fromUtf8(data);
 
         cout<<"HTTP Status Code: "<<code<<endl;
         //cout<<res_json<<endl;

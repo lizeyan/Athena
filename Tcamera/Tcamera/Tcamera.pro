@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     json/jsoncpp.cpp \
     facedetection.cpp \
     faceidentification.cpp \
-    detectionthread.cpp
+    detectionthread.cpp \
+    personregister.cpp
 
 HEADERS  += mainwindow.h \
     catchfacedetect.h \
@@ -31,7 +32,8 @@ HEADERS  += mainwindow.h \
     json/json-forwards.h \
     facedetection.h \
     faceidentification.h \
-    detectionthread.h
+    detectionthread.h \
+    personregister.h
 
 FORMS    +=
 

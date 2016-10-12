@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     imageLabel = new QLabel(this);
     imageInfo = new QTextEdit(this);
 
-    imageInfo->setText(tr("此处将显示与图片相关的文字信息"));
+    imageInfo->setText("");
 
     imageInfo->setReadOnly(true);
 
@@ -163,7 +163,12 @@ void MainWindow::testButtonClick()
     }
 }
 
+static int textCounter=0;
+
 void MainWindow::changeText(QString text)
 {
-    imageInfo->setText(text);
+    ++textCounter;
+    if(textCounter>10)
+        imageInfo->setText("");
+    imageInfo->setText(imageInfo->toPlainText()+text+"\n");
 }
