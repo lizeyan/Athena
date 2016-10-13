@@ -104,10 +104,10 @@ int CatchFaceTrack::catchFace(Mat&bgr_frame,bool saved)
             static_cast<float>(p_face[i].rect.top)),
             Point2f(static_cast<float>(p_face[i].rect.right),
             static_cast<float>(p_face[i].rect.bottom)), scalar_color, 2);
-        for (int j = 0; j < p_face[i].points_count; j++) {
+       /* for (int j = 0; j < p_face[i].points_count; j++) {
             circle(bgr_frame, Point2f(p_face[i].points_array[j].x,
                 p_face[i].points_array[j].y), 1, Scalar(0, 255, 0));
-        }
+        }*/
     }
 
     // release the memory of face

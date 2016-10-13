@@ -34,7 +34,7 @@ void DetectionThread::run()
 
     for(;;)
     {
-        this->msleep(500);
+        this->msleep(200);
         FaceDetection faceDetection;
 
         writingLock.lock();

@@ -92,7 +92,7 @@ void MainWindow::updateImage()
 {
     ++catchFaceCounter;
     int face_count;
-    if(catchFaceCounter*updateDelay<1000)
+    if(catchFaceCounter*updateDelay<100)
         face_count=catchFaceTrack.catchFace(bgr_image,false);
     else
     {
