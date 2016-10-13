@@ -1,0 +1,39 @@
+.athena-profile-setting-heading-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: #666;
+}
+.text-comment {
+    padding: 0.5em;
+    font-size: 0.8em;
+    color: #666;
+}
+
+#athena-avatar-img {
+    width: 5em;
+    height: 5em;
+    float: left;
+}
+
+#athena-avatar-img-upload {
+    margin: auto 6em;
+    padding: 0.5em;
+}
+
+#athena-username-input {
+    width: 40em;
+}
+
+#athena-realname-input {
+    width: 40em;
+}
+#athena-school-input {
+    width: 40em;
+}
+#athena-department-input {
+    width: 40em;
+}
+#athena-gender-input {
+    width: 10em;
+}

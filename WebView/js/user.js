@@ -39,7 +39,7 @@ var Profile = Backbone.Model.extend ({
             return response;
         }
     },
-    url: API_ROOT + '/account/profile/?format=json'
+    url: API_ROOT + '/profile/?format=json'
 });
 //现在得到了一个profile，需要渲染界面
 var NameCard = Backbone.View.extend ({
@@ -53,7 +53,7 @@ var NameCard = Backbone.View.extend ({
         this.$el.html (this.template ({
             'image': this.model.get('icon_image'),
             'realname': this.model.get ('real_name'),
-            'username': this.model.get('user')
+            'username': this.model.get('user').username
         }));
         return this;
     }
