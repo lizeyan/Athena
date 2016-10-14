@@ -20,7 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setWindowTitle(tr("monitor"));
 
-    connect(&theTimer, &QTimer::timeout, this, &MainWindow::updateImage);
+    connect(&cameraTimer, &QTimer::timeout, this, &MainWindow::updateImage);
+
+    connect(&dailyTimer,&QTimer::timeout, this, &MainWindow::getCameraID);
+
+    getCameraID();
+
+    dailyTimer.start(86400*1000);
 
     //catch vedio from camera
 
@@ -28,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if(catchFaceTrack.open(bgr_image))
     {
-        theTimer.start(updateDelay);
+        cameraTimer.start(updateDelay);
     }
 
     imageLabel = new QLabel(this);

@@ -48,7 +48,7 @@ private:
 
     int updateDelay;
 
-    QTimer theTimer;
+    QTimer cameraTimer,dailyTimer;
 
     Mat bgr_image;
 
