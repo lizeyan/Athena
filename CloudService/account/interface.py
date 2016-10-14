@@ -33,6 +33,18 @@ def check_email_style(text):
         return False
 
 
+def set_email_hash(profile):
+    import random
+    import string
+    profile.email_hash = ''.join(
+        random.sample(
+            string.ascii_letters +
+            string.digits,
+            30))
+    profile.save()
+    return
+
+
 def send_face_to_link_face_and_add_face_to_person(filepath, face_pk, profile_pk):
     api_url = 'https://v1-api.visioncloudapi.com/face/detection'
     files = {'file': open(filepath, 'rb')}

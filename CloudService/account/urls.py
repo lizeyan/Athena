@@ -16,5 +16,6 @@ router.register(r'register_log', information.views.RegisterLogViewSet)
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
 urlpatterns = [
-
+    url(r'^register/$', views.do_register),
+    url(r'^auth_email/(?P<username>.+)/(?P<ekey>.+)/$', views.do_auth_email)
 ]

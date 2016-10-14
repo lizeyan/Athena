@@ -15,6 +15,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, related_name='profile', unique=True)
     icon_image = models.ImageField(upload_to="icon_image/%Y/%m/%d", blank=True)
     person_id = models.CharField(max_length=50, default='', blank=True)
+    email_auth = models.BooleanField(blank=True, default=False)
+    email_hash = models.CharField(max_length=30, blank=True)
 
     class Meta:
         permissions = (('account.look', '查看全部User'), )
