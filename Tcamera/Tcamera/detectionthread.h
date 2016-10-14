@@ -14,7 +14,7 @@ public:
     QString api_id;
     QString api_secret;
 
-    QMutex faceLock,writingLock;
+    QMutex writingLock;
 
     void run();
 

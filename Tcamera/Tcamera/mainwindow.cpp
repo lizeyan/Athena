@@ -69,8 +69,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     detectionThread.api_id=QString("332cc3d4d63e404693589ca02da83600");
     detectionThread.api_secret=QString("72e68c866c34405c8491839da7ffd4d0");
-    detectionThread.start();
-
 
 }
 
@@ -92,23 +90,22 @@ void MainWindow::updateImage()
 {
     ++catchFaceCounter;
     int face_count;
-    if(catchFaceCounter*updateDelay<100)
+    if(catchFaceCounter*updateDelay<500)
         face_count=catchFaceTrack.catchFace(bgr_image,false);
     else
     {
         detectionThread.writingLock.lock();
+        bool isWriting=detectionThread.isWriting;
+        detectionThread.writingLock.unlock();
         if(!detectionThread.isWriting)
         {
-            detectionThread.faceLock.lock();
             face_count=catchFaceTrack.catchFace(bgr_image,true);
-            detectionThread.faceLock.unlock();
-            detectionThread.isWriting=false;
+            detectionThread.start();
         }
         else
         {
             face_count=catchFaceTrack.catchFace(bgr_image,false);
         }
-        detectionThread.writingLock.unlock();
     }
     //fprintf(stderr, "catch face number : %d\n", face_count);
     if(bgr_image.data)
