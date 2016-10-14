@@ -175,3 +175,30 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+ROOT_ADDRESS = 'http://127.0.0.1/'
+
+# E-mail settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.163.com'
+
+EMAIL_PORT = 25
+
+EMAIL_HOST_USER = 'AthenaAdmin@163.com'
+
+EMAIL_HOST_PASSWORD = '123XUYIMIAO'
+
+EMAIL_USE_TLS = False
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+SERVER_EMAIL = EMAIL_HOST_USER
+
+EMAIL_AUTH_PREFIX = ROOT_ADDRESS + 'account/auth_email/'
+
+USER_RETURN_MESSAGE = '申请归还'
+
+USER_MISS_MESSAGE = '申请挂失'
+
+SEND_MAIL_NOTIFY = True
