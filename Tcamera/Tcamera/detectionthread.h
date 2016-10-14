@@ -20,6 +20,8 @@ public:
 
     bool isWriting;
 
+    int faceCount;
+
 signals:
     void newPerson(QString);
 

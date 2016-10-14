@@ -89,17 +89,17 @@ void MainWindow::paintEvent(QPaintEvent *e)
 void MainWindow::updateImage()
 {
     ++catchFaceCounter;
-    int face_count;
-    if(catchFaceCounter*updateDelay<500)
-        face_count=catchFaceTrack.catchFace(bgr_image,false);
-    else
+    int face_count=catchFaceTrack.catchFace(bgr_image,false);;
+    if(catchFaceCounter*updateDelay>500&&face_count>0)
     {
         detectionThread.writingLock.lock();
         bool isWriting=detectionThread.isWriting;
         detectionThread.writingLock.unlock();
         if(!detectionThread.isWriting)
         {
+            catchFaceCounter=0;
             face_count=catchFaceTrack.catchFace(bgr_image,true);
+            detectionThread.faceCount=face_count;
             detectionThread.start();
         }
         else
@@ -166,6 +166,9 @@ void MainWindow::changeText(QString text)
 {
     ++textCounter;
     if(textCounter>10)
+    {
+        textCounter=0;
         imageInfo->setText("");
+    }
     imageInfo->setText(imageInfo->toPlainText()+text+"\n");
 }

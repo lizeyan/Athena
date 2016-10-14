@@ -11,9 +11,10 @@ class FaceDetection : public QObject
 public:
     explicit FaceDetection(QObject *parent = 0);
 
-    QString api_id,api_secret;
+    QString api_id,api_secret,face;
     void setApi_id(QString);
     void setApi_secret(QString);
+    void setFace(QString);
     QString result;
 signals:
 

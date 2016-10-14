@@ -25,53 +25,44 @@ void DetectionThread::run()
     //InfoAPI infoApi;
     //infoApi.test();
 
-    int last_person=0;
-
-    set<QString> person;
-
-    QVector<QString> face;
-    int last=0;
+    QString face;
     FaceDetection faceDetection;
 
     writingLock.lock();
     isWriting=true;
     writingLock.unlock();
+    FaceIdentification faceIdentification;
 
-    faceDetection.setApi_id(QString("332cc3d4d63e404693589ca02da83600"));
-    faceDetection.setApi_secret(QString("72e68c866c34405c8491839da7ffd4d0"));
+    int code;
 
-    int code=faceDetection.test();
-
-    writingLock.lock();
-
-    isWriting=false;
-
-    writingLock.unlock();
-
-    if(code==200)
+    for(int i=0;i<faceCount;++i)
     {
-        QJsonDocument document=QJsonDocument::fromJson(faceDetection.result.toLocal8Bit().data());
-        QJsonObject json=document.object();
-        QJsonArray faces=json.value(QString("faces")).toArray();
-        for(int i=0;i<faces.size();++i)
+        faceDetection.setApi_id(QString("332cc3d4d63e404693589ca02da83600"));
+        faceDetection.setApi_secret(QString("72e68c866c34405c8491839da7ffd4d0"));
+        faceDetection.setFace(QString("file")+QString::number(i,10)+QString(".jpg"));
+
+        code=faceDetection.test();
+
+        if(code==200)
         {
-            QJsonValue faceValue=faces.at(i).toObject().value(QString("face_id"));
-            QString face_id=faceValue.toString();
-            face.push_back(face_id);
-            cout<<face_id.toStdString()<<endl;
+            QJsonDocument document=QJsonDocument::fromJson(faceDetection.result.toLocal8Bit().data());
+            QJsonObject json=document.object();
+            QJsonArray faces=json.value(QString("faces")).toArray();
+            for(int i=0;i<faces.size();++i)
+            {
+                QJsonValue faceValue=faces.at(i).toObject().value(QString("face_id"));
+                QString face_id=faceValue.toString();
+                face=face_id;
+                cout<<face_id.toStdString()<<endl;
+            }
         }
-    }
-
-    if(last<face.size())
-    {
-        FaceIdentification faceIdentification;
 
         faceIdentification.setApi_id(QString("332cc3d4d63e404693589ca02da83600"));
         faceIdentification.setApi_secret(QString("72e68c866c34405c8491839da7ffd4d0"));
-        faceIdentification.setFace_id(face[last++]);
+        faceIdentification.setFace_id(face);
         faceIdentification.setGroup_id("6c59b4c08e4d41d884118f3afc8fdb1b");
 
-        int code=faceIdentification.test();
+        code=faceIdentification.test();
         if(code==200)
         {
             QJsonDocument document=QJsonDocument::fromJson(faceIdentification.result.toUtf8());
@@ -101,18 +92,19 @@ void DetectionThread::run()
             }
             if(bestConfidence>0)
             {
-                if(!person.count(bestPersonId))
-                {
-                    emit newPerson(bestPersonName+"已被检测到");
-                    person.insert(bestPersonId);
-                }
-            }
-            ++last_person;
-            if(last_person>10)
-            {
-                person.clear();
-                last_person=0;
+                emit newPerson(bestPersonName+"已被检测到");
             }
         }
+
+        this->msleep(200);
+
+
     }
+
+    writingLock.lock();
+    isWriting=false;
+    writingLock.unlock();
+
+
+
 }

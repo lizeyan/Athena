@@ -30,6 +30,11 @@ void FaceDetection::setApi_secret(QString secret)
     api_secret=secret;
 }
 
+void FaceDetection::setFace(QString _face)
+{
+    face=_face;
+}
+
 int FaceDetection::test()
 {
     result=QString("stupidMethod");
@@ -41,8 +46,6 @@ int FaceDetection::test()
     struct curl_httppost *formpost = NULL;
     struct curl_httppost *lastptr = NULL;
     struct curl_slist *headerlist = NULL;
-
-    char * filePath="face.jpg";
 
     try{
 
@@ -56,7 +59,7 @@ int FaceDetection::test()
         curl_formadd(&formpost,&lastptr,CURLFORM_COPYNAME,"api_secret",
                     CURLFORM_COPYCONTENTS, api_secret.toStdString().c_str(),CURLFORM_END);
         curl_formadd(&formpost,&lastptr,CURLFORM_COPYNAME,"file",
-                    CURLFORM_FILE, filePath, CURLFORM_END);
+                    CURLFORM_FILE, face.toStdString().c_str(), CURLFORM_END);
 
         curl_easy_setopt(curl, CURLOPT_URL, "https://v1-api.visioncloudapi.com/face/detection");
         curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);

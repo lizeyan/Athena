@@ -1,4 +1,5 @@
 #include "catchfacetrack.h"
+#include <QString>
 
 
 CatchFaceTrack::CatchFaceTrack()
@@ -74,8 +75,8 @@ int CatchFaceTrack::catchFace(Mat&bgr_frame,bool saved)
     capture>>bgr_frame;
 
     //save image
-    if(saved)
-        imwrite("face.jpg",bgr_frame);
+/*    if(saved)
+        imwrite("face.jpg",bgr_frame);*/
 
     // realtime track
     face_count = 0;
@@ -89,6 +90,7 @@ int CatchFaceTrack::catchFace(Mat&bgr_frame,bool saved)
     }
 
     for (int i = 0; i < face_count; i++) {
+
         //fprintf(stderr, "face: %d-----[%d, %d, %d, %d]-----id: %d\n", i,
         //    p_face[i].rect.left, p_face[i].rect.top,
         //    p_face[i].rect.right, p_face[i].rect.bottom, p_face[i].ID);
@@ -97,17 +99,42 @@ int CatchFaceTrack::catchFace(Mat&bgr_frame,bool saved)
         //    p_face[i].pitch, p_face[i].roll, p_face[i].eye_dist);
 
         // draw the video
-        Scalar scalar_color = CV_RGB(p_face[i].ID * 53 % 256,
-            p_face[i].ID * 93 % 256,
-            p_face[i].ID * 143 % 256);
-        rectangle(bgr_frame, Point2f(static_cast<float>(p_face[i].rect.left),
-            static_cast<float>(p_face[i].rect.top)),
-            Point2f(static_cast<float>(p_face[i].rect.right),
-            static_cast<float>(p_face[i].rect.bottom)), scalar_color, 2);
+
+        if(!saved)
+        {
+
+            Scalar scalar_color = CV_RGB(p_face[i].ID * 53 % 256,
+                p_face[i].ID * 93 % 256,
+                p_face[i].ID * 143 % 256);
+            rectangle(bgr_frame, Point2f(static_cast<float>(p_face[i].rect.left),
+                static_cast<float>(p_face[i].rect.top)),
+                Point2f(static_cast<float>(p_face[i].rect.right),
+                static_cast<float>(p_face[i].rect.bottom)), scalar_color, 2);
+        }
+
+        else
+        {
+            int width=p_face[i].rect.right-p_face[i].rect.left;
+            int height=p_face[i].rect.bottom-p_face[i].rect.top;
+            int left=max(0,p_face[i].rect.left-width/4);
+            int top=max(0,p_face[i].rect.top-height/4);
+            width=min(width+width/2,frame_width-left);
+            height=min(height+height/2,frame_height-top);
+            Rect rect(left,top,width,height);
+            Mat roi=Mat::zeros(frame_height, frame_width, CV_8UC3);
+            roi=bgr_frame(rect);
+            //Rect rect(p_face,);
+            QString fileName=QString("file")+QString::number(i,10)+QString(".jpg");
+            imwrite(fileName.toStdString().c_str(),roi);
+            roi.release();
+
+        }
+
        /* for (int j = 0; j < p_face[i].points_count; j++) {
             circle(bgr_frame, Point2f(p_face[i].points_array[j].x,
                 p_face[i].points_array[j].y), 1, Scalar(0, 255, 0));
         }*/
+
     }
 
     // release the memory of face
