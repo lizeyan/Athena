@@ -11,14 +11,27 @@
 }
 
 #athena-avatar-img {
-    width: 5em;
-    height: 5em;
+    width: 6em;
+    height: 6em;
     float: left;
 }
 
 #athena-avatar-img-upload {
     margin: auto 6em;
-    padding: 0.5em;
+    padding: 0.5em 2em;
+}
+#athena-avatar-upload-btn {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    margin: auto;
+}
+
+#athena-avatar-input {
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0;
 }
 
 #athena-username-input {

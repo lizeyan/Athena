@@ -59,7 +59,7 @@
     <div class="panel-heading">
         <h3 class="panel-title">Public Profile</h3>
     </div>
-    <form id="athena-public-profile-form">
+    <form id="athena-public-profile-form" enctype="multipart/form-data">
         <div class="panel-body">
             <dl id="athena-avata-setting">
                 <dt>
@@ -68,18 +68,12 @@
                 <dd>
                     <img id="athena-avatar-img" src="<%= image? image: 'img/face.png' %>">
                     <div id="athena-avatar-img-upload">
-                        <button id="athena-avatar-upload-btn" class="btn-default btn" type="button">Upload New Picture
-                        </button>
+                        <a id="athena-avatar-upload-btn" class="btn btn-primary">
+                            上传头像
+                            <input id="athena-avatar-input" type="file" accept="image/*"/>
+                        </a>
                         <p class="text-comment">选择你的头像</p>
                     </div>
-                </dd>
-            </dl>
-            <dl id="athena-username-setting">
-                <dt>
-                    <label class="athena-profile-setting-heading-label">User Name</label>
-                </dt>
-                <dd>
-                    <input class="form-control" id="athena-username-input" type="text" value="<%= username %>" required>
                 </dd>
             </dl>
             <dl id="athena-realname-setting">
@@ -113,9 +107,9 @@
                 </dt>
                 <dd>
                     <select id="athena-gender-input" class="form-control">
-                        <option value="0" selected="<% gender == 0? 'selected': ''">保密</option>
-                        <option value="1" selected="<% gender == 1? 'selected': ''">男</option>
-                        <option value="2" selected="<% gender == 2? 'selected': ''">女</option>
+                        <option value="0" <%= gender == 0? 'selected': '' %> > 保密</option>
+                        <option value="1" <%= gender == 1? 'selected': '' %> >男</option>
+                        <option value="2" <%= gender == 2? 'selected': '' %> >女</option>
                     </select>
                 </dd>
             </dl>
