@@ -35,7 +35,8 @@ var PublicProfileView = Backbone.View.extend({
         event.preventDefault();
         var formData = new FormData;
         formData.append('real_name', $('#athena-realname-input').val());
-        formData.append('icon_image', this.imgFile);
+        if (this.imgFile)
+            formData.append('icon_image', this.imgFile);
         formData.append('school', $('#athena-school-input').val());
         formData.append('department', $('#athena-department-input').val());
         formData.append('genders', $('#athena-gender-input').val());
@@ -68,11 +69,4 @@ profile.fetch({
         gobackLogin();
     },
     url: API_ROOT + '/profile/?format=json'
-});
-
-$ (function () {
-    $('#athena-avatar-input').trigger('click');
-    $('#athena-avatar-upload-btn').on('click', function () {
-        alert ('click');
-    });
 });
