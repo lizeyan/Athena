@@ -39,7 +39,8 @@
         <div class="col-md-3">
             <div id="namecard">
             </div>
-            <button id="btn-setting" class="btn btn-default btn-block" onclick="window.location='settings.html'">设置</button>
+            <button id="btn-setting" class="btn btn-default btn-block" onclick="window.location='settings.html'">设置
+            </button>
             <ul id="contact" class="list-unstyled list-group">
                 <li id='contact-email' class="list-group-item">
                     <span class="glyphicon glyphicon-envelope"></span>
@@ -47,43 +48,52 @@
             </ul>
         </div>
         <div class="col-md-8">
+            <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-main-nav">
+                <li role="presentation" id="athena-main-nav-overview"><a href="#overview">概览</a></li>
+                <li role="presentation" id="athena-main-nav-admin"><a href="#admin-activity-group">管理</a></li>
+                <li role="presentation" id="athena-main-nav-normal"><a href="#normal-activity-group">参与</a></li>
+            </ul>
+            <div class="list-group" id="athene-admin-activity-group-list">
+            </div>
+            <div class="list-group" id="athene-normal-activity-group-list">
+            </div>
             <div id="recent-activities">
-                <h2>最近的活动</h2>
-                <div class="row" id="recent-activities-row">
-                    <div class="col-md-4 pin-activity">
-                        <p>计算机组成原理</p>
-                        <p>星期五</p>
-                        <p>出勤率:100%</p>
-                    </div>
-                    <div class="col-md-4 pin-activity">
-                        <p>计算机组成原理</p>
-                        <p>星期五</p>
-                        <p>历史出勤率:100%</p>
-                    </div>
-                    <div class="col-md-4 pin-activity">
-                        <p>计算机组成原理</p>
-                        <p>星期五</p>
-                        <p>出勤率:100%</p>
-                    </div>
-                    <div class="col-md-4 pin-activity">
-                        <p>计算机组成原理</p>
-                        <p>星期五</p>
-                        <p>出勤率:100%</p>
-                    </div>
-                    <div class="col-md-4 pin-activity">
-                        <p>计算机组成原理</p>
-                        <p>星期五</p>
-                        <p>出勤率:100%</p>
-                    </div>
-                    <div class="col-md-4 pin-activity">
-                        <p>计算机组成原理</p>
-                        <p>星期五</p>
-                        <p>出勤率:100%</p>
-                    </div>
-                </div>
+                <!--<h2>最近的活动</h2>-->
+                <!--<div class="row" id="recent-activities-row">-->
+                <!--<div class="col-md-4 pin-activity">-->
+                <!--<p>计算机组成原理</p>-->
+                <!--<p>星期五</p>-->
+                <!--<p>出勤率:100%</p>-->
+                <!--</div>-->
+                <!--<div class="col-md-4 pin-activity">-->
+                <!--<p>计算机组成原理</p>-->
+                <!--<p>星期五</p>-->
+                <!--<p>历史出勤率:100%</p>-->
+                <!--</div>-->
+                <!--<div class="col-md-4 pin-activity">-->
+                <!--<p>计算机组成原理</p>-->
+                <!--<p>星期五</p>-->
+                <!--<p>出勤率:100%</p>-->
+                <!--</div>-->
+                <!--<div class="col-md-4 pin-activity">-->
+                <!--<p>计算机组成原理</p>-->
+                <!--<p>星期五</p>-->
+                <!--<p>出勤率:100%</p>-->
+                <!--</div>-->
+                <!--<div class="col-md-4 pin-activity">-->
+                <!--<p>计算机组成原理</p>-->
+                <!--<p>星期五</p>-->
+                <!--<p>出勤率:100%</p>-->
+                <!--</div>-->
+                <!--<div class="col-md-4 pin-activity">-->
+                <!--<p>计算机组成原理</p>-->
+                <!--<p>星期五</p>-->
+                <!--<p>出勤率:100%</p>-->
+                <!--</div>-->
             </div>
         </div>
     </div>
+</div>
 </div>
 <!--用来显示左边的用户名片-->
 <script type="text/template" id="tmplt-namecard">
@@ -93,6 +103,11 @@
 </script>
 <script type="text/template" id="tmlpt-email">
     <a href="mailto:<%= email %>"><%= email %></a>
+</script>
+<script type="text/template" id="tmplt-activity-group">
+    <div class="list-group-item athena-activity-groupd-list-item">
+        <a href="activity-group.html#admin/<%= url %>"><%= activity_group_name %></a>
+    </div>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
