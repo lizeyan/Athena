@@ -43,3 +43,17 @@ var Profile = Backbone.Model.extend({
         return ret;
     },
 });
+
+function SetTopNavBar (option)
+{
+    if (option && option.img)
+    {
+        $('#athena-top-nav-avatar').attr('src', option.img);
+    }
+}
+
+function Logout ()
+{
+    Cookies.remove('token');
+    gobackLogin();
+}

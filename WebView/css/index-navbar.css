@@ -37,7 +37,7 @@ body {
 }
 
 #top-nav-inner, #main-jumbotron-inner {
-    max-width: 1086px;
+    max-width: 72em;
     margin-left: auto;
     margin-right: auto;
 }
