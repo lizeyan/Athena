@@ -28,22 +28,35 @@
             </button>
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/face.png" id="athena-top-nav-avatar">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">主页</a></li>
+                        <li><a href="settings.html">设置</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#logout" onclick="Logout ()">登出</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div><!-- /.navbar-collapse -->
+
     </div><!-- /.container-fluid -->
 </nav>
 
 <div id="profile" class="container central-inner-control">
     <div class="row clearfix">
-        <div class="col-md-3">
+        <div class="col-md-3" id="athena-left-info">
             <div id="namecard">
             </div>
             <button id="btn-setting" class="btn btn-default btn-block" onclick="window.location='settings.html'">设置
             </button>
             <ul id="contact" class="list-unstyled list-group">
                 <li id='contact-email' class="list-group-item">
-                    <span class="glyphicon glyphicon-envelope"></span>
                 </li>
             </ul>
         </div>
@@ -57,40 +70,6 @@
             </div>
             <div class="list-group" id="athene-normal-activity-group-list">
             </div>
-            <div id="recent-activities">
-                <!--<h2>最近的活动</h2>-->
-                <!--<div class="row" id="recent-activities-row">-->
-                <!--<div class="col-md-4 pin-activity">-->
-                <!--<p>计算机组成原理</p>-->
-                <!--<p>星期五</p>-->
-                <!--<p>出勤率:100%</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-4 pin-activity">-->
-                <!--<p>计算机组成原理</p>-->
-                <!--<p>星期五</p>-->
-                <!--<p>历史出勤率:100%</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-4 pin-activity">-->
-                <!--<p>计算机组成原理</p>-->
-                <!--<p>星期五</p>-->
-                <!--<p>出勤率:100%</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-4 pin-activity">-->
-                <!--<p>计算机组成原理</p>-->
-                <!--<p>星期五</p>-->
-                <!--<p>出勤率:100%</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-4 pin-activity">-->
-                <!--<p>计算机组成原理</p>-->
-                <!--<p>星期五</p>-->
-                <!--<p>出勤率:100%</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-4 pin-activity">-->
-                <!--<p>计算机组成原理</p>-->
-                <!--<p>星期五</p>-->
-                <!--<p>出勤率:100%</p>-->
-                <!--</div>-->
-            </div>
         </div>
     </div>
 </div>
@@ -102,6 +81,7 @@
     <span id="label-username"><p><%= username %></p></span>
 </script>
 <script type="text/template" id="tmlpt-email">
+    <span class="glyphicon glyphicon-envelope"></span>
     <a href="mailto:<%= email %>"><%= email %></a>
 </script>
 <script type="text/template" id="tmplt-activity-group">
