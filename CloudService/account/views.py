@@ -8,7 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from CloudService.mails import send_auth_email
 from account.interface import *
 from account.models import Profile, Face
-from account.serializers import ProfileSerializer, FaceSerializer
+from account.serializers import ProfileSerializer, FaceSerializer, ProfileQueryByTermSerializer
 from django.contrib.auth.models import User
 from account.serializers import UserSerializer
 from rest_framework import permissions
@@ -51,8 +51,13 @@ class ProfileViewSet(NoPostViewSet):
         This viewset automatically provides `list`, `retrieve`,
         `update` and `destroy` actions.
     """
-    serializer_class = ProfileSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCanNotGet,)
+
+    def get_serializer_class(self):
+        if self.request.user.profile.is_term_camera:
+            return ProfileQueryByTermSerializer
+        else:
+            return ProfileSerializer
 
     def get_queryset(self):
         if self.request.user.is_superuser == 1:

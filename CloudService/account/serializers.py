@@ -2,7 +2,7 @@ from rest_framework import serializers
 from account.models import Profile, Face
 from django.contrib.auth.models import User
 
-from information.serializers import ActivityGroupForProfileSerializer, RegisterLogForProfileSerializer
+from information.serializers import ActivityGroupForProfileSerializer
 
 
 class UserForProfileSerializer(serializers.ModelSerializer):
@@ -29,8 +29,15 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Profile
         fields = (
-            'url', 'pk', 'icon', 'genders', 'real_name', 'school', 'department', 'person_ID', 'user', 'role', 'tel',
+            'url', 'pk', 'genders', 'real_name', 'school', 'department', 'person_ID', 'user', 'role', 'tel',
             'icon_image', 'face', 'admin_activity_group', 'normal_activity_group', )
+
+
+class ProfileQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = ('url', 'pk', 'term_position', )
 
 
 class FaceSerializer(serializers.HyperlinkedModelSerializer):
