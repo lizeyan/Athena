@@ -10,7 +10,7 @@ router.register(r'users', views.UserViewSet, base_name='user')
 router.register(r'profile', views.ProfileViewSet, base_name='profile')
 router.register(r'face', views.FaceViewSet, base_name='face')
 router.register(r'activity_group', information.views.ActivityGroupViewSet, base_name='activitygroup')
-router.register(r'activity', information.views.ActivityViewSet)
+router.register(r'activity', information.views.ActivityViewSet, base_name='activity')
 router.register(r'register_log', information.views.RegisterLogViewSet)
 
 # The API URLs are now determined automatically by the router.

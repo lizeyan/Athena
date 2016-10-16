@@ -4,6 +4,9 @@ from django import forms
 from django.core.exceptions import *
 import json
 
+from django.http import HttpResponse
+from rest_framework.renderers import JSONRenderer
+
 from account.models import Face, Profile
 
 username_regex = '''[0-9A-Za-z]{2,20}'''
@@ -13,6 +16,18 @@ api_id = '332cc3d4d63e404693589ca02da83600'
 api_secret = '72e68c866c34405c8491839da7ffd4d0'
 group_id = '6c59b4c08e4d41d884118f3afc8fdb1b'
 params = '?api_id=' + api_id + '&api_secret=' + api_secret
+
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
 
 def check_style(pattern, text):
     regex = re.compile(pattern)

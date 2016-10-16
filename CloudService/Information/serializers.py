@@ -78,6 +78,14 @@ class ActivitySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'pk', 'location', 'begin_time', 'end_time', 'activity_group', 'register_log')
 
 
+class ActivityQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
+    activity_group = serializers.ReadOnlyField(source='activity_group.activity_group_name')
+
+    class Meta:
+        model = Activity
+        fields = ('url', 'pk', 'begin_time', 'end_time', 'activity_group')
+
+
 class RegisterLogSerializer(serializers.HyperlinkedModelSerializer):
     register_user = ProfileForRegisterLogSerializer(read_only=True)
     activity = ActivityForRegisterLogSerializer(read_only=True)
