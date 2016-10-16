@@ -1,10 +1,15 @@
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
+from CloudService.decotators import method_required
 from CloudService.mails import send_auth_email
 from account.interface import *
 from account.models import Profile, Face
@@ -13,7 +18,7 @@ from django.contrib.auth.models import User
 from account.serializers import UserSerializer
 from rest_framework import permissions
 from account.permissions import AllowPost, IsOwnerOrCanNotGet
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -107,6 +112,7 @@ class FaceViewSet(viewsets.ModelViewSet):
 
 # normal method to show API
 @csrf_exempt
+@api_view(['POST'])
 def do_register(request):
     responseMess = {}
     if request.method == 'POST':
@@ -173,12 +179,33 @@ def do_register(request):
             return JSONResponse(responseMess, status=400)
         responseMess['status'] = 'CREATED'
         return JSONResponse(responseMess, status=201)
-    else:
-        responseMess['status'] = 'METHOD_NOT_ALLOW'
-        responseMess['suggestion'] = 'Only POST is supported'
-        return JSONResponse(responseMess, status=405)
 
 
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
+@permission_classes((IsAuthenticated,))
+def do_modify_email(request):
+    """执行修改电子邮件操作，使用post方法传递'email'。"""
+
+    data = JSONParser().parse(request)
+    email = data['email']
+    if not check_email_style(email):
+        responseMess = {'status': 'EMAIL_STYLE_ERROR', 'suggestion': '请检查邮箱输入格式'}
+        return JSONResponse(responseMess, status=400)
+
+    request.user.profile.email_auth = False
+    request.user.profile.email_hash = ''
+    request.user.email = email
+    request.user.profile.save()
+    request.user.save()
+    set_email_hash(request.user.profile)
+    send_auth_email(request.user.profile)
+    responseMess = {'status': 'ALREADY_CHANGED', }
+    return JSONResponse(responseMess, status=200)
+
+
+@csrf_exempt
 def do_auth_email(request, username, ekey):
     # TODO
     try:
