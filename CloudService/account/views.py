@@ -1,15 +1,12 @@
-from django.contrib.auth.decorators import login_required
+from calendar import timegm
 from django.db import IntegrityError
-from django.http import HttpResponse
+from django.utils.datetime_safe import datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-
-from CloudService.decotators import method_required
 from CloudService.mails import send_auth_email
 from account.interface import *
 from account.models import Profile, Face
@@ -23,6 +20,7 @@ from rest_framework.reverse import reverse
 from rest_framework.response import Response
 from rest_framework import viewsets
 from CloudService.athena_view_set import NoPostViewSet
+from rest_framework_jwt.settings import api_settings
 
 
 @api_view(['GET'])
@@ -189,9 +187,19 @@ def do_modify_email(request):
     """执行修改电子邮件操作，使用post方法传递'email'。"""
 
     data = JSONParser().parse(request)
-    email = data['email']
+    try:
+        email = data['email']
+        password = data['password']
+    except Exception as e:
+        responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请检查输入的JSON格式'}
+        return JSONResponse(responseMess, status=400)
+
     if not check_email_style(email):
         responseMess = {'status': 'EMAIL_STYLE_ERROR', 'suggestion': '请检查邮箱输入格式'}
+        return JSONResponse(responseMess, status=400)
+
+    if not request.user.check_password(password):
+        responseMess = {'status': 'PASSWORD_WRONG', 'suggestion': '请输入正确的密码'}
         return JSONResponse(responseMess, status=400)
 
     request.user.profile.email_auth = False
@@ -203,6 +211,41 @@ def do_modify_email(request):
     send_auth_email(request.user.profile)
     responseMess = {'status': 'ALREADY_CHANGED', }
     return JSONResponse(responseMess, status=200)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
+@permission_classes((IsAuthenticated,))
+def do_modify_password(request):
+    """执行修改密码操作。是修改密码action，使用post方法传递'old_password'和'new_password'。"""
+
+    user = request.user
+    try:
+        data = JSONParser().parse(request)
+        old_pass = data['old_password']
+        new_pass = data['new_password']
+        if user.check_password(old_pass):
+            user.set_password(new_pass)
+            user.save()
+
+            # create new token when password changed
+            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+            payload = jwt_payload_handler(user)
+            payload['orig_iat'] = timegm(
+                datetime.utcnow().utctimetuple()
+            )
+            token = jwt_encode_handler(payload)
+
+            responseMess = {'status': 'ALREADY_CHANGED', 'token': token, }
+            return JSONResponse(responseMess, status=200)
+        else:
+            responseMess = {'status': 'PASSWORD_WRONG', 'suggestion': '请输入正确的旧密码'}
+            return JSONResponse(responseMess, status=400)
+    except Exception as e:
+        responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请检查输入的JSON格式'}
+        return JSONResponse(responseMess, status=400)
 
 
 @csrf_exempt
