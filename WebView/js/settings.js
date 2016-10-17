@@ -57,7 +57,6 @@ var PublicProfileView = Backbone.View.extend({
 
 });
 
-var profile = new Profile;
 var ProfileView = new PublicProfileView({model: profile});
 profile.fetch({
     headers: {'Authorization': 'JWT ' + token},
@@ -70,7 +69,4 @@ profile.fetch({
         gobackLogin();
     },
     url: API_ROOT + '/profile/?format=json'
-});
-profile.on('change:icon_image', function () {
-    SetTopNavBar ({img: profile.get('icon_image')});
 });

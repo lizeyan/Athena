@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <!--感谢 http://glyphicons.com/ 提供的图标资源-->
     <meta charset="UTF-8">
@@ -8,8 +8,8 @@
     <meta name="author" content="zy-li14@hotmail.com">
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/user.css">
     <link rel="stylesheet" href="css/signedin-navbar.css">
+    <link rel="stylesheet" href="css/activity-group.css">
 </head>
 <body>
 <nav id='top-nav' class="navbar navbar-default" role="navigation">
@@ -36,7 +36,7 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">主页</a></li>
+                        <li><a href="user.html">主页</a></li>
                         <li><a href="settings.html">设置</a></li>
                         <li class="divider"></li>
                         <li><a onclick="Logout ()">登出</a></li>
@@ -48,47 +48,33 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div id="profile" class="container central-inner-control">
-    <div class="row clearfix">
-        <div class="col-md-3" id="athena-left-info">
-            <div id="namecard">
-            </div>
-            <button id="btn-setting" class="btn btn-default btn-block" onclick="window.location='settings.html'">设置
-            </button>
-            <ul id="contact" class="list-unstyled list-group">
-                <li id='contact-email' class="list-group-item">
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-main-nav">
-                <li role="presentation" id="athena-main-nav-overview"><a href="#overview">概览</a></li>
-                <li role="presentation" id="athena-main-nav-admin"><a href="#admin-activity-group">管理</a></li>
-                <li role="presentation" id="athena-main-nav-normal"><a href="#normal-activity-group">参与</a></li>
-            </ul>
-            <div class="list-group" id="athene-admin-activity-group-list">
-            </div>
-            <div class="list-group" id="athene-normal-activity-group-list">
-            </div>
-        </div>
+<div class="container-fluid panel" id=athena-page-head">
+    <div class="central-inner-control" id="athena-activity-group-title">
+    </div>
+    <div class="container central-inner-control">
+        <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-activity-group-view-nav">
+            <li role="presentation" id="athena-main-nav-overview" class="active"><a href="#activities">活动</a></li>
+            <li role="presentation" id="athena-main-nav-admin"><a href="#participators">参与者</a></li>
+            <li role="presentation" id="athena-main-nav-normal"><a href="#administers">管理员</a></li>
+        </ul>
     </div>
 </div>
+
+<div class="container">
+    <ul class="list-group central-inner-control" id="athena-activity-list">
+    </ul>
 </div>
-<!--用来显示左边的用户名片-->
-<script type="text/template" id="tmplt-namecard">
-    <img id="img-avator" src="<%= image? image: 'img/face.png' %>"/>
-    <span id="label-realname"><p><%= realname %></p></span>
-    <span id="label-username"><p><%= username %></p></span>
+
+<script type="text/template" id="tmplt-activity-group-page-head">
+    <h3>
+        <span class="glyphicon glyphicon-leaf"></span>
+        <a href="#activity-group/<%= url %>"><%= activity_group_name %></a>
+    </h3>
 </script>
-<script type="text/template" id="tmlpt-email">
-    <span class="glyphicon glyphicon-envelope"></span>
-    <a href="mailto:<%= email %>"><%= email %></a>
+<script type="text/template" id="tmplt-activity-list-item">
+    <li class="list-group-item"><%= location %></li>
 </script>
-<script type="text/template" id="tmplt-activity-group">
-    <div class="list-group-item athena-activity-groupd-list-item">
-        <a href="activity-group.html#activity-group/<%= url %>"><%= activity_group_name %></a>
-    </div>
-</script>
+
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="js/underscore-min.js"></script>
@@ -97,8 +83,6 @@
 <script src="js/js-cookie.js"></script>
 <script src="js/profileByToken.js"></script>
 <script src="js/fetchProfileAndSetTopNav.js"></script>
-<script src="js/user.js"></script>
-
-
+<script src="js/activity-group.js"></script>
 </body>
 </html>
