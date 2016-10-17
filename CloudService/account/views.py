@@ -194,6 +194,10 @@ def find_password(request):
         responseMess = {'status': 'EMAIL_IS_WRONG', 'suggestion': '请输入正确的邮箱'}
         return JSONResponse(responseMess, status=400)
 
+    if not user.profile.email_auth:
+        responseMess = {'status': 'EMAIL_NOT_VERIFIED', 'suggestion': '邮箱未被确认，无法找回密码'}
+        return JSONResponse(responseMess, status=400)
+
     set_password_hash(user.profile)
     send_change_password_email(user.profile)
     responseMess = {'status': 'EMAIL_ALREADY_SEND', }

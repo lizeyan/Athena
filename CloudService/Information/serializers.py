@@ -40,7 +40,7 @@ class ActivityGroupForActivityQuerySerializer(serializers.ModelSerializer):
 class ActivityForActivityGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ('location', 'begin_time', 'end_time', 'url',)
+        fields = ('pk', 'location', 'begin_time', 'end_time', 'url',)
 
 
 class ActivityForRegisterLogSerializer(serializers.ModelSerializer):

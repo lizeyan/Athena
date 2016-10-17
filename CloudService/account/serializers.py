@@ -25,12 +25,13 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     person_ID = serializers.ReadOnlyField(source='person_id')
     admin_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
     normal_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
+    email_authorization = serializers.ReadOnlyField(source='email_auth')
 
     class Meta:
         model = Profile
         fields = (
             'url', 'pk', 'genders', 'real_name', 'school', 'department', 'person_ID', 'user', 'role', 'tel',
-            "email_auth", 'icon_image', 'face', 'admin_activity_group', 'normal_activity_group', )
+            'email_authorization', 'icon_image', 'face', 'admin_activity_group', 'normal_activity_group', )
 
 
 class ProfileQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
