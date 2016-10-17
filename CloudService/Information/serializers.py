@@ -8,7 +8,7 @@ class ProfileForActivityGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('user', 'real_name', 'department', 'url',)
+        fields = ('user', 'real_name', 'icon_image', 'url',)
 
 
 class ProfileForRegisterLogSerializer(serializers.ModelSerializer):
@@ -29,6 +29,12 @@ class ActivityGroupForActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityGroup
         fields = ('activity_group_name', 'url', )
+
+
+class ActivityGroupForActivityQuerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActivityGroup
+        fields = ('activity_group_name', 'group_id', )
 
 
 class ActivityForActivityGroupSerializer(serializers.ModelSerializer):
@@ -79,7 +85,7 @@ class ActivitySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ActivityQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
-    activity_group = serializers.ReadOnlyField(source='activity_group.activity_group_name')
+    activity_group = ActivityGroupForActivityQuerySerializer(read_only=True)
 
     class Meta:
         model = Activity
