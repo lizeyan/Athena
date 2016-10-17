@@ -197,6 +197,8 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 EMAIL_AUTH_PREFIX = ROOT_ADDRESS + 'account/auth_email/'
 
+EMAIL_FIND_PASSWORD_PREFIX = ROOT_ADDRESS + 'account/find_password_verify/'
+
 USER_RETURN_MESSAGE = '申请归还'
 
 USER_MISS_MESSAGE = '申请挂失'

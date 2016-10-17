@@ -19,5 +19,7 @@ urlpatterns = [
     url(r'^register/$', views.do_register),
     url(r'^modify_email/$', views.do_modify_email),
     url(r'^modify_password/$', views.do_modify_password),
+    url(r'^find_password/$', views.find_password),
+    url(r'^find_password_verify/(?P<username>.+)/(?P<ekey>.+)/$', views.do_find_password),
     url(r'^auth_email/(?P<username>.+)/(?P<ekey>.+)/$', views.do_auth_email)
 ]

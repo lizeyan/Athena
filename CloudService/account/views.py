@@ -1,5 +1,6 @@
 from calendar import timegm
 from django.db import IntegrityError
+from django.http import Http404
 from django.utils.datetime_safe import datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
@@ -7,7 +8,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from CloudService.mails import send_auth_email
+from CloudService.mails import send_auth_email, send_change_password_email
 from account.interface import *
 from account.models import Profile, Face
 from account.serializers import ProfileSerializer, FaceSerializer, ProfileQueryByTermSerializer
@@ -112,49 +113,42 @@ class FaceViewSet(viewsets.ModelViewSet):
 @csrf_exempt
 @api_view(['POST'])
 def do_register(request):
-    responseMess = {}
     if request.method == 'POST':
         data = JSONParser().parse(request)
         new_account = {}
         try:
             username = data['username']
             if not check_style(username_regex, username):
-                responseMess['status'] = 'USERNAME_STYLE_ERROR'
-                responseMess['suggestion'] = '用户名由字母和数字组成，长度在2-20之间'
+                responseMess = {'status': 'USERNAME_STYLE_ERROR', 'suggestion': '用户名由字母和数字组成，长度在2-20之间'}
                 return JSONResponse(responseMess, status=400)
             new_account['user_name'] = username
 
             password = data['password']
             if not check_style(password_regex, password):
-                responseMess['status'] = 'PASSWORD_STYLE_ERROR'
-                responseMess['suggestion'] = '密码长度在6-20之间'
+                responseMess = {'status': 'PASSWORD_STYLE_ERROR', 'suggestion': '密码长度在6-20之间'}
                 return JSONResponse(responseMess, status=400)
             new_account['password'] = password
 
             email = data['email']
             if not check_email_style(email):
-                responseMess['status'] = 'EMAIL_STYLE_ERROR'
-                responseMess['suggestion'] = '需要符合邮箱格式'
+                responseMess = {'status': 'EMAIL_STYLE_ERROR', 'suggestion': '需要符合邮箱格式'}
                 return JSONResponse(responseMess, status=400)
             new_account['email'] = email
 
             new_account['real_name'] = data['real_name']
             if data['real_name'] == '':
-                responseMess['status'] = 'REAL_NAME_STYLE_ERROR'
-                responseMess['suggestion'] = '真实姓名不可以为空'
+                responseMess = {'status': 'REAL_NAME_STYLE_ERROR', 'suggestion': '真实姓名不可以为空'}
                 return JSONResponse(responseMess, status=400)
 
         except Exception as e:
-            print(e)
-            responseMess['status'] = 'INPUT_STYLE_ERROR'
-            responseMess['suggestion'] = '请输入至少由username, password, email, real_name四项组成的JSON代码'
+            responseMess = {'status': 'INPUT_STYLE_ERROR',
+                            'suggestion': '请输入至少由username, password, email, real_name四项组成的JSON代码'}
             return JSONResponse(responseMess, status=400)
 
         if 'tel' in data:
             tel = data['tel']
             if not check_style(tel_regex, tel):
-                responseMess['status'] = 'TEL_STYLE_ERROR'
-                responseMess['suggestion'] = '电话应由数字组成，长度在0-30之间'
+                responseMess = {'status': 'TEL_STYLE_ERROR', 'suggestion': '电话应由数字组成，长度在0-30之间'}
                 return JSONResponse(responseMess, status=400)
             new_account['tel'] = tel
 
@@ -168,14 +162,12 @@ def do_register(request):
             profile.person_id = person_id_temp
             profile.save()
         except IntegrityError:
-            responseMess['status'] = 'USERNAME_ALREADY_EXIST'
-            responseMess['suggestion'] = '用户名已经存在，请更换用户名'
+            responseMess = {'status': 'USERNAME_ALREADY_EXIST', 'suggestion': '用户名已经存在，请更换用户名'}
             return JSONResponse(responseMess, status=400)
         except TypeError:
-            responseMess['status'] = 'STYLE_ERROR'
-            responseMess['suggestion'] = '请检查输入格式'
+            responseMess = {'status': 'STYLE_ERROR', 'suggestion': '请检查输入格式'}
             return JSONResponse(responseMess, status=400)
-        responseMess['status'] = 'CREATED'
+        responseMess = {'status': 'CREATED'}
         return JSONResponse(responseMess, status=201)
 
 
@@ -199,8 +191,13 @@ def find_password(request):
 
     user = user_set.get(username=username)
     if email != user.email:
-        responseMess = {'status': 'EMAIL_IS_WRONG', 'suggestion': '请输入正确的用户名'}
+        responseMess = {'status': 'EMAIL_IS_WRONG', 'suggestion': '请输入正确的邮箱'}
         return JSONResponse(responseMess, status=400)
+
+    set_password_hash(user.profile)
+    send_change_password_email(user.profile)
+    responseMess = {'status': 'EMAIL_ALREADY_SEND', }
+    return JSONResponse(responseMess, status=200)
 
 
 @csrf_exempt
@@ -250,6 +247,9 @@ def do_modify_password(request):
         old_pass = data['old_password']
         new_pass = data['new_password']
         if user.check_password(old_pass):
+            if not check_style(password_regex, new_pass):
+                responseMess = {'status': 'PASSWORD_STYLE_ERROR', 'suggestion': '密码长度在6-20之间'}
+                return JSONResponse(responseMess, status=400)
             user.set_password(new_pass)
             user.save()
 
@@ -281,7 +281,46 @@ def do_auth_email(request, username, ekey):
             profile.email_auth = True
             profile.save()
             return HttpResponse("Success")
-
+        else:
+            raise Http404
     except:
-        pass
-    return HttpResponse("failed")
+        raise Http404
+
+
+@csrf_exempt
+def do_find_password(request, username, ekey):
+    if request.method == 'GET':
+        try:
+            profile = Profile.objects.get(user__username=username)
+            if profile.password_hash == ekey:
+                responseMess = {'status': 'RIGHT_URL', }
+                return JSONResponse(responseMess, status=200)
+        except:
+            raise Http404
+    elif request.method == 'POST':
+        try:
+            profile = Profile.objects.get(user__username=username)
+            if profile.password_hash == ekey:
+                try:
+                    data = JSONParser().parse(request)
+                    password = data['password']
+                except Exception as e:
+                    responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请检查输入的JSON格式'}
+                    return JSONResponse(responseMess, status=400)
+
+                if not check_style(password_regex, password):
+                    responseMess = {'status': 'PASSWORD_STYLE_ERROR', 'suggestion': '密码长度在6-20之间'}
+                    return JSONResponse(responseMess, status=400)
+
+                profile.user.set_password(password)
+                profile.user.save()
+                set_password_hash(profile)
+                responseMess = {'status': 'ALREADY_CHANGED', }
+                return JSONResponse(responseMess, status=200)
+            else:
+                raise Http404
+        except:
+            raise Http404
+    else:
+        responseMess = {'status': 'METHOD_NOT_ALLOW', }
+        return JSONResponse(responseMess, status=405)
