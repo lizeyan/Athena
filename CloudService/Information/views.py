@@ -68,20 +68,34 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser == 1:
             return RegisterLog.objects.all()
         else:
-            try:
-                activity_id = self.request.GET.get('activity_id')
-            except Exception as e:
-                return RegisterLog.objects.filter(id=0)
+            activity_id = self.request.GET.get('activity_id')
+            user_id = self.request.GET.get('user_id')
+            if user_id is None and activity_id is None:
+                return RegisterLog.objects.filter(register_user_id=self.request.user.profile.id)
+            elif user_id is None and activity_id is not None:
+                activity_set = Activity.objects.filter(id=activity_id)
+                if activity_set.count() == 0:
+                    return RegisterLog.objects.filter(id=0)
+                activity = activity_set.get(id=activity_id)
 
-            activity_set = Activity.objects.filter(id=activity_id)
-            if activity_set.count() == 0:
-                return RegisterLog.objects.filter(id=0)
-            activity = activity_set.get(id=activity_id)
-
-            activity_group_set = self.request.user.profile.admin_activity_group.filter(id=activity.activity_group.id)
-            if activity_group_set.count() == 0:
-                return RegisterLog.objects.filter(id=0)
-            return RegisterLog.objects.filter(activity_id=activity_id)
+                activity_group_set = self.request.user.profile.admin_activity_group.filter(
+                    id=activity.activity_group.id)
+                if activity_group_set.count() == 0:
+                    return RegisterLog.objects.filter(id=0)
+                return RegisterLog.objects.filter(activity_id=activity_id)
+            elif user_id is not None and activity_id is None:
+                user_id = int(user_id)
+                if user_id == self.request.user.id:
+                    return RegisterLog.objects.filter(register_user_id=self.request.user.profile.id)
+                else:
+                    return RegisterLog.objects.filter(id=0)
+            else:
+                user_id = int(user_id)
+                if user_id == self.request.user.id:
+                    return RegisterLog.objects.filter(register_user_id=self.request.user.profile.id,
+                                                      activity_id=activity_id)
+                else:
+                    return RegisterLog.objects.filter(id=0)
 
     def create(self, request, *args, **kwargs):
         if not request.user.profile.is_term_camera:

@@ -30,7 +30,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = Profile
         fields = (
             'url', 'pk', 'genders', 'real_name', 'school', 'department', 'person_ID', 'user', 'role', 'tel',
-            'icon_image', 'face', 'admin_activity_group', 'normal_activity_group', )
+            "email_auth", 'icon_image', 'face', 'admin_activity_group', 'normal_activity_group', )
 
 
 class ProfileQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
