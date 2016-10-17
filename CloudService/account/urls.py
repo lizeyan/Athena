@@ -11,7 +11,7 @@ router.register(r'profile', views.ProfileViewSet, base_name='profile')
 router.register(r'face', views.FaceViewSet, base_name='face')
 router.register(r'activity_group', information.views.ActivityGroupViewSet, base_name='activitygroup')
 router.register(r'activity', information.views.ActivityViewSet, base_name='activity')
-router.register(r'register_log', information.views.RegisterLogViewSet)
+router.register(r'register_log', information.views.RegisterLogViewSet, base_name='registerlog')
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.

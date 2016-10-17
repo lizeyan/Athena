@@ -19,6 +19,7 @@ class Profile(models.Model):
     email_hash = models.CharField(max_length=30, blank=True)
     is_term_camera = models.BooleanField(blank=True, default=False)
     term_position = models.CharField(max_length=150, blank=True, default='')
+    password_hash = models.CharField(max_length=30, blank=True)
 
     class Meta:
         permissions = (('account.look', '查看全部User'), )

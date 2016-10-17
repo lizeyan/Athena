@@ -181,10 +181,34 @@ def do_register(request):
 
 @csrf_exempt
 @api_view(['POST'])
+def find_password(request):
+    """执行找回密码操作，使用`POST`方法传递'username'和'email'。"""
+
+    data = JSONParser().parse(request)
+    try:
+        username = data['username']
+        email = data['email']
+    except Exception as e:
+        responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请检查输入的JSON格式'}
+        return JSONResponse(responseMess, status=400)
+
+    user_set = User.objects.filter(username=username)
+    if user_set.count() == 0:
+        responseMess = {'status': 'USERNAME_NOT_EXIST', 'suggestion': '请输入正确的用户名'}
+        return JSONResponse(responseMess, status=400)
+
+    user = user_set.get(username=username)
+    if email != user.email:
+        responseMess = {'status': 'EMAIL_IS_WRONG', 'suggestion': '请输入正确的用户名'}
+        return JSONResponse(responseMess, status=400)
+
+
+@csrf_exempt
+@api_view(['POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
 @permission_classes((IsAuthenticated,))
 def do_modify_email(request):
-    """执行修改电子邮件操作，使用post方法传递'email'。"""
+    """执行修改电子邮件操作，使用`POST`方法传递'email'和'password'。"""
 
     data = JSONParser().parse(request)
     try:
@@ -218,7 +242,7 @@ def do_modify_email(request):
 @authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
 @permission_classes((IsAuthenticated,))
 def do_modify_password(request):
-    """执行修改密码操作。是修改密码action，使用post方法传递'old_password'和'new_password'。"""
+    """执行修改密码操作，使用`POST`方法传递'old_password'和'new_password'。"""
 
     user = request.user
     try:
