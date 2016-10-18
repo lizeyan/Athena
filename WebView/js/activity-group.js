@@ -1,7 +1,14 @@
 /**
  * Created by zy-li14 on 16-10-17.
  */
-var Activity = Backbone.Model.extend({});
+var Activity = Backbone.Model.extend({
+    parse: function (response) {
+        response.begin_time_date = new Date(response.begin_time);
+        response.end_time_date = new Date(response.end_time);
+        response.spense = new Duration(response.end_time_date.getTime() - response.begin_time_date.getTime());
+        return response;
+    }
+});
 var ActivityGroup = Backbone.Collection.extend({
     model: Activity,
     activity_group_name: '',
@@ -42,15 +49,16 @@ var activityGroupPageHead = new ActivityGroupPageHead({collection: activityGroup
  */
 var ActivityListItem = Backbone.View.extend({
     tagName: "li",
-    initialize: function () {
-        this.listenTo(this.model, "change", this.render);
-    },
     template: _.template($("#tmplt-activity-list-item").html()),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     },
     render: function () {
-        this.$el.html(this.template({location: this.model.get('location')}));
+        this.$el.html(this.template({
+            location: this.model.get('location'),
+            begin_time: this.model.get('begin_time_date').toLocaleDateString(),
+            spense_time: this.model.get('spense').toString()
+        }));
         return this;
     }
 });
@@ -81,7 +89,11 @@ var AdministerListItem = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render);
     },
     render: function () {
-        this.$el.html(this.template({user: this.model.user}));
+        this.$el.html(this.template({
+            user: this.model.user,
+            real_name: this.model.real_name,
+            image: this.model.icon_image
+        }));
         return this;
     }
 });
@@ -112,7 +124,11 @@ var ParticipatorListItem = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render);
     },
     render: function () {
-        this.$el.html(this.template({user: this.model.user}));
+        this.$el.html(this.template({
+            user: this.model.user,
+            real_name: this.model.real_name,
+            image: this.model.icon_image
+        }));
         return this;
     }
 });
@@ -153,7 +169,7 @@ $(function () {
                     // activityList.render();
                 },
                 error: function () {
-                    alert('请求无效，返回用户界面')
+                    alert('请求无效，返回用户界面');
                     window.location = "user.html";
                 },
                 reset: true

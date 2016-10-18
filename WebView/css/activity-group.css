@@ -1,5 +1,10 @@
-#athena-page-head {
-    padding: 0;
+.athena-user-list-item-info {
+    font-size: 1em;
+    padding: 0.3em;
 }
-#athena-activity-group-main-nav {
+
+.user-list-item-avatar {
+    float: left;
+    height: 2em;
+    width: 2em;
 }

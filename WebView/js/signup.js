@@ -10,7 +10,7 @@ var RegisterUser = Backbone.Model.extend({
 });
 var UserLibrary = Backbone.Collection.extend({
     model: RegisterUser,
-    url: API_ROOT + '/register/'
+    url: API_ROOT + '/account/register/'
 });
 var userLibrary = new UserLibrary;
 

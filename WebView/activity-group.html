@@ -54,7 +54,8 @@
     <div class="container central-inner-control">
         <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-activity-group-main-nav">
             <li role="presentation" id="athena-activity-group-main-nav-activity"><a href="#activities">活动</a></li>
-            <li role="presentation" id="athena-activity-group-main-nav-participator"><a href="#participators">参与者</a></li>
+            <li role="presentation" id="athena-activity-group-main-nav-participator"><a href="#participators">参与者</a>
+            </li>
             <li role="presentation" id="athena-activity-group-main-nav-administer"><a href="#administers">管理员</a></li>
         </ul>
     </div>
@@ -76,14 +77,69 @@
     </h3>
 </script>
 <script type="text/template" id="tmplt-activity-list-item">
-    <li class="list-group-item"><%= location %></li>
+    <li class="list-group-item-info container panel panel-default central-inner-control">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <label>时间：<%= begin_time %></label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    持续时长：<%= spense_time %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-home"></span>
+                    地点：<%= location %>
+                </div>
+            </div>
+        </div>
+    </li>
 </script>
 
 <script type="text/template" id="tmplt-administer-list-item">
-    <li class="list-group-item"><%= user %></li>
+    <li class="list-group-item-info container panel panel-default central-inner-control">
+        <div class="panel-body">
+            <div class="row">
+                <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <label class="athena-user-list-item-info">
+                        用户名：<%= user %>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <label class="athena-user-list-item-info">
+                        真实姓名：<%= real_name %>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </li>
 </script>
 <script type="text/template" id="tmplt-participator-list-item">
-    <li class="list-group-item"><%= user %></li>
+    <li class="list-group-item-info container panel panel-default central-inner-control">
+        <div class="panel-body">
+            <div class="row">
+                <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <label class="athena-user-list-item-info">
+                        用户名：<%= user %>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <label class="athena-user-list-item-info">
+                        真实姓名：<%= real_name %>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </li>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
@@ -93,6 +149,7 @@
 <script src="js/js-cookie.js"></script>
 <script src="js/profileByToken.js"></script>
 <script src="js/fetchProfileAndSetTopNav.js"></script>
+<script src="js/chrono.js"></script>
 <script src="js/activity-group.js"></script>
 </body>
 </html>
