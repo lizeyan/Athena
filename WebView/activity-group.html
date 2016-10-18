@@ -52,16 +52,20 @@
     <div class="central-inner-control" id="athena-activity-group-title">
     </div>
     <div class="container central-inner-control">
-        <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-activity-group-view-nav">
-            <li role="presentation" id="athena-main-nav-overview" class="active"><a href="#activities">活动</a></li>
-            <li role="presentation" id="athena-main-nav-admin"><a href="#participators">参与者</a></li>
-            <li role="presentation" id="athena-main-nav-normal"><a href="#administers">管理员</a></li>
+        <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-activity-group-main-nav">
+            <li role="presentation" id="athena-activity-group-main-nav-activity"><a href="#activities">活动</a></li>
+            <li role="presentation" id="athena-activity-group-main-nav-participator"><a href="#participators">参与者</a></li>
+            <li role="presentation" id="athena-activity-group-main-nav-administer"><a href="#administers">管理员</a></li>
         </ul>
     </div>
 </div>
 
 <div class="container">
-    <ul class="list-group central-inner-control" id="athena-activity-list">
+    <ul class="list-group central-inner-control list-unstyled" id="athena-activity-list">
+    </ul>
+    <ul class="list-group central-inner-control list-unstyled" id="athena-administer-list">
+    </ul>
+    <ul class="list-group central-inner-control list-unstyled" id="athena-participator-list">
     </ul>
 </div>
 
@@ -75,6 +79,12 @@
     <li class="list-group-item"><%= location %></li>
 </script>
 
+<script type="text/template" id="tmplt-administer-list-item">
+    <li class="list-group-item"><%= user %></li>
+</script>
+<script type="text/template" id="tmplt-participator-list-item">
+    <li class="list-group-item"><%= user %></li>
+</script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="js/underscore-min.js"></script>
