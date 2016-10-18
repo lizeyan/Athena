@@ -89,10 +89,15 @@
                     持续时长：<%= spense_time %>
                 </div>
             </div>
+            <!--<button type="button" class="btn btn-default athena-activity-checkin-detail-button">详细信息</button>-->
             <div class="row">
                 <div class="col-md-6">
                     <span class="glyphicon glyphicon-home"></span>
                     地点：<%= location %>
+                </div>
+            </div>
+            <div class="row athena-register-checklist panel panel-info">
+                <div class="panel-body athena-activity-checkin-list">
                 </div>
             </div>
         </div>
@@ -140,6 +145,12 @@
             </div>
         </div>
     </li>
+</script>
+<script type="text/template" id="tmplt-activity-user-checkin-item">
+    <div class="col-md-3">
+        <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
+        <%= real_name %>
+    </div>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>

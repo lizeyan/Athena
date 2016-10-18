@@ -17,7 +17,7 @@ var Duration = Backbone.Model.extend({
         if (minutes > 0)
             ret += (minutes + "分钟");
         s %= 60;
-        if (s > 0)
+        if (s > 0 || (hours == 0 && minutes == 0))
             ret += (s + "秒");
         return ret;
     }
