@@ -208,6 +208,20 @@ def find_password(request):
 @api_view(['POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
 @permission_classes((IsAuthenticated,))
+def do_verify_email(request):
+    if request.user.profile.email_auth:
+        responseMess = {'status': 'ALREADY_VERIFIED', 'suggestion': '邮箱已经被验证'}
+        return JSONResponse(responseMess, status=400)
+    set_email_hash(request.user.profile)
+    send_auth_email(request.user.profile)
+    responseMess = {'status': 'EMAIL_ALREADY_SEND', }
+    return JSONResponse(responseMess, status=200)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
+@permission_classes((IsAuthenticated,))
 def do_modify_email(request):
     """执行修改电子邮件操作，使用`POST`方法传递'email'和'password'。"""
 

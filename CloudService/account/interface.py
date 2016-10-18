@@ -72,6 +72,11 @@ def set_password_hash(profile):
     return
 
 
+def get_new_group_id_from_link_face():
+    # TODO
+    return group_id
+
+
 def send_face_to_link_face_and_add_face_to_person(filepath, face_pk, profile_pk):
     api_url = 'https://v1-api.visioncloudapi.com/face/detection'
     files = {'file': open(filepath, 'rb')}

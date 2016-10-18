@@ -1,7 +1,8 @@
 from datetime import timedelta, datetime
+from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.parsers import JSONParser
-from account.interface import JSONResponse
+from account.interface import JSONResponse, get_new_group_id_from_link_face
 from account.models import Profile
 from information.models import ActivityGroup, Activity, RegisterLog
 from information.permissions import ActivityGroupPermission, ActivityPermission, RegisterLogPermission
@@ -13,7 +14,8 @@ from django.utils import timezone
 
 class ActivityGroupViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    You should provide `activity_group_name` when creating an activity,
+    lists of `admin_user` and `normal_user` is optional(all is username)
     """
     serializer_class = ActivityGroupSerializer
     permission_classes = (permissions.IsAuthenticated, ActivityGroupPermission)
@@ -25,6 +27,58 @@ class ActivityGroupViewSet(viewsets.ModelViewSet):
             profile = self.request.user.profile
             queryset = profile.admin_activity_group.all() | profile.normal_activity_group.all()
             return queryset.distinct()
+
+    def create(self, request, *args, **kwargs):
+        try:
+            data = JSONParser().parse(request)
+            activity_group_name = data['activity_group_name']
+        except Exception as e:
+            print(e)
+            responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请输入由activity_group_name项组成的JSON代码'}
+            return JSONResponse(responseMess, status=400)
+
+        admin_user_list = []
+        normal_user_list = []
+        try:
+            admin_user_list = data['admin_user']
+        except Exception as e:
+            pass
+        try:
+            normal_user_list = data['normal_user']
+        except Exception as e:
+            pass
+        activity_group = ActivityGroup(activity_group_name=activity_group_name)
+        activity_group.group_id = get_new_group_id_from_link_face()
+        activity_group.save()
+        activity_group.admin_user.add(request.user.profile)
+
+        admin_success = True
+        normal_success = True
+        for admin_user in admin_user_list:
+            try:
+                user = User.objects.get(username=admin_user)
+                if user.id == request.user.id:
+                    continue
+                activity_group.admin_user.add(user.profile)
+            except Exception as e:
+                admin_success = False
+        for normal_user in normal_user_list:
+            try:
+                if normal_user in admin_user_list:
+                    continue
+                user = User.objects.get(username=normal_user)
+                if user.id == request.user.id:
+                    continue
+                activity_group.normal_user.add(user.profile)
+            except Exception as e:
+                normal_success = False
+
+        if admin_success and normal_success:
+            responseMess = {'status': 'CREATE_SUCCESS', }
+            return JSONResponse(responseMess, status=201)
+        else:
+            responseMess = {'status': 'CREATE_SUCCESS_SOME_ADD_FAILED', 'suggestion': '创建成功，但是某些成员添加失败'}
+            return JSONResponse(responseMess, status=201)
 
 
 class ActivityViewSet(viewsets.ModelViewSet):
@@ -102,8 +156,8 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
             responseMess = {'status': 'FORBIDDEN', }
             return JSONResponse(responseMess, status=403)
 
-        data = JSONParser().parse(request)
         try:
+            data = JSONParser().parse(request)
             activity_id = data['activity_id']
             person_id = data['person_id']
         except Exception as e:
