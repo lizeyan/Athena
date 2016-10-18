@@ -129,7 +129,7 @@ var EmailView = Backbone.View.extend({
         ;
     },
     render: function () {
-        this.$el.html(this.template({email: this.model.get('user').email}));
+        this.$el.html(this.template({email: this.model.get('user').email, email_authorization: this.model.get('email_authorization')}));
         return this;
     },
     uploadEmail: function (event) {
