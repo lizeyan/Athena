@@ -5,7 +5,7 @@ var ActivityGroup = Backbone.Model.extend({
     parse: function (response) {
         //重置url
         this.url = response.url;
-        response.url = null;
+        delete response["url"];
         return response;
     }
 });
@@ -160,12 +160,40 @@ var ParticipatorListItem = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render);
     },
     render: function () {
-        this.$el.html(this.template({
+        this.activity_register_log = registerLog.clone();
+        var activity_check_list = new Object();
+        _.each(activityGroup.get('activity'), function (activity) {
+            activity_check_list[activity.url] = false;
+        });
+        this.activity_register_log.fetch({
+            headers: {'Authorization': 'JWT ' + token},
+            success: _.bind(function (collection) {
+                var i = 0;
+                _.each(collection.models, function (entry) {
+                    if (entry.get('activity').url in activity_check_list) {
+                        activity_check_list[entry.get('activity').url] = true;
+                        i += 1;
+                    }
+                });
+                this.setEL( {
+                    user: this.model.user,
+                    real_name: this.model.real_name,
+                    image: this.model.icon_image,
+                    rate: i / Object.keys(activity_check_list).length
+                })
+            }, this),
+            data: $.param({user_id: this.model.pk})
+        });
+        this.setEL({
             user: this.model.user,
             real_name: this.model.real_name,
-            image: this.model.icon_image
-        }));
+            image: this.model.icon_image,
+            rate: 0
+        });
         return this;
+    },
+    setEL: function (args) {
+        this.$el.html (this.template(args));
     }
 });
 var ParcitipatorList = Backbone.View.extend ({
@@ -204,7 +232,7 @@ $(function () {
             activityGroup.url = agUrl;
             activityGroup.fetch({
                 headers: {'Authorization': 'JWT ' + token},
-                success: function () {
+                success: function (model) {
                 },
                 error: function (model, response) {
                     window.location = "user.html";
