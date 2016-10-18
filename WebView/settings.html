@@ -55,29 +55,78 @@
                     <h3 class="panel-title">Personal Settings</h3>
                 </div>
                 <div class="panel-body">
-                    <ul class="nav nav-pills nav-stacked" role="tablist">
-                        <li role="presentation"><a href="#profile">Profile</a></li>
-                        <li role="presentation"><a href="#security">Security</a></li>
-                        <li role="presentation"><a href="#email">Email</a></li>
+                    <ul class="nav nav-pills nav-stacked" role="tablist" id="athena-side-nav-list">
+                        <li role="presentation" id="athena-profile-nav-item"><a href="#profile">Profile</a></li>
+                        <li role="presentation" id="athena-security-nav-item"><a href="#security">Security</a></li>
+                        <li role="presentation" id="athena-email-nav-item"><a href="#email">Email</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="col-md-9" id="settings">
+            <div id="athena-info-list">
+            </div>
             <div id="athena-profile-setting" class="panel panel-default">
+            </div>
+            <div id="athena-security-setting" class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">密码</h3>
+                </div>
+                <form id="athena-password-form">
+                    <div class="panel-body">
+                        <dl>
+                            <dt>
+                                <label class="athena-setting-heading-label">旧密码</label>
+                            </dt>
+                            <dd>
+                                <input class="form-control" id="athena-old-password-input" type="password" required/>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <label class="athena-setting-heading-label">新密码</label>
+                            </dt>
+                            <dd>
+                                <input class="form-control" id="athena-new-password-input" type="password" required/>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <label class="athena-setting-heading-label">确认新密码</label>
+                            </dt>
+                            <dd>
+                                <input class="form-control" id="athena-confirm-password-input" type="password"
+                                       required/>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <button type="submit" class="btn btn-success" id="athena-password-submit-btn">修改密码
+                            </button>
+                        </dl>
+                    </div>
+                </form>
+            </div>
+            <div id="athena-email-setting" class="panel panel-default">
             </div>
         </div>
     </div>
 </div>
+<script type="text/template" id="tmplt-box-info">
+    <div class="alert alert-<%= type %> alert-dismissible box-error-top" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <%= text %>
+    </div>
+</script>
 <script type="text/template" id="tmplt-profile-setting">
     <div class="panel-heading">
-        <h3 class="panel-title">Public Profile</h3>
+        <h3 class="panel-title">公开信息</h3>
     </div>
     <form id="athena-public-profile-form" enctype="multipart/form-data">
         <div class="panel-body">
             <dl id="athena-avata-setting">
                 <dt>
-                    <label class="athena-profile-setting-heading-label">Profile Picture</label>
+                    <label class="athena-setting-heading-label">头像</label>
                 </dt>
                 <dd>
                     <img id="athena-avatar-img" src="<%= image? image: 'img/face.png' %>">
@@ -92,7 +141,7 @@
             </dl>
             <dl id="athena-realname-setting">
                 <dt>
-                    <label class="athena-profile-setting-heading-label">Real Name</label>
+                    <label class="athena-setting-heading-label">真实姓名</label>
                 </dt>
                 <dd>
                     <input class="form-control" id="athena-realname-input" type="text" value="<%= realname %>" required>
@@ -100,35 +149,67 @@
             </dl>
             <dl id="athena-school-setting">
                 <dt>
-                    <label class="athena-profile-setting-heading-label">School</label>
+                    <label class="athena-setting-heading-label">学校</label>
                 </dt>
                 <dd>
-                    <input class="form-control" id="athena-school-input" type="text" value="<%= school %>" >
+                    <input class="form-control" id="athena-school-input" type="text" value="<%= school %>">
                 </dd>
             </dl>
             <dl id="athena-department-setting">
                 <dt>
-                    <label class="athena-profile-setting-heading-label">Department</label>
+                    <label class="athena-setting-heading-label">院系</label>
                 </dt>
                 <dd>
                     <input class="form-control" id="athena-department-input" type="text" value="<%= department %>"
-                           >
+                    >
                 </dd>
             </dl>
             <dl id="athena-gender-setting">
                 <dt>
-                    <label class="athena-profile-setting-heading-label">Gender</label>
+                    <label class="athena-setting-heading-label">性别</label>
                 </dt>
                 <dd>
                     <select id="athena-gender-input" class="form-control">
-                        <option value="0" <%= gender == 0? 'selected': '' %> > 保密</option>
-                        <option value="1" <%= gender == 1? 'selected': '' %> >男</option>
-                        <option value="2" <%= gender == 2? 'selected': '' %> >女</option>
+                        <option value="0"
+                        <%= gender == 0? 'selected': '' %> > 保密</option>
+                        <option value="1"
+                        <%= gender == 1? 'selected': '' %> >男</option>
+                        <option value="2"
+                        <%= gender == 2? 'selected': '' %> >女</option>
                     </select>
                 </dd>
             </dl>
             <dl>
                 <button type="submit" class="btn btn-success" id="athena-public-profile-submit-btn">提交个人信息
+                </button>
+            </dl>
+        </div>
+    </form>
+</script>
+<script type="text/template" id="tmplt-email-setting">
+    <div class="panel-heading">
+        <h3 class="panel-title">电子邮件</h3>
+    </div>
+    <form id="athena-email-form">
+        <div class="panel-body">
+            <dl>
+                <dt>
+                    <label class="athena-setting-heading-label">电子邮件</label>
+                </dt>
+                <dd>
+                    <input class="form-control" id="athena-email-input" type="email" value="<%= email %>" required/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                    <label class="athena-setting-heading-label">输入密码以验证身份</label>
+                </dt>
+                <dd>
+                    <input class="form-control" id="athena-email-validate-password-input" type="password" required/>
+                </dd>
+            </dl>
+            <dl>
+                <button type="submit" class="btn btn-success" id="athena-email-submit-btn">修改电子邮件
                 </button>
             </dl>
         </div>

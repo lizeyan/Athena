@@ -1,26 +1,28 @@
 /**
  * Created by zy-li14 on 16-10-17.
  */
-var Activity = Backbone.Model.extend({
+var Activity = Backbone.Model.extend({});
+var ActivityGroup = Backbone.Model.extend({
     parse: function (response) {
-        response.begin_time_date = new Date(response.begin_time);
-        response.end_time_date = new Date(response.end_time);
-        response.spense = new Duration(response.end_time_date.getTime() - response.begin_time_date.getTime());
-        return response;
-    }
-});
-var ActivityGroup = Backbone.Collection.extend({
-    model: Activity,
-    activity_group_name: '',
-    url: '',
-    admin_user: [],
-    normal_user: [],
-    parse: function (response, options) {
-        this.activity_group_name = response.activity_group_name;
         this.url = response.url;
-        this.admin_user = response.admin_user;
-        this.normal_user = response.normal_user;
-        return response.activity;
+        _.each(response.activity, function (activity) {
+            activity.activityModel = new Activity;
+            activity.activityModel.url = activity.url;
+            activity.activityModel.fetch({
+                headers: {'Authorization': 'JWT ' + token},
+                success: function (model) {
+                    alert(JSON.stringify(model));
+                    // activityGroupPageHead.render();
+                    // activityList.render();
+                },
+                error: function (model, response) {
+                    alert('请求无效，返回用户界面' + "\n" + response.responseText);
+                    window.location = "user.html";
+                }
+            });
+        });
+        response.url = null;
+        return response;
     }
 });
 var activityGroup = new ActivityGroup;
@@ -31,18 +33,18 @@ var activityGroup = new ActivityGroup;
 var ActivityGroupPageHead = Backbone.View.extend({
     el: $('#athena-activity-group-title'),
     initialize: function () {
-        this.listenTo(this.collection, 'reset', this.render);
+        this.listenTo(this.model, 'change', this.render);
     },
     template: _.template($('#tmplt-activity-group-page-head').html()),
     render: function () {
         this.$el.html(this.template({
-            url: this.collection.url,
-            activity_group_name: this.collection.activity_group_name
+            url: this.model.url,
+            activity_group_name: this.model.get('activity_group_name')
         }));
         return this;
     }
 });
-var activityGroupPageHead = new ActivityGroupPageHead({collection: activityGroup});
+var activityGroupPageHead = new ActivityGroupPageHead({model: activityGroup});
 /***************************************************************88
  * set Activity List
  * @type {any}
@@ -55,9 +57,9 @@ var ActivityListItem = Backbone.View.extend({
     },
     render: function () {
         this.$el.html(this.template({
-            location: this.model.get('location'),
-            begin_time: this.model.get('begin_time_date').toLocaleDateString(),
-            spense_time: this.model.get('spense').toString()
+            location: this.model.location,
+            begin_time: "",
+            spense_time: ""
         }));
         return this;
     }
@@ -65,18 +67,18 @@ var ActivityListItem = Backbone.View.extend({
 var ActivityList = Backbone.View.extend({
     el: $('#athena-activity-list'),
     initialize: function () {
-        this.listenTo(this.collection, 'reset', this.render);
+        this.listenTo(this.model, 'change', this.render);
     },
     template: _.template($('#tmplt-activity-list-item').html()),
     render: function () {
         this.$el.empty();
-        _.each(this.collection.models, function (activity) {
+        _.each(this.model.get('activity'), function (activity) {
             this.$el.append((new ActivityListItem({model: activity})).render().$el);
         }, this);
         return this;
     }
 });
-var activityList = new ActivityList({collection: activityGroup});
+var activityList = new ActivityList({model: activityGroup});
 /***************************************************************88
  * set Administer List
  * @type {any}
@@ -100,18 +102,18 @@ var AdministerListItem = Backbone.View.extend({
 var AdministerList = Backbone.View.extend ({
     el: $('#athena-administer-list'),
     initialize: function () {
-        this.listenTo(this.collection, 'reset', this.render);
+        this.listenTo(this.model, 'change', this.render);
     },
     template: _.template($('#tmplt-administer-list-item').html()),
     render: function () {
         this.$el.empty();
-        _.each(this.collection.admin_user, function (administer) {
+        _.each(this.model.get('admin_user'), function (administer) {
             this.$el.append((new AdministerListItem({model: administer})).render().$el);
         }, this);
         return this;
     }
 });
-var administerList = new AdministerList ({collection: activityGroup});
+var administerList = new AdministerList({model: activityGroup});
 /***************************************************************88
  * set Participator List
  * @type {any}
@@ -135,21 +137,21 @@ var ParticipatorListItem = Backbone.View.extend({
 var ParcitipatorList = Backbone.View.extend ({
     el: $('#athena-participator-list'),
     initialize: function () {
-        this.listenTo(this.collection, 'reset', this.render);
+        this.listenTo(this.model, 'change', this.render);
     },
     template: _.template($('#tmplt-participator-list-item').html()),
     render: function () {
         this.$el.empty();
-        _.each(this.collection.normal_user, function (participator) {
+        _.each(this.model.get('normal_user'), function (participator) {
             this.$el.append((new ParticipatorListItem({model: participator})).render().$el);
         }, this);
         return this;
     }
 });
+var participatorList = new ParcitipatorList({model: activityGroup});
 /********************************************
  * set A Router
  */
-var participatorList = new ParcitipatorList ({collection: activityGroup});
 $(function () {
     var Router = Backbone.Router.extend({
         routes: {
@@ -168,8 +170,8 @@ $(function () {
                     // activityGroupPageHead.render();
                     // activityList.render();
                 },
-                error: function () {
-                    alert('请求无效，返回用户界面');
+                error: function (model, response) {
+                    alert('请求无效，返回用户界面' + "\n" + response.responseText);
                     window.location = "user.html";
                 },
                 reset: true

@@ -1,6 +1,18 @@
 /**
  * Created by zy-li14 on 16-10-13.
  */
+
+//ErrorBox是显示错误信息的页面
+var InfoBox = Backbone.View.extend({
+    tagName: 'div',
+    template: _.template($('#tmplt-box-info').html()),
+    render: function (args) {
+        this.$el.html(this.template(args));
+        return this;
+    }
+});
+var infoList = $('#athena-info-list');
+
 var PublicProfileView = Backbone.View.extend({
     el: $('#athena-profile-setting'),
     imgFile: null,
@@ -32,6 +44,7 @@ var PublicProfileView = Backbone.View.extend({
         reader.readAsDataURL(this.imgFile);
     },
     uploadProfile: function (event) {
+        infoList.empty();
         event.preventDefault();
         var formData = new FormData;
         formData.append('real_name', $('#athena-realname-input').val());
@@ -42,9 +55,14 @@ var PublicProfileView = Backbone.View.extend({
         formData.append('genders', $('#athena-gender-input').val());
         this.model.save(null, {
             headers: {'Authorization': 'JWT ' + token},
-            error: function () {
-                alert('上传错误');
-                window.location.reload();
+            error: function (model, response) {
+                infoList.append((new InfoBox).render({
+                    type: "danger",
+                    text: "上传失败，请尝试重新登录或者刷新页面\n提示:\n" + response.responseText
+                }).$el.html());
+            },
+            success: function () {
+                infoList.append((new InfoBox).render({type: "success", text: "上传成功"}).$el.html());
             },
             data: formData,
             patch: true,
@@ -56,8 +74,89 @@ var PublicProfileView = Backbone.View.extend({
     }
 
 });
+var PasswordLib = Backbone.Model.extend({
+    url: API_ROOT + "/account/modify_password/"
+});
+var SecurityView = Backbone.View.extend({
+    el: $('#athena-security-setting'),
+    events: {
+        'submit #athena-password-form': 'uploadPassword'
+    },
+    validatePassword: function () {
+        if ($("#athena-new-password-input").val() != $("#athena-confirm-password-input").val())
+            return false;
+        else
+            return true;
+    },
+    uploadPassword: function (event) {
+        event.preventDefault();
+        infoList.empty();
+        if (!this.validatePassword()) {
+            infoList.append((new InfoBox).render({type: "danger", text: "修改失败\n提示:\n" + "新密码不一致，请确认输入"}).$el.html());
+            return;
+        }
+        (new PasswordLib).save({
+            old_password: $("#athena-old-password-input").val(),
+            new_password: $("#athena-new-password-input").val()
+        }, {
+            headers: {'Authorization': 'JWT ' + token},
+            error: function (model, response) {
+                infoList.append((new InfoBox).render({
+                    type: "danger",
+                    text: "修改失败\n提示:\n" + response.responseText
+                }).$el.html());
+            },
+            success: function (model, response) {
+                token = response.token;
+                Cookies.set("token", token);
+                window.location.reload();
+                infoList.append((new InfoBox).render({type: "success", text: "修改成功"}).$el.html());
+            }
+        });
+    }
+});
+var EmailLib = Backbone.Model.extend({
+    url: API_ROOT + "/account/modify_email/"
+});
+var EmailView = Backbone.View.extend({
+    el: $("#athena-email-setting"),
+    template: _.template($("#tmplt-email-setting").html()),
+    events: {
+        "submit #athena-email-form": "uploadEmail",
+    },
+    initialize: function () {
+        this.listenTo(this.model, "change", this.render);
+        ;
+    },
+    render: function () {
+        this.$el.html(this.template({email: this.model.get('user').email}));
+        return this;
+    },
+    uploadEmail: function (event) {
+        event.preventDefault();
+        infoList.empty();
+        (new EmailLib).save({
+            "email": $("#athena-email-input").val(),
+            "password": $("#athena-email-validate-password-input").val()
+        }, {
+            headers: {'Authorization': 'JWT ' + token},
+            error: function (model, response) {
+                infoList.append((new InfoBox).render({
+                    type: "danger",
+                    text: "修改失败\n提示:\n" + response.responseText
+                }).$el.html());
+            },
+            success: function () {
+                infoList.append((new InfoBox).render({type: "success", text: "修改成功"}).$el.html());
+            }
+        });
+        $("#athena-confirm-password-modal").modal('toggle');
+    }
+});
 
-var ProfileView = new PublicProfileView({model: profile});
+var profileView = new PublicProfileView({model: profile});
+var securityView = new SecurityView({model: profile});
+var emailView = new EmailView({model: profile});
 profile.fetch({
     headers: {'Authorization': 'JWT ' + token},
     success: function (model, response) {
@@ -69,4 +168,40 @@ profile.fetch({
         gobackLogin();
     },
     url: API_ROOT + '/profile/?format=json'
+});
+
+$(function () {
+    var Router = Backbone.Router.extend({
+        routes: {
+            "profile": "profile",
+            "security": "security",
+            "email": "email",
+            "*path": "profile"
+        },
+        profile: function () {
+            this.deactivateAll();
+            profileView.$el.show();
+            $("#athena-profile-nav-item").addClass("active");
+        },
+        security: function () {
+            this.deactivateAll();
+            securityView.$el.show();
+            $("#athena-security-nav-item").addClass("active");
+        },
+        email: function () {
+            this.deactivateAll();
+            emailView.$el.show();
+            $("#athena-email-nav-item").addClass("active");
+        },
+        deactivateAll: function () {
+            profileView.$el.hide();
+            securityView.$el.hide();
+            emailView.$el.hide();
+            _.each($("#athena-side-nav-list").children("li"), function (li) {
+                $(li).removeClass("active");
+            });
+        }
+    });
+    var router = new Router;
+    Backbone.history.start();
 });
