@@ -1,26 +1,9 @@
 /**
  * Created by zy-li14 on 16-10-17.
  */
-var Activity = Backbone.Model.extend({});
 var ActivityGroup = Backbone.Model.extend({
     parse: function (response) {
         this.url = response.url;
-        _.each(response.activity, function (activity) {
-            activity.activityModel = new Activity;
-            activity.activityModel.url = activity.url;
-            activity.activityModel.fetch({
-                headers: {'Authorization': 'JWT ' + token},
-                success: function (model) {
-                    alert(JSON.stringify(model));
-                    // activityGroupPageHead.render();
-                    // activityList.render();
-                },
-                error: function (model, response) {
-                    alert('请求无效，返回用户界面' + "\n" + response.responseText);
-                    window.location = "user.html";
-                }
-            });
-        });
         response.url = null;
         return response;
     }
@@ -49,6 +32,13 @@ var activityGroupPageHead = new ActivityGroupPageHead({model: activityGroup});
  * set Activity List
  * @type {any}
  */
+var ActivityUserCheckinItem = Backbone.View.extend ({
+    tagName: "div",
+    template: _.template($("#tmplt-activity-user-checkin-item").html()),
+    render: function () {
+        return this;
+    }
+});
 var ActivityListItem = Backbone.View.extend({
     tagName: "li",
     template: _.template($("#tmplt-activity-list-item").html()),
@@ -149,6 +139,10 @@ var ParcitipatorList = Backbone.View.extend ({
     }
 });
 var participatorList = new ParcitipatorList({model: activityGroup});
+/*************************************************************************8
+ * set A RegisterLog
+ */
+
 /********************************************
  * set A Router
  */
@@ -167,11 +161,8 @@ $(function () {
             activityGroup.fetch({
                 headers: {'Authorization': 'JWT ' + token},
                 success: function () {
-                    // activityGroupPageHead.render();
-                    // activityList.render();
                 },
                 error: function (model, response) {
-                    alert('请求无效，返回用户界面' + "\n" + response.responseText);
                     window.location = "user.html";
                 },
                 reset: true

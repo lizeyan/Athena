@@ -8,3 +8,11 @@
     height: 2em;
     width: 2em;
 }
+.athena-checkin-status {
+    width: 1em;
+    height: 1em;
+}
+
+.athena-activity-checkin-detail-button {
+    float: right;
+}
