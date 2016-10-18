@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from rest_framework import viewsets
 from rest_framework.parsers import JSONParser
 from account.interface import JSONResponse
@@ -123,6 +123,16 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
             return JSONResponse(responseMess, status=400)
         activity = activity_set.get(id=activity_id)
 
+        location = activity.location
+        if request.user.profile.term_position != location:
+            responseMess = {'status': 'LOCATION_ERROR', 'suggestion': '该活动不在term的签到地点'}
+            return JSONResponse(responseMess, status=400)
+
+        time = datetime.now()
+        if time < activity.begin_time or time > activity.end_time:
+            responseMess = {'status': 'NOT_REGISTER_TIME', 'suggestion': '当前不是该活动的签到时间'}
+            return JSONResponse(responseMess, status=400)
+
         activity_group = activity.activity_group
         profile_normal_activity_group = profile.normal_activity_group.filter(id=activity_group.id)
         if profile_normal_activity_group.count() == 0:
@@ -131,7 +141,7 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
 
         register_set = RegisterLog.objects.filter(register_user=profile, activity=activity)
         if register_set.count() != 0:
-            responseMess = {'status': 'ALREADY_REGISTERED', 'suggestion': '不是本活动需要签到的用户'}
+            responseMess = {'status': 'ALREADY_REGISTERED', 'suggestion': '此用户已经签到'}
             return JSONResponse(responseMess, status=400)
 
         new_register_log = RegisterLog(register_user=profile, activity=activity)

@@ -77,11 +77,10 @@ class ActivityGroupSerializer(serializers.HyperlinkedModelSerializer):
 
 class ActivitySerializer(serializers.HyperlinkedModelSerializer):
     activity_group = ActivityGroupForActivitySerializer(read_only=True)
-    register_log = RegisterLogForActivitySerializer(many=True, read_only=True)
 
     class Meta:
         model = Activity
-        fields = ('url', 'pk', 'location', 'begin_time', 'end_time', 'activity_group', 'register_log')
+        fields = ('url', 'pk', 'location', 'begin_time', 'end_time', 'activity_group', )
 
 
 class ActivityQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
