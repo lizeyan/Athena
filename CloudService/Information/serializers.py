@@ -8,7 +8,7 @@ class ProfileForActivityGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('user', 'real_name', 'icon_image', 'url',)
+        fields = ('pk', 'user', 'real_name', 'icon_image', 'url',)
 
 
 class ProfileForRegisterLogSerializer(serializers.ModelSerializer):
@@ -16,25 +16,25 @@ class ProfileForRegisterLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('user', 'real_name', 'department', 'url',)
+        fields = ('pk', 'user', 'real_name', 'department', 'url',)
 
 
 class ActivityGroupForProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityGroup
-        fields = ('activity_group_name', 'url', )
+        fields = ('pk', 'activity_group_name', 'url', )
 
 
 class ActivityGroupForActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityGroup
-        fields = ('activity_group_name', 'url', )
+        fields = ('pk', 'activity_group_name', 'url', )
 
 
 class ActivityGroupForActivityQuerySerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityGroup
-        fields = ('activity_group_name', 'group_id', )
+        fields = ('pk', 'activity_group_name', 'group_id', )
 
 
 class ActivityForActivityGroupSerializer(serializers.ModelSerializer):
@@ -46,7 +46,7 @@ class ActivityForActivityGroupSerializer(serializers.ModelSerializer):
 class ActivityForRegisterLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ('location', 'begin_time', 'end_time', 'url')
+        fields = ('pk', 'location', 'begin_time', 'end_time', 'url')
 
 
 class RegisterLogForProfileSerializer(serializers.ModelSerializer):
@@ -54,7 +54,7 @@ class RegisterLogForProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RegisterLog
-        fields = ('register_time', 'activity', 'url',)
+        fields = ('pk', 'register_time', 'activity', 'url',)
 
 
 class RegisterLogForActivitySerializer(serializers.ModelSerializer):
@@ -62,7 +62,7 @@ class RegisterLogForActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RegisterLog
-        fields = ('register_time', 'register_user', 'url',)
+        fields = ('pk', 'register_time', 'register_user', 'url',)
 
 
 class ActivityGroupSerializer(serializers.HyperlinkedModelSerializer):

@@ -24,7 +24,7 @@ class ActivityGroupViewSet(viewsets.ModelViewSet):
         else:
             profile = self.request.user.profile
             queryset = profile.admin_activity_group.all() | profile.normal_activity_group.all()
-            return queryset
+            return queryset.distinct()
 
 
 class ActivityViewSet(viewsets.ModelViewSet):
@@ -48,7 +48,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
             if queryset_admin_group.count() != 0:
                 for admin_group in queryset_admin_group:
                     queryset = queryset | admin_group.activity.all()
-            return queryset
+            return queryset.distinct()
 
     def get_serializer_class(self):
         if self.request.user.profile.is_term_camera:
