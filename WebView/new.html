@@ -62,14 +62,14 @@
         <h1>创建新活动组</h1>
         <p>一个活动组包含一系列活动，你将是这个活动组的管理员。添加参与者和活动以记录考勤信息。</p>
     </div>
-    <div class="row container central-inner-control">
+    <div class="row container central-inner-control" id="athena-new-activity-group-main">
         <form id="athena-new-activity-group-form">
             <dl>
                 <dt>
                     <label class="athena-key-label">活动组名称</label>
                 </dt>
                 <dd>
-                    <input type="text" class="form-control" id="athena-name-input"/>
+                    <input type="text" class="form-control" id="athena-name-input" required/>
                 </dd>
             </dl>
             <dl>
@@ -77,18 +77,62 @@
                     <label class="athena-key-label">参与者</label>
                 </dt>
                 <dd>
-                    <ul class="list-unstyled ">
-
-                        <li><input type="text" class="athena-participator-input form-control "/></li>
-                        <li><input type="text" class="athena-participator-input form-control "/></li>
-                        <li><input type="text" class="athena-participator-input form-control "/></li>
-                        <li><input type="text" class="athena-participator-input form-control "/></li>
+                    <ul class="list-unstyled" id="athena-participator-input-list">
                     </ul>
                 </dd>
+            </dl>
+            <dl>
+                <dt>
+                    <label class="athena-key-label">管理者</label>
+                </dt>
+                <dd>
+                    <ul class="list-unstyled" id="athena-administer-input-list">
+                    </ul>
+                </dd>
+            </dl>
+            <dl>
+                <button type="submit" class="btn btn-success btn-lg">创建</button>
             </dl>
         </form>
     </div>
 </div>
+<script type="text/template" id="tmplt-box-info">
+    <div class="alert alert-<%= type %> alert-dismissible box-error-top" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <%= text %>
+    </div>
+</script>
+<script type="text/template" id="tmplt-user-input">
+    <li class="">
+        <input type="text" class="athena-user-input form-control " value="<%= username %>"/>
+        <div class="alert alert-danger alert-dismissible" role="alert" style="display:<%= error? 'inline': 'none' %>;">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                    class="sr-only">Close</span></button>
+            <strong><%= errorMsg %></strong>
+        </div>
+        <div class="panel panel-success athena-user-profile-label" style="display:<%= foundUser? 'inline':'none' %>;">
+            <label>
+                <img src="<%= icon_image %>" class="athena-user-input-avatar"/>
+            </label>
+            <label class="">
+                <span class="glyphicon glyphicon-th"></span><%= real_name %>
+            </label>
+            <label class="">
+                <span class="glyphicon glyphicon-th"></span><%= school %>
+            </label>
+            <label class="">
+                <span class="glyphicon glyphicon-th"></span><%= department %>
+            </label>
+        </div>
+        <button type="button" class="btn btn-info athena-participator-push-input-entry"
+                style="display:<%= showAdd? 'inline':'none' %>;">更多用户
+        </button>
+        <button type="button" class="btn btn-info athena-participator-pop-input-entry"
+                style="display:<%= showSub? 'inline':'none' %>;">减少用户
+        </button>
+    </li>
+</script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="js/underscore-min.js"></script>
