@@ -71,12 +71,70 @@
 </div>
 
 <div class="container">
+    <div id="athena-info-list">
+    </div>
     <ul class="list-group central-inner-control list-unstyled" id="athena-activity-list">
     </ul>
     <ul class="list-group central-inner-control list-unstyled" id="athena-administer-list">
     </ul>
     <ul class="list-group central-inner-control list-unstyled" id="athena-participator-list">
     </ul>
+    <div class="central-inner-control" id="athena-admin-control" style="display: none;">
+        <button type="button" class="btn btn-success btn-lg" data-toggle="modal"
+                data-target="#athena-new-activity-modal" id="athena-new-activity-modal-button">
+            创建新活动
+        </button>
+    </div>
+</div>
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="athena-new-activity-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="athena-new-activity-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <dl>
+                        <dt>
+                            <label>地点</label>
+                        </dt>
+                        <dd>
+                            <input type="text" id="athena-new-activity-location-input" class="form-control " required/>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <label>开始时间</label>
+                        </dt>
+                        <dd>
+                            <input type="datetime-local" id="athena-new-activity-begin-time-input" class="form-control"
+                                   required/>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <label>结束时间</label>
+                        </dt>
+                        <dd>
+                            <input type="datetime-local" id="athena-new-activity-end-time-input" class="form-control"
+                                   required/>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script type="text/template" id="tmplt-activity-group-page-head">
@@ -165,6 +223,13 @@
     <div class="col-md-3">
         <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
         <%= real_name %>
+    </div>
+</script>
+<script type="text/template" id="tmplt-box-info">
+    <div class="alert alert-<%= type %> alert-dismissible box-error-top" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <%= text %>
     </div>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>

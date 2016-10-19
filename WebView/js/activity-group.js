@@ -10,6 +10,7 @@ var ActivityGroup = Backbone.Model.extend({
     }
 });
 var activityGroup = new ActivityGroup;
+var iAmAdminister = false;
 /*************************************************************************
  * set Page Head
  * @type {any}
@@ -212,10 +213,24 @@ var ParcitipatorList = Backbone.View.extend ({
     }
 });
 var participatorList = new ParcitipatorList({model: activityGroup});
-/*************************************************************************8
- * set A RegisterLog
+/*********************************************8
+ * Info Box
+ * @type {any}
  */
-
+var InfoBox = Backbone.View.extend({
+    tagName: 'div',
+    template: _.template($('#tmplt-box-info').html()),
+    render: function (args) {
+        this.$el.html(this.template(args));
+        return this;
+    }
+});
+/********************************************************
+ * Set Activity
+ */
+var ActivityAdderLib = Backbone.Collection.extend({
+    url: API_ROOT + "/activity/"
+});
 /********************************************
  * set A Router
  */
@@ -234,6 +249,15 @@ $(function () {
             activityGroup.fetch({
                 headers: {'Authorization': 'JWT ' + token},
                 success: function (model) {
+                    var admin_user_list = model.get('admin_user');
+                    var myid = profile.get('pk');
+                    _.each(admin_user_list, function (user) {
+                        if (user.pk == myid)
+                            iAmAdminister = true;
+                    });
+                    if (iAmAdminister) {
+                        $('#athena-admin-control').css('display', 'block');
+                    }
                 },
                 error: function (model, response) {
                     window.location = "user.html";
@@ -248,6 +272,7 @@ $(function () {
             activityList.$el.hide();
             administerList.$el.hide();
             participatorList.$el.hide();
+            $('#athena-new-activity-modal-button').hide();
         },
         showActivityList: function (agUrl) {
             if (agUrl == null) {
@@ -257,6 +282,7 @@ $(function () {
             this.deactivateAll();
             this.viewUrl(agUrl);
             activityList.$el.show();
+            $('#athena-new-activity-modal-button').show();
             $('#athena-activity-group-main-nav-activity').addClass('active');
         },
         showAdministerList: function (agUrl) {
@@ -282,4 +308,26 @@ $(function () {
     });
     var router = new Router;
     Backbone.history.start();
+
+    $("#athena-new-activity-form").on('submit', function CreateActivity(event) {
+        event.preventDefault();
+        (new ActivityAdderLib).create({
+            activity_group_id: activityGroup.get('pk'),
+            location: $("#athena-new-activity-location-input").val(),
+            begin_time: $("#athena-new-activity-begin-time-input").val(),
+            end_time: $("#athena-new-activity-end-time-input").val()
+        }, {
+            headers: {'Authorization': 'JWT ' + token},
+            success: function () {
+                window.location.reload();
+            },
+            error: function (model, response) {
+                $('#athena-info-list').append((new InfoBox).render({
+                    type: "danger",
+                    text: "添加失败：" + response.responseText
+                }).$el);
+            }
+        });
+    });
 });
+
