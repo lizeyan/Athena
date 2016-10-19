@@ -39,7 +39,7 @@
                         <li><a href="#">主页</a></li>
                         <li><a href="settings.html">设置</a></li>
                         <li class="divider"></li>
-                        <li><a href="#logout" onclick="Logout ()">登出</a></li>
+                        <li><a onclick="Logout ()">登出</a></li>
                     </ul>
                 </li>
             </ul>
@@ -86,7 +86,7 @@
 </script>
 <script type="text/template" id="tmplt-activity-group">
     <div class="list-group-item athena-activity-groupd-list-item">
-        <a href="activity-group.html#admin/<%= url %>"><%= activity_group_name %></a>
+        <a target="_blank" href="activity-group.html#activities/<%= url %>"><%= activity_group_name %></a>
     </div>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
@@ -96,6 +96,7 @@
 <script src="js/workspace.js"></script>
 <script src="js/js-cookie.js"></script>
 <script src="js/profileByToken.js"></script>
+<script src="js/fetchProfileAndSetTopNav.js"></script>
 <script src="js/user.js"></script>
 
 

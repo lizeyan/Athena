@@ -24,7 +24,6 @@ tokenValidator.save({'token': token}, {
 var Profile = Backbone.Model.extend({
     idAttribute: 'pk',
     parse: function (response) {
-        // alert (JSON.stringify(response));
         var ret;
         if (response.results && Array.isArray(response.results)) {
             if (response.results.length < 1) {
@@ -41,7 +40,7 @@ var Profile = Backbone.Model.extend({
         }
         this.url = ret['url'];
         return ret;
-    },
+    }
 });
 
 function SetTopNavBar (option)

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--感谢 http://glyphicons.com/ 提供的图标资源-->
+    <meta charset="UTF-8">
+    <title>Athena</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zy-li14@hotmail.com">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/signedin-navbar.css">
+    <link rel="stylesheet" href="css/activity-group.css">
+</head>
+<body>
+<nav id='top-nav' class="navbar navbar-default" role="navigation">
+    <div class="container central-inner-control" id="top-nav-inner">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img id="img-brand" alt="签到" src="img/index/dragon.png">
+            </a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/face.png" id="athena-top-nav-avatar">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="user.html">主页</a></li>
+                        <li><a href="settings.html">设置</a></li>
+                        <li class="divider"></li>
+                        <li><a onclick="Logout ()">登出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container-fluid panel" id=athena-page-head">
+    <div class="central-inner-control" id="athena-activity-group-title">
+    </div>
+    <div class="container central-inner-control">
+        <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-activity-group-main-nav">
+            <li role="presentation" id="athena-activity-group-main-nav-activity"><a href="#activities">活动</a></li>
+            <li role="presentation" id="athena-activity-group-main-nav-participator"><a href="#participators">参与者</a>
+            </li>
+            <li role="presentation" id="athena-activity-group-main-nav-administer"><a href="#administers">管理员</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container">
+    <ul class="list-group central-inner-control list-unstyled" id="athena-activity-list">
+    </ul>
+    <ul class="list-group central-inner-control list-unstyled" id="athena-administer-list">
+    </ul>
+    <ul class="list-group central-inner-control list-unstyled" id="athena-participator-list">
+    </ul>
+</div>
+
+<script type="text/template" id="tmplt-activity-group-page-head">
+    <h3>
+        <span class="glyphicon glyphicon-leaf"></span>
+        <a href="#activity-group/<%= url %>"><%= activity_group_name %></a>
+    </h3>
+</script>
+<script type="text/template" id="tmplt-activity-list-item">
+    <li class="list-group-item-info container panel panel-default central-inner-control">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <label>时间：<%= begin_time %></label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    持续时长：<%= spense_time %>
+                </div>
+            </div>
+            <!--<button type="button" class="btn btn-default athena-activity-checkin-detail-button">详细信息</button>-->
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-home"></span>
+                    地点：<%= location %>
+                </div>
+            </div>
+            <div class="row athena-register-checklist panel panel-info">
+                <div class="panel-body athena-activity-checkin-list">
+                </div>
+            </div>
+        </div>
+    </li>
+</script>
+
+<script type="text/template" id="tmplt-administer-list-item">
+    <li class="list-group-item-info container panel panel-default central-inner-control">
+        <div class="panel-body">
+            <div class="row">
+                <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <label class="athena-user-list-item-info">
+                        用户名：<%= user %>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <label class="athena-user-list-item-info">
+                        真实姓名：<%= real_name %>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </li>
+</script>
+<script type="text/template" id="tmplt-participator-list-item">
+    <li class="list-group-item-info container panel panel-default central-inner-control">
+        <div class="panel-body">
+            <div class="row">
+                <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
+                <div class="col-md-4">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <label class="athena-user-list-item-info">
+                        用户名：<%= user %>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <label class="athena-user-list-item-info">
+                        真实姓名：<%= real_name %>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <label class="athena-user-list-item-info">
+                        出勤率：<%= rate * 100 %>%
+                    </label>
+                </div>
+            </div>
+        </div>
+    </li>
+</script>
+<script type="text/template" id="tmplt-activity-user-checkin-item">
+    <div class="col-md-3">
+        <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
+        <%= real_name %>
+    </div>
+</script>
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/underscore-min.js"></script>
+<script src="js/backbone-min.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/js-cookie.js"></script>
+<script src="js/profileByToken.js"></script>
+<script src="js/fetchProfileAndSetTopNav.js"></script>
+<script src="js/chrono.js"></script>
+<script src="js/activity-group.js"></script>
+</body>
+</html>
