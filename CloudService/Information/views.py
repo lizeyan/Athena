@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-
+from CloudService.settings import ROOT_ADDRESS
 from account.interface import JSONResponse, get_new_group_id_from_link_face
 from account.models import Profile
 from information.models import ActivityGroup, Activity, RegisterLog
@@ -76,11 +76,13 @@ class ActivityGroupViewSet(viewsets.ModelViewSet):
             except Exception as e:
                 normal_success = False
 
+        url = ROOT_ADDRESS + 'activity_group/' + str(activity_group.id)
         if admin_success and normal_success:
-            responseMess = {'status': 'CREATE_SUCCESS', }
+            responseMess = {'status': 'CREATE_SUCCESS', 'url': url, 'pk': activity_group.id}
             return JSONResponse(responseMess, status=201)
         else:
-            responseMess = {'status': 'CREATE_SUCCESS_SOME_ADD_FAILED', 'suggestion': '创建成功，但是某些成员添加失败'}
+            responseMess = {'status': 'CREATE_SUCCESS_SOME_ADD_FAILED', 'suggestion': '创建成功，但是某些成员添加失败',
+                            'url': url, 'pk': activity_group.id}
             return JSONResponse(responseMess, status=201)
 
 
@@ -162,12 +164,17 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
                     if activity_group_set.count() == 0:
                         return RegisterLog.objects.filter(id=0)
                     else:
+                        user_set = User.objects.filter(id=user_id)
                         activity_group = activity_group_set.get(id=activity_group_id)
                         admin_set = activity_group.admin_user.filter(id=self.request.user.profile.id)
+                        if user_set.count() != 0:
+                            user = user_set.get(id=user_id)
+                            if user == self.request.user:
+                                return RegisterLog.objects.filter(activity__activity_group=activity_group,
+                                                                  register_user=user.profile)
                         if admin_set.count() == 0:
                             return RegisterLog.objects.filter(id=0)
                         else:
-                            user_set = User.objects.filter(id=user_id)
                             if user_set.count() == 0:
                                 return RegisterLog.objects.filter(id=0)
                             else:
