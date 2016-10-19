@@ -50,3 +50,9 @@
 #athena-gender-input {
     width: 10em;
 }
+
+#athena-email-validate-icon {
+    width: 2em;
+    height: 2em;
+    display: inline;
+}

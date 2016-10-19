@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="row athena-register-checklist panel panel-info">
-                <div class="panel-body" id="athena-activity-checkin-list">
+                <div class="panel-body athena-activity-checkin-list">
                 </div>
             </div>
         </div>
@@ -130,7 +130,7 @@
         <div class="panel-body">
             <div class="row">
                 <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <span class="glyphicon glyphicon-calendar"></span>
                     <label class="athena-user-list-item-info">
                         用户名：<%= user %>
@@ -140,6 +140,12 @@
                     <span class="glyphicon glyphicon-time"></span>
                     <label class="athena-user-list-item-info">
                         真实姓名：<%= real_name %>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <label class="athena-user-list-item-info">
+                        出勤率：<%= rate * 100 %>%
                     </label>
                 </div>
             </div>
