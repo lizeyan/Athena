@@ -16,6 +16,7 @@ api_id = '332cc3d4d63e404693589ca02da83600'
 api_secret = '72e68c866c34405c8491839da7ffd4d0'
 group_id = '6c59b4c08e4d41d884118f3afc8fdb1b'
 params = '?api_id=' + api_id + '&api_secret=' + api_secret
+max_face_num = 10
 
 
 class JSONResponse(HttpResponse):
@@ -110,3 +111,14 @@ def get_person_id_from_link_face_and_add_person_to_group(real_name):
     }
     requests.post(api_url + params, data=dic)
     return response_json['person_id']
+
+
+def remove_face_from_one_person_in_link_face(face_id, person_id):
+    api_url = 'https://v1-api.visioncloudapi.com/person/remove_face'
+    dic = {
+        "face_id": face_id,
+        "person_id": person_id
+    }
+    response = requests.post(api_url + params, data=dic)
+    print("remove from linkface code is")
+    print(response.status_code)

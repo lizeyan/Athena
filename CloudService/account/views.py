@@ -112,7 +112,17 @@ class FaceViewSet(viewsets.ModelViewSet):
         profile_temp = Profile.objects.get(user=self.request.user)
         serializer.save(profile=profile_temp)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        remove_face_from_one_person_in_link_face(instance.face_id, instance.profile.person_id)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     def create(self, request, *args, **kwargs):
+        face_set = Face.objects.filter(profile=self.request.user.profile)
+        if face_set.count() >= 10:
+            responseMess = {'status': 'FACE_NUM_MAX', 'suggestion': '人脸数已经达到上限'}
+            return JSONResponse(responseMess, status=400)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

@@ -277,6 +277,70 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
 @permission_classes((IsAuthenticated,))
+def remove_activity_group_user(request):
+    """
+       执行对activity_group移除人员的操作，使用`POST`方法传递'activity_group_id'，user_list为所需要移除的user的列表
+    """
+    data = JSONParser().parse(request)
+    try:
+        activity_group_id = data['activity_group_id']
+    except Exception as e:
+        print(e)
+        responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请输入至少由activity_group_id项组成的JSON代码'}
+        return JSONResponse(responseMess, status=400)
+
+    activity_group_set = ActivityGroup.objects.filter(id=activity_group_id)
+    if activity_group_set.count() == 0:
+        responseMess = {'status': 'ACTIVITY_GROUP_NOT_EXIST', 'suggestion': '该activity_group不存在'}
+        return JSONResponse(responseMess, status=400)
+    activity_group = activity_group_set.get(id=activity_group_id)
+
+    admin_set = activity_group.admin_user.filter(id=request.user.profile.id)
+    if admin_set.count() == 0:
+        responseMess = {'status': 'NOT_ADMIN_USER', 'suggestion': '不是该activity_group的管理员'}
+        return JSONResponse(responseMess, status=403)
+
+    user_list = []
+    success = True
+    remove_num = 0
+    try:
+        user_list = data['user_list']
+    except Exception as e:
+        print(e)
+
+    for remove_user in user_list:
+        if remove_user == request.user.username:
+            success = False
+            continue
+        normal_user_set = activity_group.normal_user.filter(user__username=remove_user)
+        if normal_user_set.count() != 0:
+            user = normal_user_set.get(user__username=remove_user)
+            activity_group.normal_user.remove(user)
+            remove_num += 1
+        else:
+            admin_user_set = activity_group.admin_user.filter(user__username=remove_user)
+            if admin_user_set.count() != 0:
+                user = admin_user_set.get(user__username=remove_user)
+                activity_group.admin_user.remove(user)
+                remove_num += 1
+            else:
+                success = False
+
+    if success and remove_num != 0:
+        responseMess = {'status': 'REMOVE_SUCCESS', 'suggestion': '全部移除成功', }
+        return JSONResponse(responseMess, status=200)
+    elif remove_num != 0 and not success:
+        responseMess = {'status': 'REMOVE_SUCCESS_SOME_FAILED', 'suggestion': '移除成功，但是某些成员移除失败', }
+        return JSONResponse(responseMess, status=200)
+    else:
+        responseMess = {'status': 'REMOVE_ALL_FAILED', 'suggestion': '全部移除失败', }
+        return JSONResponse(responseMess, status=400)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
+@permission_classes((IsAuthenticated,))
 def add_activity_group_user(request):
     """
     执行对activity_group增加人员的操作，使用`POST`方法传递'activity_group_id'，admin_user_list和normal_user_list为可选项，
@@ -306,6 +370,7 @@ def add_activity_group_user(request):
     normal_user_list = []
     admin_success = True
     normal_success = True
+    add_num = 0
     try:
         admin_user_list = data['admin_user']
     except Exception as e:
@@ -324,12 +389,14 @@ def add_activity_group_user(request):
             normal = normal_set_temp.get(user__username=admin_user)
             activity_group.normal_user.remove(normal)
             activity_group.admin_user.add(normal)
+            add_num += 1
             continue
 
         # not exist in admin_user and normal user
         try:
             user = User.objects.get(username=admin_user)
             activity_group.admin_user.add(user.profile)
+            add_num += 1
         except Exception as e:
             admin_success = False
 
@@ -347,12 +414,17 @@ def add_activity_group_user(request):
         try:
             user = User.objects.get(username=normal_user)
             activity_group.normal_user.add(user.profile)
+            add_num += 1
         except Exception as e:
             normal_success = False
 
-    if admin_success and normal_success:
-        responseMess = {'status': 'CREATE_SUCCESS', 'suggestion': '全部添加成功', }
-        return JSONResponse(responseMess, status=200)
+    if add_num != 0:
+        if admin_success and normal_success:
+            responseMess = {'status': 'ADD_SUCCESS', 'suggestion': '全部添加成功', }
+            return JSONResponse(responseMess, status=200)
+        else:
+            responseMess = {'status': 'ADD_SUCCESS_SOME_FAILED', 'suggestion': '添加成功，但是某些成员添加失败', }
+            return JSONResponse(responseMess, status=200)
     else:
-        responseMess = {'status': 'CREATE_SUCCESS_SOME_ADD_FAILED', 'suggestion': '添加成功，但是某些成员添加失败', }
-        return JSONResponse(responseMess, status=200)
+        responseMess = {'status': 'ADD_ALL_FAILED', 'suggestion': '全部添加失败', }
+        return JSONResponse(responseMess, status=400)

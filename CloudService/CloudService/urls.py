@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^account/', include('account.urls')),
     url(r'^activity_group/add_user/$', views.add_activity_group_user),
+    url(r'^activity_group/remove_user/$', views.remove_activity_group_user),
     url(r'^', include(router.urls)),
 ]
 
