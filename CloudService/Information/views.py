@@ -1,7 +1,10 @@
 from datetime import timedelta, datetime
 from django.contrib.auth.models import User
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+
 from account.interface import JSONResponse, get_new_group_id_from_link_face
 from account.models import Profile
 from information.models import ActivityGroup, Activity, RegisterLog
@@ -86,6 +89,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
     This viewset automatically provides `list` and `detail` actions.
     """
     permission_classes = (permissions.IsAuthenticated, ActivityPermission)
+    activity_group_self = None
 
     def get_queryset(self):
         if self.request.user.is_superuser == 1:
@@ -109,6 +113,33 @@ class ActivityViewSet(viewsets.ModelViewSet):
             return ActivityQueryByTermSerializer
         else:
             return ActivitySerializer
+
+    def perform_create(self, serializer):
+        serializer.save(activity_group=self.activity_group_self)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            activity_group_id = data['activity_group_id']
+        except Exception as e:
+            responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请检查输入的JSON格式，需要有activity_group_id'}
+            return JSONResponse(responseMess, status=400)
+        activity_group_set = ActivityGroup.objects.filter(id=activity_group_id)
+        if activity_group_set.count() == 0:
+            responseMess = {'status': 'GROUP_NOT_EXIST', 'suggestion': '输入的activity_group_id不存在'}
+            return JSONResponse(responseMess, status=400)
+        activity_group = activity_group_set.get(id=activity_group_id)
+        admin_set = activity_group.admin_user.filter(user=request.user)
+        if admin_set.count() == 0:
+            responseMess = {'status': 'NOT_GROUP_ADMIN', 'suggestion': '您不是activity_group的管理员，无法创建'}
+            return JSONResponse(responseMess, status=403)
+        self.activity_group_self = activity_group
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class RegisterLogViewSet(viewsets.ModelViewSet):
