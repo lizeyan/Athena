@@ -141,7 +141,7 @@ JWT_AUTH = {
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LEEWAY': 0,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=30000),
     'JWT_AUDIENCE': None,
     'JWT_ISSUER': None,
 
@@ -168,7 +168,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -181,13 +181,13 @@ ROOT_ADDRESS = 'http://127.0.0.1:8000/'
 # E-mail settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.163.com'
+EMAIL_HOST = 'smtp.sina.com'
 
 EMAIL_PORT = 25
 
-EMAIL_HOST_USER = 'AthenaAdmin@163.com'
+EMAIL_HOST_USER = 'athena_system@sina.com'
 
-EMAIL_HOST_PASSWORD = '123XUYIMIAO'
+EMAIL_HOST_PASSWORD = '123xuyimiao'
 
 EMAIL_USE_TLS = False
 
@@ -196,6 +196,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 
 EMAIL_AUTH_PREFIX = ROOT_ADDRESS + 'account/auth_email/'
+
+EMAIL_FIND_PASSWORD_PREFIX = ROOT_ADDRESS + 'account/find_password_verify/'
 
 USER_RETURN_MESSAGE = '申请归还'
 

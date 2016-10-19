@@ -2,7 +2,7 @@ from rest_framework import serializers
 from account.models import Profile, Face
 from django.contrib.auth.models import User
 
-from information.serializers import ActivityGroupForProfileSerializer, RegisterLogForProfileSerializer
+from information.serializers import ActivityGroupForProfileSerializer
 
 
 class UserForProfileSerializer(serializers.ModelSerializer):
@@ -25,12 +25,26 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     person_ID = serializers.ReadOnlyField(source='person_id')
     admin_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
     normal_activity_group = ActivityGroupForProfileSerializer(many=True, read_only=True,)
+    email_authorization = serializers.ReadOnlyField(source='email_auth')
 
     class Meta:
         model = Profile
         fields = (
-            'url', 'pk', 'icon', 'genders', 'real_name', 'school', 'department', 'person_ID', 'user', 'role', 'tel',
-            'icon_image', 'face', 'admin_activity_group', 'normal_activity_group', )
+            'url', 'pk', 'genders', 'real_name', 'school', 'department', 'person_ID', 'user', 'role', 'tel',
+            'email_authorization', 'icon_image', 'face', 'admin_activity_group', 'normal_activity_group', )
+
+
+class ProfileQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = ('url', 'pk', 'term_position', )
+
+
+class ProfileQueryByUsernameSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('url', 'icon_image', 'real_name', 'school', 'department', 'genders', )
 
 
 class FaceSerializer(serializers.HyperlinkedModelSerializer):

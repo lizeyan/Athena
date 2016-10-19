@@ -4,6 +4,9 @@ from django import forms
 from django.core.exceptions import *
 import json
 
+from django.http import HttpResponse
+from rest_framework.renderers import JSONRenderer
+
 from account.models import Face, Profile
 
 username_regex = '''[0-9A-Za-z]{2,20}'''
@@ -13,6 +16,19 @@ api_id = '332cc3d4d63e404693589ca02da83600'
 api_secret = '72e68c866c34405c8491839da7ffd4d0'
 group_id = '6c59b4c08e4d41d884118f3afc8fdb1b'
 params = '?api_id=' + api_id + '&api_secret=' + api_secret
+max_face_num = 10
+
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
 
 def check_style(pattern, text):
     regex = re.compile(pattern)
@@ -43,6 +59,23 @@ def set_email_hash(profile):
             30))
     profile.save()
     return
+
+
+def set_password_hash(profile):
+    import random
+    import string
+    profile.password_hash = ''.join(
+        random.sample(
+            string.ascii_letters +
+            string.digits,
+            30))
+    profile.save()
+    return
+
+
+def get_new_group_id_from_link_face():
+    # TODO
+    return group_id
 
 
 def send_face_to_link_face_and_add_face_to_person(filepath, face_pk, profile_pk):
@@ -78,3 +111,14 @@ def get_person_id_from_link_face_and_add_person_to_group(real_name):
     }
     requests.post(api_url + params, data=dic)
     return response_json['person_id']
+
+
+def remove_face_from_one_person_in_link_face(face_id, person_id):
+    api_url = 'https://v1-api.visioncloudapi.com/person/remove_face'
+    dic = {
+        "face_id": face_id,
+        "person_id": person_id
+    }
+    response = requests.post(api_url + params, data=dic)
+    print("remove from linkface code is")
+    print(response.status_code)

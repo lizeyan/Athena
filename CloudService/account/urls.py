@@ -10,12 +10,17 @@ router.register(r'users', views.UserViewSet, base_name='user')
 router.register(r'profile', views.ProfileViewSet, base_name='profile')
 router.register(r'face', views.FaceViewSet, base_name='face')
 router.register(r'activity_group', information.views.ActivityGroupViewSet, base_name='activitygroup')
-router.register(r'activity', information.views.ActivityViewSet)
-router.register(r'register_log', information.views.RegisterLogViewSet)
+router.register(r'activity', information.views.ActivityViewSet, base_name='activity')
+router.register(r'register_log', information.views.RegisterLogViewSet, base_name='registerlog')
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
 urlpatterns = [
     url(r'^register/$', views.do_register),
+    url(r'^modify_email/$', views.do_modify_email),
+    url(r'^verify_email/$', views.do_verify_email),
+    url(r'^modify_password/$', views.do_modify_password),
+    url(r'^find_password/$', views.find_password),
+    url(r'^find_password_verify/(?P<username>.+)/(?P<ekey>.+)/$', views.do_find_password),
     url(r'^auth_email/(?P<username>.+)/(?P<ekey>.+)/$', views.do_auth_email)
 ]
