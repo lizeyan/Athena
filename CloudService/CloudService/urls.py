@@ -18,7 +18,7 @@ from rest_framework_jwt.views import *
 from django.conf.urls.static import static
 from CloudService import settings
 from account.urls import router
-from account import views
+from information import views
 
 urlpatterns = [
     url(r'^api-token-auth/', obtain_jwt_token),
@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^api-token-verify/', verify_jwt_token),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^account/', include('account.urls')),
+    url(r'^activity_group/add_user/$', views.add_activity_group_user),
     url(r'^', include(router.urls)),
 ]
 

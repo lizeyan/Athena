@@ -1,9 +1,17 @@
 from datetime import timedelta, datetime
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view
+from rest_framework.decorators import authentication_classes
+from rest_framework.decorators import permission_classes
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from CloudService.settings import ROOT_ADDRESS
 from account.interface import JSONResponse, get_new_group_id_from_link_face
 from account.models import Profile
@@ -263,3 +271,88 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
         new_register_log.save()
         responseMess = {'status': 'CREATED'}
         return JSONResponse(responseMess, status=201)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication, JSONWebTokenAuthentication))
+@permission_classes((IsAuthenticated,))
+def add_activity_group_user(request):
+    """
+    执行对activity_group增加人员的操作，使用`POST`方法传递'activity_group_id'，admin_user_list和normal_user_list为可选项，
+    为所需要添加的admin_user和normal_user的列表
+    """
+
+    data = JSONParser().parse(request)
+    try:
+        activity_group_id = data['activity_group_id']
+    except Exception as e:
+        print(e)
+        responseMess = {'status': 'INPUT_STYLE_ERROR', 'suggestion': '请输入至少由activity_group_id项组成的JSON代码'}
+        return JSONResponse(responseMess, status=400)
+
+    activity_group_set = ActivityGroup.objects.filter(id=activity_group_id)
+    if activity_group_set.count() == 0:
+        responseMess = {'status': 'ACTIVITY_GROUP_NOT_EXIST', 'suggestion': '该activity_group不存在'}
+        return JSONResponse(responseMess, status=400)
+    activity_group = activity_group_set.get(id=activity_group_id)
+
+    admin_set = activity_group.admin_user.filter(id=request.user.profile.id)
+    if admin_set.count() == 0:
+        responseMess = {'status': 'NOT_ADMIN_USER', 'suggestion': '不是该activity_group的管理员'}
+        return JSONResponse(responseMess, status=403)
+
+    admin_user_list = []
+    normal_user_list = []
+    admin_success = True
+    normal_success = True
+    try:
+        admin_user_list = data['admin_user']
+    except Exception as e:
+        print(e)
+    try:
+        normal_user_list = data['normal_user']
+    except Exception as e:
+        print(e)
+
+    for admin_user in admin_user_list:
+        admin_set_temp = activity_group.admin_user.filter(user__username=admin_user)
+        if admin_set_temp.count() != 0:
+            continue
+        normal_set_temp = activity_group.normal_user.filter(user__username=admin_user)
+        if normal_set_temp.count() != 0:
+            normal = normal_set_temp.get(user__username=admin_user)
+            activity_group.normal_user.remove(normal)
+            activity_group.admin_user.add(normal)
+            continue
+
+        # not exist in admin_user and normal user
+        try:
+            user = User.objects.get(username=admin_user)
+            activity_group.admin_user.add(user.profile)
+        except Exception as e:
+            admin_success = False
+
+    for normal_user in normal_user_list:
+        if normal_user in admin_user_list:
+            continue
+        admin_set_temp = activity_group.admin_user.filter(user__username=normal_user)
+        if admin_set_temp.count() != 0:
+            continue
+        normal_set_temp = activity_group.normal_user.filter(user__username=normal_user)
+        if normal_set_temp.count() != 0:
+            continue
+
+        # not exist in admin_user and normal user and admin_user_list
+        try:
+            user = User.objects.get(username=normal_user)
+            activity_group.normal_user.add(user.profile)
+        except Exception as e:
+            normal_success = False
+
+    if admin_success and normal_success:
+        responseMess = {'status': 'CREATE_SUCCESS', 'suggestion': '全部添加成功', }
+        return JSONResponse(responseMess, status=200)
+    else:
+        responseMess = {'status': 'CREATE_SUCCESS_SOME_ADD_FAILED', 'suggestion': '添加成功，但是某些成员添加失败', }
+        return JSONResponse(responseMess, status=200)
