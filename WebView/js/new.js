@@ -10,6 +10,7 @@ var UserInputItemView = Backbone.View.extend({
         "change .athena-user-input": "updateUserInfo"
     },
     render: function () {
+        //为了重新渲染的时候保存之前的输入
         var username = null;
         if (this.$el && this.$el.find('.athena-user-input'))
             username = this.$el.find('.athena-user-input').val();
@@ -25,16 +26,19 @@ var UserInputItemView = Backbone.View.extend({
             error: false,
             errorMsg: null
         }));
+        //如果输入不为空，那么还需要查找用户
         if (username != null)
             this.updateUserInfo();
         return this;
     },
     updateUserInfo: function () {
+        //试图去查找用户名。注意可能输入框不存在
         var username = null;
         try {
             username = $(this.$el.find(".athena-user-input")[0]).val();
         }
         catch (e) {
+            return;
         }
         // alert (this.$el.html());
         // alert (username);
@@ -76,6 +80,7 @@ var UserInputItemView = Backbone.View.extend({
 var AdministerUserView = Backbone.View.extend({
     el: $("#athena-administer-input-list"),
     initialize: function () {
+        //创建一个用户输入框，不可读。因为当前登录的用户一定是管理员之一
         var item = new UserInputItemView;
         item.showAdd = false;
         item.showSub = false;
