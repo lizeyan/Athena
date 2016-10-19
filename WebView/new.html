@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <!--感谢 http://glyphicons.com/ 提供的图标资源-->
     <meta charset="UTF-8">
-    <title>Athena</title>
+    <title>创建活动组</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="zy-li14@hotmail.com">
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/user.css">
+    <link rel="stylesheet" href="css/new.css">
     <link rel="stylesheet" href="css/signedin-navbar.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
     <div class="container central-inner-control" id="top-nav-inner">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="user.html">
                 <img id="img-brand" alt="签到" src="img/index/dragon.png">
             </a>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -45,7 +45,7 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">主页</a></li>
+                        <li><a href="user.html">主页</a></li>
                         <li><a href="settings.html">设置</a></li>
                         <li class="divider"></li>
                         <li><a onclick="Logout ()">登出</a></li>
@@ -57,47 +57,38 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div id="profile" class="container central-inner-control">
-    <div class="row clearfix">
-        <div class="col-md-3" id="athena-left-info">
-            <div id="namecard">
-            </div>
-            <button id="btn-setting" class="btn btn-default btn-block" onclick="window.location='settings.html'">设置
-            </button>
-            <ul id="contact" class="list-unstyled list-group">
-                <li id='contact-email' class="list-group-item">
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <ul class="nav nav-tabs nav-justified" role="tablist" id="athena-main-nav">
-                <li role="presentation" id="athena-main-nav-overview"><a href="#overview">概览</a></li>
-                <li role="presentation" id="athena-main-nav-admin"><a href="#admin-activity-group">管理</a></li>
-                <li role="presentation" id="athena-main-nav-normal"><a href="#normal-activity-group">参与</a></li>
-            </ul>
-            <div class="list-group" id="athene-admin-activity-group-list">
-            </div>
-            <div class="list-group" id="athene-normal-activity-group-list">
-            </div>
-        </div>
+<div class="container central-inner-control">
+    <div class="page-header">
+        <h1>创建新活动组</h1>
+        <p>一个活动组包含一系列活动，你将是这个活动组的管理员。添加参与者和活动以记录考勤信息。</p>
+    </div>
+    <div class="row container central-inner-control">
+        <form id="athena-new-activity-group-form">
+            <dl>
+                <dt>
+                    <label class="athena-key-label">活动组名称</label>
+                </dt>
+                <dd>
+                    <input type="text" class="form-control" id="athena-name-input"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                    <label class="athena-key-label">参与者</label>
+                </dt>
+                <dd>
+                    <ul class="list-unstyled ">
+
+                        <li><input type="text" class="athena-participator-input form-control "/></li>
+                        <li><input type="text" class="athena-participator-input form-control "/></li>
+                        <li><input type="text" class="athena-participator-input form-control "/></li>
+                        <li><input type="text" class="athena-participator-input form-control "/></li>
+                    </ul>
+                </dd>
+            </dl>
+        </form>
     </div>
 </div>
-</div>
-<!--用来显示左边的用户名片-->
-<script type="text/template" id="tmplt-namecard">
-    <img id="img-avator" src="<%= image? image: 'img/face.png' %>"/>
-    <span id="label-realname"><p><%= realname %></p></span>
-    <span id="label-username"><p><%= username %></p></span>
-</script>
-<script type="text/template" id="tmlpt-email">
-    <span class="glyphicon glyphicon-envelope"></span>
-    <a href="mailto:<%= email %>"><%= email %></a>
-</script>
-<script type="text/template" id="tmplt-activity-group">
-    <div class="list-group-item athena-activity-groupd-list-item">
-        <a target="_blank" href="activity-group.html#activities/<%= url %>"><%= activity_group_name %></a>
-    </div>
-</script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="js/underscore-min.js"></script>
@@ -106,8 +97,6 @@
 <script src="js/js-cookie.js"></script>
 <script src="js/profileByToken.js"></script>
 <script src="js/fetchProfileAndSetTopNav.js"></script>
-<script src="js/user.js"></script>
-
-
+<script src="js/new.js"></script>
 </body>
 </html>
