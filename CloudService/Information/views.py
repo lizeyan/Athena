@@ -124,6 +124,29 @@ class RegisterLogViewSet(viewsets.ModelViewSet):
         else:
             activity_id = self.request.GET.get('activity_id')
             user_id = self.request.GET.get('user_id')
+            activity_group_id = self.request.GET.get('activity_group_id')
+            if activity_group_id is not None:
+                if user_id is not None:
+                    activity_group_set = ActivityGroup.objects.filter(id=activity_group_id)
+                    if activity_group_set.count() == 0:
+                        return RegisterLog.objects.filter(id=0)
+                    else:
+                        activity_group = activity_group_set.get(id=activity_group_id)
+                        admin_set = activity_group.admin_user.filter(id=self.request.user.profile.id)
+                        if admin_set.count() == 0:
+                            return RegisterLog.objects.filter(id=0)
+                        else:
+                            user_set = User.objects.filter(id=user_id)
+                            if user_set.count() == 0:
+                                return RegisterLog.objects.filter(id=0)
+                            else:
+                                user = user_set.get(id=user_id)
+                                return RegisterLog.objects.filter(activity__activity_group=activity_group,
+                                                                  register_user=user.profile)
+                else:
+                    return RegisterLog.objects.filter(id=0)
+            else:
+                pass
             if user_id is None and activity_id is None:
                 return RegisterLog.objects.filter(register_user_id=self.request.user.profile.id)
             elif user_id is None and activity_id is not None:

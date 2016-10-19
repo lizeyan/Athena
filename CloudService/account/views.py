@@ -11,7 +11,8 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from CloudService.mails import send_auth_email, send_change_password_email
 from account.interface import *
 from account.models import Profile, Face
-from account.serializers import ProfileSerializer, FaceSerializer, ProfileQueryByTermSerializer
+from account.serializers import ProfileSerializer, FaceSerializer, ProfileQueryByTermSerializer, \
+    ProfileQueryByUsernameSerializer
 from django.contrib.auth.models import User
 from account.serializers import UserSerializer
 from rest_framework import permissions
@@ -47,14 +48,20 @@ class ProfileViewSet(NoPostViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCanNotGet,)
 
     def get_serializer_class(self):
+        username = self.request.GET.get('username')
         if self.request.user.profile.is_term_camera:
             return ProfileQueryByTermSerializer
+        elif username is not None:
+            return ProfileQueryByUsernameSerializer
         else:
             return ProfileSerializer
 
     def get_queryset(self):
+        username = self.request.GET.get('username')
         if self.request.user.is_superuser == 1:
             return Profile.objects.all()
+        elif username is not None:
+            return Profile.objects.filter(user__username=username)
         else:
             queryset = Profile.objects.filter(user=self.request.user)
             return queryset

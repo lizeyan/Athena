@@ -44,9 +44,11 @@ class ActivityForActivityGroupSerializer(serializers.ModelSerializer):
 
 
 class ActivityForRegisterLogSerializer(serializers.ModelSerializer):
+    activity_group = serializers.ReadOnlyField(read_only=True, source='activity_group.activity_group_name')
+
     class Meta:
         model = Activity
-        fields = ('pk', 'location', 'begin_time', 'end_time', 'url')
+        fields = ('pk', 'activity_group', 'location', 'begin_time', 'end_time', 'url')
 
 
 class RegisterLogForProfileSerializer(serializers.ModelSerializer):

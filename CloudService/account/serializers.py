@@ -41,6 +41,12 @@ class ProfileQueryByTermSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'pk', 'term_position', )
 
 
+class ProfileQueryByUsernameSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('url', 'icon_image', 'real_name', 'school', 'department', 'genders', )
+
+
 class FaceSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='profile.real_name')
     face_ID = serializers.ReadOnlyField(source='face_id')
