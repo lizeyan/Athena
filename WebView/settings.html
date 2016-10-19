@@ -204,6 +204,8 @@
             <dl class="alert alert-<%= email_authorization ? 'success': 'danger' %>">
                 <img id="athena-email-validate-icon" src="img/<%= email_authorization ? 'check': 'error' %>.png"/>
                 <label ><%= email_authorization ? '你的邮箱已通过验证': '你的邮箱还未验证，请查看你的邮箱' %></label>
+                <a class="btn btn-info" style="display: <%= email_authorization?'none':'inline'%>"
+                   id="athena-resent-verify-emial-button">重新发送激活邮件</a>
             </dl>
             <dl>
                 <dt>

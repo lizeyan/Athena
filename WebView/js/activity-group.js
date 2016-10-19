@@ -160,6 +160,7 @@ var ParticipatorListItem = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render);
     },
     render: function () {
+        alert(this.model.pk + this.model.real_name);
         this.activity_register_log = registerLog.clone();
         var activity_check_list = new Object();
         _.each(activityGroup.get('activity'), function (activity) {

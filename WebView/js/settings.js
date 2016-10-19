@@ -118,19 +118,29 @@ var SecurityView = Backbone.View.extend({
 var EmailLib = Backbone.Model.extend({
     url: API_ROOT + "/account/modify_email/"
 });
+var EmailValidator = Backbone.Collection.extend({
+    url: API_ROOT + "/account/verify_email/"
+});
+var emailValidator = new EmailValidator;
 var EmailView = Backbone.View.extend({
     el: $("#athena-email-setting"),
     template: _.template($("#tmplt-email-setting").html()),
     events: {
         "submit #athena-email-form": "uploadEmail",
+        "click #athena-resent-verify-emial-button": "resentVerifyEmail"
     },
     initialize: function () {
         this.listenTo(this.model, "change", this.render);
-        ;
     },
     render: function () {
         this.$el.html(this.template({email: this.model.get('user').email, email_authorization: this.model.get('email_authorization')}));
         return this;
+    },
+    resentVerifyEmail: function (event) {
+        event.preventDefault();
+        emailValidator.create(null, {
+            headers: {'Authorization': 'JWT ' + token}
+        });
     },
     uploadEmail: function (event) {
         event.preventDefault();
