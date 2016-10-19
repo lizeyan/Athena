@@ -1,0 +1,26 @@
+.athena-key-label {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+#athena-name-input {
+    width: 40em;
+}
+
+.athena-user-input {
+    width: 20em;
+    margin: 0.5em;
+    display: inline;
+}
+
+.athena-user-profile-label {
+    display: inline;
+    margin: 0.5em
+    /*width: 40em;*/
+    /*background-color: cornsilk;*/
+}
+
+.athena-user-input-avatar {
+    width: 1.5em;
+    height: 1.5em;
+}

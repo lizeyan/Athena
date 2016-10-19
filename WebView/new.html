@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--感谢 http://glyphicons.com/ 提供的图标资源-->
+    <meta charset="UTF-8">
+    <title>创建活动组</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zy-li14@hotmail.com">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/new.css">
+    <link rel="stylesheet" href="css/signedin-navbar.css">
+</head>
+<body>
+<nav id='top-nav' class="navbar navbar-default" role="navigation">
+    <div class="container central-inner-control" id="top-nav-inner">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="user.html">
+                <img id="img-brand" alt="签到" src="img/index/dragon.png">
+            </a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="new.html#activity_group">创建活动组</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/face.png" id="athena-top-nav-avatar" class="athena-top-nav-icon">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="user.html">主页</a></li>
+                        <li><a href="settings.html">设置</a></li>
+                        <li class="divider"></li>
+                        <li><a onclick="Logout ()">登出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container central-inner-control">
+    <div class="page-header">
+        <h1>创建新活动组</h1>
+        <p>一个活动组包含一系列活动，你将是这个活动组的管理员。添加参与者和活动以记录考勤信息。</p>
+    </div>
+    <div class="row container central-inner-control" id="athena-new-activity-group-main">
+        <form id="athena-new-activity-group-form">
+            <dl>
+                <dt>
+                    <label class="athena-key-label">活动组名称</label>
+                </dt>
+                <dd>
+                    <input type="text" class="form-control" id="athena-name-input" required/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                    <label class="athena-key-label">参与者</label>
+                </dt>
+                <dd>
+                    <ul class="list-unstyled" id="athena-participator-input-list">
+                    </ul>
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                    <label class="athena-key-label">管理者</label>
+                </dt>
+                <dd>
+                    <ul class="list-unstyled" id="athena-administer-input-list">
+                    </ul>
+                </dd>
+            </dl>
+            <dl>
+                <button type="submit" class="btn btn-success btn-lg">创建</button>
+            </dl>
+        </form>
+    </div>
+</div>
+<script type="text/template" id="tmplt-box-info">
+    <div class="alert alert-<%= type %> alert-dismissible box-error-top" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <%= text %>
+    </div>
+</script>
+<script type="text/template" id="tmplt-user-input">
+    <li class="">
+        <input type="text" class="athena-user-input form-control " value="<%= username %>"/>
+        <div class="alert alert-danger alert-dismissible" role="alert" style="display:<%= error? 'inline': 'none' %>;">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                    class="sr-only">Close</span></button>
+            <strong><%= errorMsg %></strong>
+        </div>
+        <div class="panel panel-success athena-user-profile-label" style="display:<%= foundUser? 'inline':'none' %>;">
+            <label>
+                <img src="<%= icon_image %>" class="athena-user-input-avatar"/>
+            </label>
+            <label class="">
+                <span class="glyphicon glyphicon-th"></span><%= real_name %>
+            </label>
+            <label class="">
+                <span class="glyphicon glyphicon-th"></span><%= school %>
+            </label>
+            <label class="">
+                <span class="glyphicon glyphicon-th"></span><%= department %>
+            </label>
+        </div>
+        <button type="button" class="btn btn-info athena-participator-push-input-entry"
+                style="display:<%= showAdd? 'inline':'none' %>;">更多用户
+        </button>
+        <button type="button" class="btn btn-info athena-participator-pop-input-entry"
+                style="display:<%= showSub? 'inline':'none' %>;">减少用户
+        </button>
+    </li>
+</script>
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/underscore-min.js"></script>
+<script src="js/backbone-min.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/js-cookie.js"></script>
+<script src="js/profileByToken.js"></script>
+<script src="js/fetchProfileAndSetTopNav.js"></script>
+<script src="js/new.js"></script>
+</body>
+</html>

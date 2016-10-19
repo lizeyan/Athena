@@ -160,6 +160,7 @@ var ParticipatorListItem = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render);
     },
     render: function () {
+        // alert(this.model.pk + this.model.real_name);
         this.activity_register_log = registerLog.clone();
         var activity_check_list = new Object();
         _.each(activityGroup.get('activity'), function (activity) {
@@ -182,13 +183,13 @@ var ParticipatorListItem = Backbone.View.extend({
                     rate: i / Object.keys(activity_check_list).length
                 })
             }, this),
-            data: $.param({user_id: this.model.pk})
+            data: $.param({user_id: this.model.pk, activity_group_id: activityGroup.get('pk')})
         });
         this.setEL({
             user: this.model.user,
             real_name: this.model.real_name,
             image: this.model.icon_image,
-            rate: 0
+            rate: null
         });
         return this;
     },

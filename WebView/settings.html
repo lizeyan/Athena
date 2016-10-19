@@ -32,7 +32,16 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="img/face.png" id="athena-top-nav-avatar">
+                        <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="new.html#activity_group">创建活动组</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/face.png" id="athena-top-nav-avatar" class="athena-top-nav-icon">
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
@@ -204,6 +213,8 @@
             <dl class="alert alert-<%= email_authorization ? 'success': 'danger' %>">
                 <img id="athena-email-validate-icon" src="img/<%= email_authorization ? 'check': 'error' %>.png"/>
                 <label ><%= email_authorization ? '你的邮箱已通过验证': '你的邮箱还未验证，请查看你的邮箱' %></label>
+                <a class="btn btn-info" style="display: <%= email_authorization?'none':'inline'%>"
+                   id="athena-resent-verify-emial-button">重新发送激活邮件</a>
             </dl>
             <dl>
                 <dt>

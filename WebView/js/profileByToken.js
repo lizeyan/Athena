@@ -24,22 +24,23 @@ tokenValidator.save({'token': token}, {
 var Profile = Backbone.Model.extend({
     idAttribute: 'pk',
     parse: function (response) {
-        var ret;
-        if (response.results && Array.isArray(response.results)) {
-            if (response.results.length < 1) {
-                alert('加载信息错误，返回results长度不为1,即将返回登录界面');
-                gobackLogin();
+        try {
+            var ret;
+            if (response.results && Array.isArray(response.results)) {
+                ret = response.results[0];
             }
-            ret = response.results[0];
+            else if (response.results) {
+                ret = response.results;
+            }
+            else {
+                ret = response;
+            }
+            this.url = ret['url'];
+            return ret;
         }
-        else if (response.results) {
-            ret = response.results;
+        catch (e) {
+            return null;
         }
-        else {
-            ret = response;
-        }
-        this.url = ret['url'];
-        return ret;
     }
 });
 
