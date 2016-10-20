@@ -62,8 +62,11 @@ var ActivityListItem = Backbone.View.extend({
     render: function (user_list) {
         this.user_list = user_list;
         _.sortBy(this.user_list, 'real_name');
+        // alert (this.model.begin_time);
         var beginDate = new Date (this.model.begin_time);
         var endDate = new Date (this.model.end_time);
+        beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
+        endDate = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
         this.$el.html(this.template({
             location: this.model.location,
             begin_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
@@ -502,6 +505,7 @@ $(function () {
 
     $("#athena-new-activity-form").on('submit', function CreateActivity(event) {
         event.preventDefault();
+        // alert (JSON.stringify($('#athena-new-activity-begin-time-input').val()));
         (new ActivityAdderLib).create({
             activity_group_id: activityGroup.get('pk'),
             location: $("#athena-new-activity-location-input").val(),
