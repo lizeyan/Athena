@@ -71,7 +71,7 @@
 </div>
 
 <div class="container">
-    <div id="athena-info-list">
+    <div id="athena-info-list" class="central-inner-control">
     </div>
     <ul class="list-group central-inner-control list-unstyled" id="athena-activity-list">
     </ul>
@@ -80,9 +80,22 @@
     <ul class="list-group central-inner-control list-unstyled" id="athena-participator-list">
     </ul>
     <div class="central-inner-control" id="athena-admin-control" style="display: none;">
+        <div class="panel panel-default central-inner-control" id="athena-user-input-div">
+            <form id="athena-user-input-form" class="panel-body">
+                <ul id="athena-user-input-list" class="list-group list-unstyled central-inner-control">
+
+                </ul>
+            </form>
+        </div>
         <button type="button" class="btn btn-success btn-lg" data-toggle="modal"
                 data-target="#athena-new-activity-modal" id="athena-new-activity-modal-button">
             创建新活动
+        </button>
+        <button type="button" class="btn btn-success btn-lg" id="athena-new-participator-button">
+            添加参与者
+        </button>
+        <button type="button" class="btn btn-success btn-lg" id="athena-new-administer-button">
+            添加管理员
         </button>
     </div>
 </div>
@@ -170,7 +183,36 @@
         </div>
     </li>
 </script>
-
+<script type="text/template" id="tmplt-user-input">
+    <li class="">
+        <input type="text" class="athena-user-input form-control " value="<%= username %>"/>
+        <div class="alert alert-danger alert-dismissible" role="alert" style="display:<%= error? 'inline': 'none' %>;">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                    class="sr-only">Close</span></button>
+            <strong><%= errorMsg %></strong>
+        </div>
+        <div class="panel panel-success athena-user-profile-label" style="display:<%= foundUser? 'inline':'none' %>;">
+            <label>
+                <img src="<%= icon_image %>" class="athena-inline-avatar"/>
+            </label>
+            <label class="athena-user-info-preview-label">
+                <span class="glyphicon glyphicon-user"></span><%= real_name %>
+            </label>
+            <label class="athena-user-info-preview-label">
+                <span class="glyphicon glyphicon-star"></span><%= school %>
+            </label>
+            <label class="athena-user-info-preview-label">
+                <span class="glyphicon glyphicon-th-large"></span><%= department %>
+            </label>
+        </div>
+        <button type="button" class="btn btn-info athena-user-push-input-entry"
+                style="display:<%= showAdd? 'inline':'none' %>;">更多用户
+        </button>
+        <button type="button" class="btn btn-info athena-user-pop-input-entry"
+                style="display:<%= showSub? 'inline':'none' %>;">减少用户
+        </button>
+    </li>
+</script>
 <script type="text/template" id="tmplt-administer-list-item">
     <li class="list-group-item-info container panel panel-default central-inner-control">
         <div class="panel-body">
@@ -222,6 +264,7 @@
 <script type="text/template" id="tmplt-activity-user-checkin-item">
     <div class="col-md-3">
         <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
+        <img src="<%= icon_image? icon_image:'img/face.png' %>" class="athena-inline-avatar"/>
         <%= real_name %>
     </div>
 </script>

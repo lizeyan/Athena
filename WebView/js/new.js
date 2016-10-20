@@ -43,10 +43,11 @@ var UserInputItemView = Backbone.View.extend({
         // alert (this.$el.html());
         // alert (username);
         (new Profile).fetch({
-            url: API_ROOT + '/profile/',
+            url: API_ROOT + '/profile/?format=json',
             headers: {'Authorization': 'JWT ' + token},
             data: $.param({username: username}),
             success: _.bind(function (model, response) {
+                // alert (JSON.stringify(model));
                 this.$el.html(this.template({
                     foundUser: true,
                     icon_image: model.get('icon_image'),
@@ -201,7 +202,7 @@ var ActivityGroupForm = Backbone.View.extend({
         }, {
             headers: {'Authorization': 'JWT ' + token},
             success: function (model, response) {
-                alert(model.get('url'));
+                // alert(model.get('url'));
                 window.location = "activity-group.html#activities/" + model.get('url') + '/?format=json';
             },
             error: function (model, response) {

@@ -16,3 +16,25 @@
 .athena-activity-checkin-detail-button {
     float: right;
 }
+
+.athena-user-input {
+    width: 20em;
+    margin: 0.5em;
+    display: inline;
+}
+
+.athena-user-profile-label {
+    display: inline;
+    margin: 0.5em
+    /*width: 40em;*/
+    /*background-color: cornsilk;*/
+}
+
+.athena-inline-avatar {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.athena-user-info-preview-label {
+    min-width: 10em;
+}

@@ -48,8 +48,8 @@ var registerLog = new RegisterLog;
 var ActivityUserCheckinItem = Backbone.View.extend ({
     tagName: "div",
     template: _.template($("#tmplt-activity-user-checkin-item").html()),
-    render: function (name, check) {
-        this.$el.html(this.template ({'real_name': name, 'check': check}));
+    render: function (name, check, icon) {
+        this.$el.html(this.template ({'real_name': name, 'check': check, 'icon_image': icon}));
         return this;
     }
 });
@@ -88,13 +88,14 @@ var ActivityListItem = Backbone.View.extend({
             check_list[user.user] = new Object();
             check_list[user.user].checked = false;
             check_list[user.user].real_name = user.real_name;
+            check_list[user.user].icon_image = user.icon_image;
         });
         _.each(activity_register_log.models, function (entry) {
             if (entry.get('register_user').user in check_list)
                 check_list[entry.get('register_user').user].checked = true;
         });
         _.each(check_list, function (entry) {
-            $checkList.append((new ActivityUserCheckinItem).render(entry.real_name, entry.checked).$el);
+            $checkList.append((new ActivityUserCheckinItem).render(entry.real_name, entry.checked, entry.icon_image).$el);
         });
     }
 });
@@ -152,6 +153,7 @@ var administerList = new AdministerList({model: activityGroup});
 /***************************************************************88
  * set Participator List
  * @type {any}
+ * 显示参与者列表
  */
 
 var ParticipatorListItem = Backbone.View.extend({
@@ -215,6 +217,7 @@ var ParcitipatorList = Backbone.View.extend ({
 var participatorList = new ParcitipatorList({model: activityGroup});
 /*********************************************8
  * Info Box
+ * 用于在顶部信息列表显示一条信息
  * @type {any}
  */
 var InfoBox = Backbone.View.extend({
@@ -226,11 +229,191 @@ var InfoBox = Backbone.View.extend({
     }
 });
 /********************************************************
- * Set Activity
+ * Set Activity Adder
+ * 添加活动的URL
  */
 var ActivityAdderLib = Backbone.Collection.extend({
     url: API_ROOT + "/activity/"
 });
+/*********************************************************
+ * User Input List Item
+ * @type {any}
+ * 添加参与者和管理者
+ */
+var ActivityGroupUserAdderLib = Backbone.Collection.extend ({
+    url: API_ROOT + "/activity_group/add_user/"
+});
+var UserInputItemView = Backbone.View.extend({
+    tagName: 'li',
+    template: _.template($("#tmplt-user-input").html()),
+    initialize: function () {
+    },
+    events: {
+        "change .athena-user-input": "updateUserInfo"
+    },
+    render: function () {
+        //为了重新渲染的时候保存之前的输入
+        var username = null;
+        if (this.$el && this.$el.find('.athena-user-input'))
+            username = this.$el.find('.athena-user-input').val();
+        this.$el.html(this.template({
+            icon_image: null,
+            real_name: null,
+            username: username,
+            school: null,
+            department: null,
+            foundUser: false,
+            showAdd: this.showAdd,
+            showSub: this.showSub,
+            error: false,
+            errorMsg: null
+        }));
+        //如果输入不为空，那么还需要查找用户
+        if (username != null)
+            this.updateUserInfo();
+        return this;
+    },
+    updateUserInfo: function () {
+        //试图去查找用户名。注意可能输入框不存在
+        var username = null;
+        try {
+            username = $(this.$el.find(".athena-user-input")[0]).val();
+        }
+        catch (e) {
+            return;
+        }
+        // alert (this.$el.html());
+        // alert (username);
+        (new Profile).fetch({
+            url: API_ROOT + '/profile/?format=json',
+            headers: {'Authorization': 'JWT ' + token},
+            data: $.param({username: username}),
+            success: _.bind(function (model, response) {
+                // alert (JSON.stringify(model));
+                this.$el.html(this.template({
+                    foundUser: true,
+                    icon_image: model.get('icon_image'),
+                    username: username,
+                    real_name: model.get('real_name'),
+                    school: model.get('school'),
+                    department: model.get('department'),
+                    showAdd: this.showAdd,
+                    showSub: this.showSub,
+                    error: false,
+                    errorMsg: null
+                }));
+            }, this),
+            error: _.bind(function (model, response) {
+                this.$el.html(this.template({
+                    icon_image: null,
+                    real_name: null,
+                    username: username,
+                    school: null,
+                    department: null,
+                    foundUser: false,
+                    showAdd: this.showAdd,
+                    showSub: this.showSub,
+                    error: true,
+                    errorMsg: "没有对应的用户"
+                }));
+            }, this)
+        });
+    }
+});
+var UserInputListView = Backbone.View.extend({
+    el: $("#athena-user-input-list"),
+    initialize: function () {
+        this.entryList = new Array;
+        this.addNewEntry();
+    },
+    events: {
+        "click .athena-user-push-input-entry": "addNewEntry",
+        "click .athena-user-pop-input-entry": "deleteEntry"
+    },
+    addNewEntry: function () {
+        var item = new UserInputItemView;
+        item.showAdd = true;
+        if (this.entryList.length > 0) {
+            item.showSub = true;
+            var lastEntry = this.entryList[this.entryList.length - 1];
+            lastEntry.showAdd = false;
+            lastEntry.showSub = false;
+            lastEntry.render();
+        }
+        else
+            item.showSub = false;
+        this.entryList.push(item);
+        this.$el.append(item.render().$el);
+    },
+    deleteEntry: function () {
+        if (this.entryList && this.entryList.length > 1) {
+            var lastEntry = this.entryList[this.entryList.length - 1];
+            lastEntry.$el.remove();
+            this.entryList.pop();
+            lastEntry = this.entryList[this.entryList.length - 1];
+            lastEntry.showAdd = true;
+            if (this.entryList.length > 1) {
+                lastEntry.showSub = true;
+            }
+            else {
+                lastEntry.showSub = false;
+            }
+            lastEntry.render();
+        }
+    }
+});
+var userInputListView = new UserInputListView;
+var ControllerView = Backbone.View.extend ({
+    el: $("#athena-admin-control"),
+    events: {
+        "click #athena-new-participator-button"     :       "newParticipator",
+        "click #athena-new-administer-button"       :       "newAdminister"
+    },
+    getUserList: function () {
+        var ret = new Array;
+        // alert (this.el.find(".athena-user-input"));
+        _.each(this.$el.find(".athena-user-input"), function (input) {
+            ret.push($(input).val());
+        });
+        return ret;
+    },
+    newParticipator: function () {
+        (new ActivityGroupUserAdderLib).create ({
+            activity_group_id: activityGroup.get('pk'),
+            normal_user_list: this.getUserList()
+        }, {
+            headers: {'Authorization': 'JWT ' + token},
+            success: function () {
+                window.location.reload();
+            },
+            error: function (collection, response) {
+                $('#athena-info-list').append((new InfoBox).render({
+                    type: "danger",
+                    text: "添加失败：" + response.responseText
+                }).$el);
+            }
+        });
+    },
+    newAdminister: function () {
+        (new ActivityGroupUserAdderLib).create ({
+            activity_group_id: activityGroup.get('pk'),
+            admin: this.getUserList()
+        }, {
+            headers: {'Authorization': 'JWT ' + token},
+            success: function () {
+                window.location.reload();
+            },
+            error: function (collection, response) {
+                $('#athena-info-list').append((new InfoBox).render({
+                    type: "danger",
+                    text: "添加失败：" + response.responseText
+                }).$el);
+            }
+        });
+    }
+
+});
+var controllerView = new ControllerView;
 /********************************************
  * set A Router
  */
@@ -273,6 +456,9 @@ $(function () {
             administerList.$el.hide();
             participatorList.$el.hide();
             $('#athena-new-activity-modal-button').hide();
+            $('#athena-new-participator-button').hide();
+            $('#athena-new-administer-button').hide();
+            $('#athena-user-input-div').hide();
         },
         showActivityList: function (agUrl) {
             if (agUrl == null) {
@@ -293,6 +479,8 @@ $(function () {
             this.deactivateAll();
             this.viewUrl(agUrl);
             administerList.$el.show();
+            $('#athena-new-administer-button').show();
+            $('#athena-user-input-div').show();
             $('#athena-activity-group-main-nav-administer').addClass('active');
         },
         showParticipatorList: function (agUrl) {
@@ -303,6 +491,8 @@ $(function () {
             this.deactivateAll();
             this.viewUrl(agUrl);
             participatorList.$el.show();
+            $('#athena-user-input-div').show();
+            $('#athena-new-participator-button').show();
             $('#athena-activity-group-main-nav-participator').addClass('active');
         }
     });
