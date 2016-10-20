@@ -440,6 +440,7 @@ $(function () {
                     });
                     if (iAmAdminister) {
                         $('#athena-admin-control').css('display', 'block');
+                        $('.athena-register-checklist').css ('display', 'block');
                     }
                 },
                 error: function (model, response) {
