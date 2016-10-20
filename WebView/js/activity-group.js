@@ -66,7 +66,7 @@ var ActivityListItem = Backbone.View.extend({
         var endDate = new Date (this.model.end_time);
         this.$el.html(this.template({
             location: this.model.location,
-            begin_time: beginDate.toLocaleDateString(),
+            begin_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
             spense_time: (new Duration (endDate.getTime() - beginDate.getTime())).toString()
         }));
         this.activity_register_log = registerLog.clone();
