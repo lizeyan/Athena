@@ -20,14 +20,15 @@
     margin: auto 6em;
     padding: 0.5em 2em;
 }
-#athena-avatar-upload-btn {
+
+#athena-avatar-upload-btn, #athena-face-upload-btn {
     position: relative;
     display: inline-block;
     overflow: hidden;
     margin: auto;
 }
 
-#athena-avatar-input {
+#athena-avatar-input, #athena-face-input {
     position: absolute;
     right: 0;
     top: 0;
@@ -55,4 +56,18 @@
     width: 2em;
     height: 2em;
     display: inline;
+}
+
+.athena-face-img {
+    width: 3em;
+    height: 3em;
+    margin: 0 3em;
+}
+
+.athena-face-delete-button {
+    float: right;
+}
+
+#athena-face-upload {
+    margin: 2em;
 }
