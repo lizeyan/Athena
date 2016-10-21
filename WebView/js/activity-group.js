@@ -182,12 +182,7 @@ var ParticipatorListItem = Backbone.View.extend({
                         i += 1;
                     }
                 });
-                this.setEL( {
-                    user: this.model.user,
-                    real_name: this.model.real_name,
-                    image: this.model.icon_image,
-                    rate: i / Object.keys(activity_check_list).length
-                })
+                this.$el.find('.athena-rate-span').html((i * 100 / Object.keys(activity_check_list).length).toFixed(2));
             }, this),
             data: $.param({user_id: this.model.pk, activity_group_id: activityGroup.get('pk')})
         });
@@ -195,7 +190,6 @@ var ParticipatorListItem = Backbone.View.extend({
             user: this.model.user,
             real_name: this.model.real_name,
             image: this.model.icon_image,
-            rate: null
         });
         return this;
     },
@@ -474,6 +468,12 @@ var NewActvityModel = Backbone.View.extend ({
     }
 });
 var newActivityModal = new NewActvityModel;
+/**********************************************
+ * Settings View
+ */
+var SettingsView = Backbone.View.extend ({
+    el: $()
+});
 /********************************************
  * set A Router
  */
@@ -483,8 +483,10 @@ $(function () {
             "activities/*path": "showActivityList",
             "administers/*path": "showAdministerList",
             "participators/*path": "showParticipatorList",
+            "settings/*path": "showSettings",
             "activities": "showActivityList",
             "administers": "showAdministerList",
+            "settings": "showSettings",
             "participators": "showParticipatorList"
         },
         viewUrl: function (agUrl) {
@@ -499,8 +501,7 @@ $(function () {
                             iAmAdminister = true;
                     });
                     if (iAmAdminister) {
-                        $('#athena-admin-control').css('display', 'block');
-                        $('.athena-register-checklist').css ('display', 'block');
+                        $('.athena-admin-control').css('display', 'inherit');
                     }
                 },
                 error: function (model, response) {
@@ -520,6 +521,16 @@ $(function () {
             $('#athena-new-participator-button').hide();
             $('#athena-new-administer-button').hide();
             $('#athena-user-input-div').hide();
+            $('#athena-activity-group-settings-div').hide();
+        },
+        showSettings: function (agUrl) {
+            if (agUrl == null)  {
+                window.location = "#settings/" + activityGroup.url;
+                return;
+            }
+            this.deactivateAll();
+            this.viewUrl(agUrl);
+            $('#athena-activity-group-settings-div').show();
         },
         showActivityList: function (agUrl) {
             if (agUrl == null) {

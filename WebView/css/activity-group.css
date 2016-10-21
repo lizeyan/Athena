@@ -38,3 +38,11 @@
 .athena-user-info-preview-label {
     min-width: 10em;
 }
+
+.athena-activity-close-button, .athena-administer-delete-button, .athena-participator-delete-button {
+    float: right;
+}
+
+.athena-admin-control {
+    display: none;
+}
