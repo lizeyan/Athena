@@ -417,6 +417,63 @@ var ControllerView = Backbone.View.extend ({
 
 });
 var controllerView = new ControllerView;
+/*******************************************************
+ * new activity modal
+ */
+var NewActvityModel = Backbone.View.extend ({
+    el: $('#athena-new-activity-modal'),
+    initialize: function () {
+        this.method = parseInt($('#athena-new-activity-repeat-method-select').val());
+    },
+    events:{
+        "submit #athena-new-activity-form"                  :       "newActivity",
+        "change #athena-new-activity-repeat-method-select"  :       "repeatMethodChanged"
+    },
+    newActivity: function (event) {
+        event.preventDefault();
+        var times = 1;
+        if (this.method != 0)
+            times = $('#athena-new-activity-repeat-times-input').val();
+        var begin_time = new Date($('#athena-new-activity-begin-time-input').val());
+        var end_time = new Date($('#athena-new-activity-end-time-input').val());
+        var finishCnt = times;
+        while (times > 0)
+        {
+            // alert (begin_time.toUTCString());
+            (new ActivityAdderLib).create({
+                activity_group_id: activityGroup.get('pk'),
+                location: $("#athena-new-activity-location-input").val(),
+                begin_time: begin_time,
+                end_time: end_time
+            }, {
+                headers: {'Authorization': 'JWT ' + token},
+                success: function () {
+                    finishCnt -= 1;
+                    // alert (finishCnt);
+                    if (finishCnt == 0)
+                        window.location.reload();
+                },
+                error: function (model, response) {
+                    $('#athena-info-list').append((new InfoBox).render({
+                        type: "danger",
+                        text: "添加失败：" + response.responseText
+                    }).$el);
+                }
+            });
+            times -= 1;
+            begin_time = new Date(begin_time.getTime() + this.method);
+            end_time = new Date(end_time.getTime() + this.method);
+        }
+    },
+    repeatMethodChanged: function () {
+        this.method = parseInt($('#athena-new-activity-repeat-method-select').val());
+        if (this.method == 0)
+            $('#athena-new-activity-repeat-times-input').attr('disabled', true);
+        else
+            $('#athena-new-activity-repeat-times-input').attr('disabled', false);
+    }
+});
+var newActivityModal = new NewActvityModel;
 /********************************************
  * set A Router
  */
@@ -503,26 +560,5 @@ $(function () {
     var router = new Router;
     Backbone.history.start();
 
-    $("#athena-new-activity-form").on('submit', function CreateActivity(event) {
-        event.preventDefault();
-        // alert (JSON.stringify($('#athena-new-activity-begin-time-input').val()));
-        (new ActivityAdderLib).create({
-            activity_group_id: activityGroup.get('pk'),
-            location: $("#athena-new-activity-location-input").val(),
-            begin_time: $("#athena-new-activity-begin-time-input").val(),
-            end_time: $("#athena-new-activity-end-time-input").val()
-        }, {
-            headers: {'Authorization': 'JWT ' + token},
-            success: function () {
-                window.location.reload();
-            },
-            error: function (model, response) {
-                $('#athena-info-list').append((new InfoBox).render({
-                    type: "danger",
-                    text: "添加失败：" + response.responseText
-                }).$el);
-            }
-        });
-    });
 });
 
