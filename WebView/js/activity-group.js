@@ -96,7 +96,10 @@ var ActivityListItem = Backbone.View.extend({
                 window.location.reload();
             },
             error: function () {
-                alert('关闭失败');
+                $('#athena-info-list').append((new InfoBox).render({
+                    type: "danger",
+                    text: "关闭活动失败"
+                }).$el);
                 window.location.reload();
             }
         });
@@ -525,12 +528,46 @@ var NewActvityModel = Backbone.View.extend({
     }
 });
 var newActivityModal = new NewActvityModel;
-/**********************************************
- * Settings View
+/***************************************************8
+ * close activity group modal
  */
-var SettingsView = Backbone.View.extend({
-    el: $()
+var CloseActvityGroupModal = Backbone.View.extend ({
+    el: $('#athena-activity-group-close-modal'),
+    events: {
+        "click #athena-activity-group-close-confirm-button":    "closeActivityGroup"
+    },
+    confirm: function () {
+        return $('#athena-activity-group-close-confirm-input').val() == activityGroup.get('activity_group_name');
+    },
+    closeActivityGroup: function () {
+        if (!this.confirm())
+        {
+            $('#athena-info-list').append((new InfoBox).render({
+                type: "danger",
+                text: "确认活动组名称失败"
+            }).$el);
+        }
+        else
+        {
+            $.ajax({
+                headers: {'Authorization': 'JWT ' + token},
+                type: "DELETE",
+                url: activityGroup.url,
+                success: function () {
+                    window.location = "user.html";
+                },
+                error: function () {
+                    $('#athena-info-list').append((new InfoBox).render({
+                        type: "danger",
+                        text: "关闭活动组失败"
+                    }).$el);
+                    window.location.reload();
+                }
+            });
+        }
+    }
 });
+var closeActvityGroupModel = new CloseActvityGroupModal;
 /********************************************
  * set A Router
  */

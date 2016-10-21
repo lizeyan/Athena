@@ -46,3 +46,7 @@
 .athena-admin-control {
     display: none;
 }
+
+#athena-activity-group-close-button {
+    float: right;
+}
