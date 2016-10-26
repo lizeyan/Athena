@@ -35,3 +35,18 @@ body {
     width: auto;
     max-width: 100%;
 }
+
+.athena-overview-header {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.athena-overview-recent-activity-pin {
+    padding: 1em;
+    margin: 0.5em 0.8em;
+}
+
+.athena-activity-pin-group-name {
+    font-weight: bold;
+    font-size: 1.2em;
+}

@@ -73,6 +73,72 @@ var email = new Email ({model: profile});
 var adminActivityGroupList = new AdminActivityGroupList ({model: profile});
 var normalActivityGroupList = new NormalActivityGroupList ({model: profile});
 
+/************************88
+ * overview
+ */
+var ActivityModel = Backbone.Model.extend({});
+var ActivityLib = Backbone.Collection.extend({
+    url: API_ROOT + "/activity/?format=json",
+    parse: function (response) {
+        return response.results;
+    }
+});
+var ActivityPin = Backbone.View.extend({
+    tagName: "div",
+    template: _.template($("#tmplt-activity-pin").html()),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        var beginDate = new Date(this.model.get('begin_time'));
+        var endDate = new Date(this.model.get('end_time'));
+        beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
+        endDate = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
+        this.$el.html(this.template({
+            activity_group_url: this.model.get('activity_group').url,
+            activity_group_name: this.model.get('activity_group').activity_group_name,
+            location: this.model.get('location'),
+            start_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
+            spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
+            type: "info",
+            msg: "none"
+        }));
+        return this;
+    }
+});
+var RecentActivityView = Backbone.View.extend({
+    el: $('#athena-overview-recent-activity-list'),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        var activityLib = new ActivityLib;
+        activityLib.fetch({
+            headers: {'Authorization': 'JWT ' + token},
+            success: _.bind(function () {
+                this.$el.empty();
+                _.each(activityLib.models.slice(0, 6), function (model) {
+                    this.$el.append((new ActivityPin({model: model})).render().$el);
+                }, this);
+            }, this),
+            data: $.param({normal: 1})
+        });
+        return this;
+    }
+});
+var OverView = Backbone.View.extend({
+    el: $("#athena-overview-div"),
+    initialize: function () {
+        this.recentActivityView = new RecentActivityView({model: this.model});
+        this.listenTo(this.model, "change", this.render);
+    },
+    render: function () {
+        return this;
+    }
+});
+var overView = new OverView({model: profile});
+
+
 //my router
 $(function () {
     var Router = Backbone.Router.extend({
@@ -84,6 +150,7 @@ $(function () {
         },
         showOverview: function () {
             this.deactivateAll();
+            overView.$el.show();
             $('#athena-main-nav-overview').addClass('active');
         },
         showAdminActivityGroup: function () {
@@ -100,6 +167,7 @@ $(function () {
             _.each($('#athena-main-nav').children('li'), function (li) {
                 $(li).removeClass('active');
             });
+            overView.$el.hide();
             adminActivityGroupList.$el.hide();
             normalActivityGroupList.$el.hide();
         }

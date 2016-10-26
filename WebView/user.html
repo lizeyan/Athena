@@ -75,6 +75,17 @@
                 <li role="presentation" id="athena-main-nav-admin"><a href="#admin-activity-group">管理</a></li>
                 <li role="presentation" id="athena-main-nav-normal"><a href="#normal-activity-group">参与</a></li>
             </ul>
+            <div id="athena-overview-div">
+                <dl>
+                    <dt>
+                    <p class="page-header athena-overview-header">最近的活动</p>
+                    </dt>
+                    <dd>
+                        <div class="row" id="athena-overview-recent-activity-list">
+                        </div>
+                    </dd>
+                </dl>
+            </div>
             <div class="list-group" id="athene-admin-activity-group-list">
             </div>
             <div class="list-group" id="athene-normal-activity-group-list">
@@ -84,6 +95,19 @@
 </div>
 </div>
 <!--用来显示左边的用户名片-->
+<script type="text/template" id="tmplt-activity-pin">
+    <div class="panel panel-default col-md-5 athena-overview-recent-activity-pin">
+        <label class="athena-activity-pin-group-name"><a
+                href="activity-group.html#activities/<%= activity_group_url %>"><%= activity_group_name %></a></label>
+        <label class="athena-activity-pin-location"><%= location %></label>
+        <br/>
+        <label class="athena-activity-pin-start-time">开始：<%= start_time %></label>
+        <br/>
+        <label class="athena-activity-pin-end-time">时长：<%= spense_time %></label>
+        <br/>
+        <label class="alert-<%= type %>"><%= msg %></label>
+    </div>
+</script>
 <script type="text/template" id="tmplt-namecard">
     <img id="img-avator" src="<%= image? image: 'img/face.png' %>"/>
     <span id="label-realname"><p><%= realname %></p></span>
@@ -106,6 +130,7 @@
 <script src="js/js-cookie.js"></script>
 <script src="js/profileByToken.js"></script>
 <script src="js/fetchProfileAndSetTopNav.js"></script>
+<script src="js/chrono.js"></script>
 <script src="js/user.js"></script>
 
 
