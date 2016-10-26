@@ -45,6 +45,53 @@ var RegisterLog = Backbone.Collection.extend({
 });
 var registerLog = new RegisterLog;
 
+var RateByActivityModel = Backbone.Model.extend ({
+    defaults: {
+        data: new Array
+    }
+});
+var rateByActivityModel = new RateByActivityModel;
+var RateActivityGraph = Backbone.View.extend ({
+    el: $("#athena-rate-activity-graph"),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        _.sortBy(this.model.get('data'), 'label');
+        var chart = new Chart (document.getElementById("athena-rate-activity-graph"), {
+            type: 'line',
+            data: {
+                labels: _.pluck(this.model.get('data'), 'label'),
+                datasets: [
+                    {
+                        label: "出勤率",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "rgba(75,192,192,0.4)",
+                        borderColor: "rgba(75,192,192,1)",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "rgba(75,192,192,1)",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: _.pluck(this.model.get('data'), 'rate'),
+                        spanGaps: false
+                    }
+                ]
+            }
+        });
+        return this;
+    }
+});
+var rateActivityGraph = new RateActivityGraph ({model: rateByActivityModel});
 var ActivityUserCheckinItem = Backbone.View.extend({
     tagName: "div",
     template: _.template($("#tmplt-activity-user-checkin-item").html()),
@@ -106,18 +153,25 @@ var ActivityListItem = Backbone.View.extend({
     },
     createUserCheckinList: function (activity_register_log) {
         var $checkList = $(this.$el.find(".athena-activity-checkin-list")[0]);
-        var check_list = new Object();
+        this.check_list = new Object();
         _.each(this.user_list, function (user) {
-            check_list[user.user] = new Object();
-            check_list[user.user].checked = false;
-            check_list[user.user].real_name = user.real_name;
-            check_list[user.user].icon_image = user.icon_image;
-        });
+            this.check_list[user.user] = new Object();
+            this.check_list[user.user].checked = false;
+            this.check_list[user.user].real_name = user.real_name;
+            this.check_list[user.user].icon_image = user.icon_image;
+        }, this);
+        var attendanceCnt = 0;
         _.each(activity_register_log.models, function (entry) {
-            if (entry.get('register_user').user in check_list)
-                check_list[entry.get('register_user').user].checked = true;
-        });
-        _.each(check_list, function (entry) {
+            if (entry.get('register_user').user in this.check_list) {
+                this.check_list[entry.get('register_user').user].checked = true;
+                attendanceCnt += 1;
+            }
+        }, this);
+        // alert (JSON.stringify(rateByActivityModel));
+        rateByActivityModel.get('data').push(new Object({label:(new Date(this.model.begin_time)).toLocaleDateString(), rate: attendanceCnt}));
+        if (rateByActivityModel.get('data').length == activityGroup.get('activity').length)
+            rateByActivityModel.trigger('change');
+        _.each(this.check_list, function (entry) {
             $checkList.append((new ActivityUserCheckinItem).render(entry.real_name, entry.checked, entry.icon_image).$el);
         });
     }
@@ -131,9 +185,11 @@ var ActivityList = Backbone.View.extend({
     render: function () {
         this.$el.empty();
         var userList = this.model.get('normal_user');
+        //render and
         _.each(this.model.get('activity'), function (activity) {
             this.$el.append((new ActivityListItem({model: activity})).render(userList).$el);
         }, this);
+        //render graph
         return this;
     }
 });
@@ -571,97 +627,98 @@ var closeActvityGroupModel = new CloseActvityGroupModal;
 /********************************************
  * set A Router
  */
-$(function () {
-    var Router = Backbone.Router.extend({
-        routes: {
-            "activities/*path": "showActivityList",
-            "administers/*path": "showAdministerList",
-            "participators/*path": "showParticipatorList",
-            "settings/*path": "showSettings",
-            "activities": "showActivityList",
-            "administers": "showAdministerList",
-            "settings": "showSettings",
-            "participators": "showParticipatorList"
-        },
-        viewUrl: function (agUrl) {
-            activityGroup.url = agUrl;
-            activityGroup.fetch({
-                headers: {'Authorization': 'JWT ' + token},
-                success: function (model) {
-                    var admin_user_list = model.get('admin_user');
-                    var myid = profile.get('pk');
-                    _.each(admin_user_list, function (user) {
-                        if (user.pk == myid)
-                            iAmAdminister = true;
-                    });
-                    if (iAmAdminister) {
-                        $('.athena-admin-control').css('display', 'inherit');
-                    }
-                },
-                error: function (model, response) {
-                    window.location = "user.html";
-                },
-                reset: true
-            });
-        },
-        deactivateAll: function () {
-            _.each($('#athena-activity-group-main-nav').children('li'), function (li) {
-                $(li).removeClass('active');
-            });
-            activityList.$el.hide();
-            administerList.$el.hide();
-            participatorList.$el.hide();
-            $('#athena-new-activity-modal-button').hide();
-            $('#athena-new-participator-button').hide();
-            $('#athena-new-administer-button').hide();
-            $('#athena-user-input-div').hide();
-            $('#athena-activity-group-settings-div').hide();
-        },
-        showSettings: function (agUrl) {
-            if (agUrl == null) {
-                window.location = "#settings/" + activityGroup.url;
-                return;
-            }
-            this.deactivateAll();
-            this.viewUrl(agUrl);
-            $('#athena-activity-group-settings-div').show();
-        },
-        showActivityList: function (agUrl) {
-            if (agUrl == null) {
-                window.location = "#activities/" + activityGroup.url;
-                return;
-            }
-            this.deactivateAll();
-            this.viewUrl(agUrl);
-            activityList.$el.show();
-            $('#athena-new-activity-modal-button').show();
-            $('#athena-activity-group-main-nav-activity').addClass('active');
-        },
-        showAdministerList: function (agUrl) {
-            if (agUrl == null) {
-                window.location = "#administers/" + activityGroup.url;
-                return;
-            }
-            this.deactivateAll();
-            this.viewUrl(agUrl);
-            administerList.$el.show();
-            $('#athena-new-administer-button').show();
-            $('#athena-user-input-div').show();
-            $('#athena-activity-group-main-nav-administer').addClass('active');
-        },
-        showParticipatorList: function (agUrl) {
-            if (agUrl == null) {
-                window.location = "#participators/" + activityGroup.url;
-                return;
-            }
-            this.deactivateAll();
-            this.viewUrl(agUrl);
-            participatorList.$el.show();
-            $('#athena-user-input-div').show();
-            $('#athena-new-participator-button').show();
-            $('#athena-activity-group-main-nav-participator').addClass('active');
+var Router = Backbone.Router.extend({
+    routes: {
+        "activities/*path": "showActivityList",
+        "administers/*path": "showAdministerList",
+        "participators/*path": "showParticipatorList",
+        "settings/*path": "showSettings",
+        "activities": "showActivityList",
+        "administers": "showAdministerList",
+        "settings": "showSettings",
+        "participators": "showParticipatorList"
+    },
+    viewUrl: function (agUrl) {
+        activityGroup.url = agUrl;
+        activityGroup.fetch({
+            headers: {'Authorization': 'JWT ' + token},
+            success: function (model) {
+                var admin_user_list = model.get('admin_user');
+                var myid = profile.get('pk');
+                _.each(admin_user_list, function (user) {
+                    if (user.pk == myid)
+                        iAmAdminister = true;
+                });
+                if (iAmAdminister) {
+                    $('.athena-admin-control').css('display', 'inherit');
+                }
+            },
+            error: function (model, response) {
+                window.location = "user.html";
+            },
+            reset: true
+        });
+    },
+    deactivateAll: function () {
+        _.each($('#athena-activity-group-main-nav').children('li'), function (li) {
+            $(li).removeClass('active');
+        });
+        activityList.$el.hide();
+        administerList.$el.hide();
+        participatorList.$el.hide();
+        $('#athena-new-activity-modal-button').hide();
+        $('#athena-new-participator-button').hide();
+        $('#athena-new-administer-button').hide();
+        $('#athena-user-input-div').hide();
+        $('#athena-activity-group-settings-div').hide();
+    },
+    showSettings: function (agUrl) {
+        if (agUrl == null) {
+            window.location = "#settings/" + activityGroup.url;
+            return;
         }
-    });
+        this.deactivateAll();
+        this.viewUrl(agUrl);
+        $('#athena-activity-group-settings-div').show();
+    },
+    showActivityList: function (agUrl) {
+        if (agUrl == null) {
+            window.location = "#activities/" + activityGroup.url;
+            return;
+        }
+        this.deactivateAll();
+        this.viewUrl(agUrl);
+        activityList.$el.show();
+        $('#athena-new-activity-modal-button').show();
+        $('#athena-activity-group-main-nav-activity').addClass('active');
+    },
+    showAdministerList: function (agUrl) {
+        if (agUrl == null) {
+            window.location = "#administers/" + activityGroup.url;
+            return;
+        }
+        this.deactivateAll();
+        this.viewUrl(agUrl);
+        administerList.$el.show();
+        $('#athena-new-administer-button').show();
+        $('#athena-user-input-div').show();
+        $('#athena-activity-group-main-nav-administer').addClass('active');
+    },
+    showParticipatorList: function (agUrl) {
+        if (agUrl == null) {
+            window.location = "#participators/" + activityGroup.url;
+            return;
+        }
+        this.deactivateAll();
+        this.viewUrl(agUrl);
+        participatorList.$el.show();
+        $('#athena-user-input-div').show();
+        $('#athena-new-participator-button').show();
+        $('#athena-activity-group-main-nav-participator').addClass('active');
+    }
+});
+
+$(function () {
     var router = new Router;
     Backbone.history.start();
 

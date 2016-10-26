@@ -60,6 +60,7 @@
 <div class="container-fluid panel" id=athena-page-head">
     <div class="athena-admin-control central-inner-control" id="athena-activity-group-close-div">
         <button class="btn btn-danger" id="athena-activity-group-close-button" data-toggle="modal" data-target="#athena-activity-group-close-modal">关闭活动组</button>
+        <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button" href="#athena-activity-group-statistic">统计</a>
     </div>
     <div class="central-inner-control" id="athena-activity-group-title">
     </div>
@@ -103,6 +104,10 @@
         <button type="button" class="btn btn-success btn-lg" id="athena-new-administer-button">
             添加管理员
         </button>
+    </div>
+    <div class="athena-admin-control" id="athena-activity-group-statistic">
+        <h2 class="page-header">统计</h2>
+        <canvas id="athena-rate-activity-graph" ></canvas>
     </div>
 </div>
 <!-- Button trigger modal -->
@@ -332,6 +337,7 @@
 <script src="js/profileByToken.js"></script>
 <script src="js/fetchProfileAndSetTopNav.js"></script>
 <script src="js/chrono.js"></script>
+<script src="js/Chart.min.js"></script>
 <script src="js/activity-group.js"></script>
 </body>
 </html>
