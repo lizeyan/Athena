@@ -26,7 +26,13 @@ function CheckSuperUser() {
 CheckSuperUser();
 
 
-var TerminalModel = Backbone.Model.extend({});
+var TerminalModel = Backbone.Model.extend({
+    idAttribute: 'pk',
+    parse: function (response) {
+        this.url = response.url + '?term=true';
+        return response;
+    }
+});
 var TerminalCollection = Backbone.Collection.extend({
     model: TerminalModel,
     url: API_ROOT + '/profile/?term=true',
@@ -57,6 +63,7 @@ var TerminalItemView = Backbone.View.extend({
             },
             {
                 headers: {'Authorization': 'JWT ' + token},
+                patch: true
             });
     },
     deleteTerminal: function () {
