@@ -51,13 +51,24 @@ var RateByActivityModel = Backbone.Model.extend ({
     }
 });
 var rateByActivityModel = new RateByActivityModel;
+var RateByPersonModel = Backbone.Model.extend({
+    defaults: {
+        data: new Array
+    }
+});
+var rateByPersonModel = new RateByPersonModel;
 var RateActivityGraph = Backbone.View.extend ({
     el: $("#athena-rate-activity-graph"),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     },
     render: function () {
-        _.sortBy(this.model.get('data'), 'label');
+        this.model.get('data').sort(function (a, b) {
+            if ((new Date(a.label)) < (new Date(b.label)))
+                return -1;
+            else
+                return 1;
+        });
         var chart = new Chart (document.getElementById("athena-rate-activity-graph"), {
             type: 'line',
             data: {
@@ -92,6 +103,45 @@ var RateActivityGraph = Backbone.View.extend ({
     }
 });
 var rateActivityGraph = new RateActivityGraph ({model: rateByActivityModel});
+var RateByPersonGraph = Backbone.View.extend({
+    el: $("#athena-rate-person-graph"),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        var chart = new Chart(document.getElementById('athena-rate-person-graph'), {
+            type: 'bar',
+            data: {
+                labels: _.pluck(this.model.get('data'), 'user_name'),
+                datasets: [
+                    {
+                        label: "出勤率",
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1,
+                        data: _.pluck(this.model.get('data'), 'rate')
+                    }
+                ]
+            }
+        });
+        return this;
+    }
+});
+var rateByPersonGraph = new RateByPersonGraph({model: rateByPersonModel});
 var ActivityUserCheckinItem = Backbone.View.extend({
     tagName: "div",
     template: _.template($("#tmplt-activity-user-checkin-item").html()),
@@ -299,7 +349,12 @@ var ParticipatorListItem = Backbone.View.extend({
                         i += 1;
                     }
                 });
-                this.$el.find('.athena-rate-span').html((i * 100 / Object.keys(activity_check_list).length).toFixed(2));
+                var rate = (i / Object.keys(activity_check_list).length);
+                rateByPersonModel.get('data').push(new Object({user_name: this.model.user, rate: rate}));
+                // alert (JSON.stringify(rateByPersonModel.get('data')));
+                if (rateByPersonModel.get('data').length == activityGroup.get('normal_user').length)
+                    rateByPersonModel.trigger('change');
+                this.$el.find('.athena-rate-span').html((rate * 100).toFixed(2));
             }, this),
             data: $.param({user_id: this.model.pk, activity_group_id: activityGroup.get('pk')})
         });
