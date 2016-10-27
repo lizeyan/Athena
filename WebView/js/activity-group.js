@@ -109,7 +109,7 @@ var RateByPersonGraph = Backbone.View.extend({
         this.listenTo(this.model, 'change', this.render);
     },
     render: function () {
-        var chart = new Chart(document.getElementById('athena-rate-person-graph'), {
+        var chart = new Chart(this.$el, {
             type: 'bar',
             data: {
                 labels: _.pluck(this.model.get('data'), 'user_name'),

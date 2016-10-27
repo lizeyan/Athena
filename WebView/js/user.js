@@ -24,7 +24,7 @@ function CheckSuperUser() {
 CheckSuperUser();
 //现在得到了一个profile，需要渲染界面
 //左侧的名片和邮件的显示
-var NameCard = Backbone.View.extend ({
+var NameCard = Backbone.View.extend({
     el: $('#namecard'),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
@@ -32,15 +32,15 @@ var NameCard = Backbone.View.extend ({
     template: _.template($('#tmplt-namecard').html()),
     render: function () {
         // alert (this.model.get('url'));
-        this.$el.html (this.template ({
+        this.$el.html(this.template({
             'image': this.model.get('icon_image'),
-            'realname': this.model.get ('real_name'),
+            'realname': this.model.get('real_name'),
             'username': this.model.get('user').username
         }));
         return this;
     }
 });
-var Email = Backbone.View.extend ({
+var Email = Backbone.View.extend({
     el: $('#contact-email'),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
@@ -54,7 +54,7 @@ var Email = Backbone.View.extend ({
     }
 });
 //管理的所有活动的显示
-var ActivityGroupCard = Backbone.View.extend ({
+var ActivityGroupCard = Backbone.View.extend({
     tagName: 'div',
     template: _.template($('#tmplt-activity-group').html()),
     render: function (option) {
@@ -62,7 +62,7 @@ var ActivityGroupCard = Backbone.View.extend ({
         return this;
     }
 });
-var AdminActivityGroupList = Backbone.View.extend ({
+var AdminActivityGroupList = Backbone.View.extend({
     el: $('#athene-admin-activity-group-list'),
     initialize: function () {
         this.listenTo(this.model, 'change:admin_activity_group', this.render);
@@ -70,12 +70,15 @@ var AdminActivityGroupList = Backbone.View.extend ({
     render: function () {
         this.$el.empty();
         _.each(this.model.get('admin_activity_group'), function (activity_group) {
-            this.$el.append((new ActivityGroupCard).render({'activity_group_name': activity_group.activity_group_name, 'url': activity_group.url}).$el);
+            this.$el.append((new ActivityGroupCard).render({
+                'activity_group_name': activity_group.activity_group_name,
+                'url': activity_group.url
+            }).$el);
         }, this);
         return this;
     }
 });
-var NormalActivityGroupList = Backbone.View.extend ({
+var NormalActivityGroupList = Backbone.View.extend({
     el: $('#athene-normal-activity-group-list'),
     initialize: function () {
         this.listenTo(this.model, 'change:normal_activity_group', this.render);
@@ -83,20 +86,27 @@ var NormalActivityGroupList = Backbone.View.extend ({
     render: function () {
         this.$el.empty();
         _.each(this.model.get('normal_activity_group'), function (activity_group) {
-            this.$el.append((new ActivityGroupCard).render({'activity_group_name': activity_group.activity_group_name, 'url': activity_group.url}).$el);
+            this.$el.append((new ActivityGroupCard).render({
+                'activity_group_name': activity_group.activity_group_name,
+                'url': activity_group.url
+            }).$el);
         }, this);
         return this;
     }
 });
 //定义完了View和Model，正常顺序处理
-var namecard = new NameCard ({model: profile});
-var email = new Email ({model: profile});
-var adminActivityGroupList = new AdminActivityGroupList ({model: profile});
-var normalActivityGroupList = new NormalActivityGroupList ({model: profile});
+var namecard = new NameCard({model: profile});
+var email = new Email({model: profile});
+var adminActivityGroupList = new AdminActivityGroupList({model: profile});
+var normalActivityGroupList = new NormalActivityGroupList({model: profile});
 
 /************************88
  * overview
  */
+var RegisterLogLib = Backbone.Collection.extend({
+    url: API_ROOT + "/register_log/?format=json"
+});
+var registerLib = new RegisterLogLib;
 var ActivityModel = Backbone.Model.extend({});
 var ActivityLib = Backbone.Collection.extend({
     url: API_ROOT + "/activity/?format=json",
@@ -115,15 +125,53 @@ var ActivityPin = Backbone.View.extend({
         var endDate = new Date(this.model.get('end_time'));
         beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
         endDate = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
-        this.$el.html(this.template({
-            activity_group_url: this.model.get('activity_group').url,
-            activity_group_name: this.model.get('activity_group').activity_group_name,
-            location: this.model.get('location'),
-            start_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
-            spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
-            type: "info",
-            msg: "none"
-        }));
+        var type = "";
+        var msg = "";
+        var duration = (new Date().getTime()) - beginDate.getTime();
+        if (duration >= 0) {
+            registerLib.fetch({
+                headers: {'Authorization': 'JWT ' + token},
+                data: $.param({user_id: profile.get('user').pk, activity_id: this.model.get('pk')}),
+                success: _.bind(function (collection, response) {
+                    if (response.results.length == 0) {
+                        type = "danger";
+                        msg = "未签到";
+                    }
+                    else {
+                        type = "success";
+                        msg = "已签到";
+                    }
+                    this.$el.html(this.template({
+                        activity_group_url: this.model.get('activity_group').url,
+                        activity_group_name: this.model.get('activity_group').activity_group_name,
+                        location: this.model.get('location'),
+                        start_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
+                        spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
+                        type: type,
+                        msg: msg
+                    }));
+                }, this)
+            });
+        }
+        else {
+            if (duration > -86400000) {
+                type = "warning";
+                msg = "即将开始";
+            }
+            else {
+                type = "info";
+                msg = "尚未开始";
+            }
+            this.$el.html(this.template({
+                activity_group_url: this.model.get('activity_group').url,
+                activity_group_name: this.model.get('activity_group').activity_group_name,
+                location: this.model.get('location'),
+                start_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
+                spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
+                type: type,
+                msg: msg
+            }));
+        }
         return this;
     }
 });
@@ -154,7 +202,56 @@ var OverView = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render);
     },
     render: function () {
+        this.generateTotalGraph();
         return this;
+    },
+    generateTotalGraph: function () {
+        var activityLib = new ActivityLib;
+        var pass = 0, miss = 0, undo = 0;
+        activityLib.fetch({
+            headers: {'Authorization': 'JWT ' + token},
+            success: _.bind(function () {
+                _.each(activityLib.models, function (activity) {
+                    var beginDate = new Date(activity.get('begin_time'));
+                    beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
+                    if ((new Date().getTime()) < beginDate.getTime())
+                        undo += 1;
+                });
+                registerLib.fetch({
+                    headers: {'Authorization': 'JWT ' + token},
+                    data: $.param({user_id: profile.get('user').pk}),
+                    success: _.bind(function (collection, response) {
+                        pass = response.results.length;
+                        miss = activityLib.models.length - pass - undo;
+                        var chart = new Chart($("#athena-activity-total-graph"), {
+                            type: 'pie',
+                            data: {
+                                labels: [
+                                    "未开始",
+                                    "未签到",
+                                    "已签到"
+                                ],
+                                datasets: [
+                                    {
+                                        data: [undo, miss, pass],
+                                        backgroundColor: [
+                                            "#FF6384",
+                                            "#36A2EB",
+                                            "#FFCE56"
+                                        ],
+                                        hoverBackgroundColor: [
+                                            "#FF6384",
+                                            "#36A2EB",
+                                            "#FFCE56"
+                                        ]
+                                    }]
+                            }
+                        });
+                    }, this)
+                });
+            }, this),
+            data: $.param({normal: 1})
+        });
     }
 });
 var overView = new OverView({model: profile});
