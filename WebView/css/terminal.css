@@ -1,0 +1,14 @@
+.athena-terminal-id-label {
+    min-width: 10em;
+}
+
+.athena-terminal-location-input {
+    max-width: 50em;
+    min-width: 40em;
+}
+
+.center-inner-control {
+    max-width: 1256px;
+    margin-left: auto;
+    margin-right: auto;
+}

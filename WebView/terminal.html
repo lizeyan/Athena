@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,10 +10,38 @@
     <title>Athena管理</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/index-navbar.css">
-    <link rel="stylesheet" href="css/signup.css">
+    <link rel="stylesheet" href="css/terminal.css">
 </head>
 <body>
+<div class="page-header center-inner-control">
+    <h1>终端设置</h1>
+</div>
+<div class="list-group center-inner-control list-unstyled" id="athena-terminal-list-div">
+</div>
+<div class="center-inner-control" id="athena-new-terminal-input">
 
+</div>
+
+
+<script type="text/template" id="tmplt-terminal-item">
+    <li class="list-group-item">
+        <form class="athena-terminal-item-form form-inline">
+            <span class="glyphicon-star glyphicon"></span>
+            <label class="athena-terminal-id-label">#<%= pk %></label>
+            <input type="text" class="form-control athena-terminal-location-input" value="<%= location %>"
+                   placeholder="终端设备的位置" required/>
+            <button type="submit" class="btn btn-info athena-terminal-update-button">更新</button>
+            <button type="button" class="btn btn-danger athena-terminal-delete-button">删除</button>
+        </form>
+    </li>
+</script>
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/underscore-min.js"></script>
+<script src="js/backbone-min.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/js-cookie.js"></script>
+<script src="js/profileByToken.js"></script>
+<script src="js/terminal.js"></script>
 </body>
 </html>
