@@ -1,6 +1,27 @@
 /**
  * Created by zy-li14 on 16-10-9.
  */
+//check superuser
+var UserModel = Backbone.Model.extend({
+    url: API_ROOT + "/users/?format=json",
+    parse: function (response) {
+        return response.results[0];
+    }
+});
+var userModel = new UserModel;
+function CheckSuperUser() {
+    userModel.fetch({
+        headers: {'Authorization': 'JWT ' + token},
+        success: function (model) {
+            if (model.get('is_superuser') == true) {
+                window.location = "terminal.html";
+            }
+        },
+        error: function () {
+        }
+    });
+}
+CheckSuperUser();
 //现在得到了一个profile，需要渲染界面
 //左侧的名片和邮件的显示
 var NameCard = Backbone.View.extend ({

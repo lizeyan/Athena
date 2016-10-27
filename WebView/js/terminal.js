@@ -3,7 +3,10 @@
  */
 //check superuser
 var UserModel = Backbone.Model.extend({
-    url: API_ROOT + "/users/?format=json"
+    url: API_ROOT + "/users/?format=json",
+    parse: function (response) {
+        return response.results[0];
+    }
 });
 var userModel = new UserModel;
 function CheckSuperUser() {
