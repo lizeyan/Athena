@@ -1,6 +1,27 @@
 /**
  * Created by zy-li14 on 16-10-17.
  */
+var UserModel = Backbone.Model.extend({
+    url: API_ROOT + "/users/?format=json",
+    parse: function (response) {
+        return response.results[0];
+    }
+});
+var userModel = new UserModel;
+function CheckSuperUser() {
+    userModel.fetch({
+        headers: {'Authorization': 'JWT ' + token},
+        success: function (model) {
+            if (model.get('is_superuser') == true) {
+                $("#athena-terminal-config-entry").css("display", "inline");
+                $('.athena-super-admin-control').css('display', 'inherit');
+            }
+        },
+        error: function () {
+        }
+    });
+}
+CheckSuperUser();
 var ActivityGroup = Backbone.Model.extend({
     parse: function (response) {
         //重置url
@@ -705,8 +726,12 @@ var Router = Backbone.Router.extend({
                     if (user.pk == myid)
                         iAmAdminister = true;
                 });
+                var course = activityGroup.get('is_classes');
                 if (iAmAdminister) {
                     $('.athena-admin-control').css('display', 'inherit');
+                }
+                if (course == false) {
+                    $('.athena-super-admin-control').css('display', 'inherit');
                 }
             },
             error: function (model, response) {

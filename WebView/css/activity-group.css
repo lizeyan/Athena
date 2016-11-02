@@ -43,7 +43,7 @@
     float: right;
 }
 
-.athena-admin-control {
+.athena-admin-control, .athena-super-admin-control {
     display: none;
 }
 
