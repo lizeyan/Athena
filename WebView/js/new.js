@@ -217,11 +217,14 @@ var ActivityGroupForm = Backbone.View.extend({
         _.each(administerUserView.$el.find(".athena-user-input"), function (input) {
             admin_user.push($(input).val());
         });
+        var is_class = '0';
+        if ($("input[name=athena-activity-group-type-input]:checked").val() == "course")
+            is_class = '1';
         activityGroupLib.create({
             activity_group_name: $('#athena-name-input').val(),
             admin_user: admin_user,
             normal_user: normal_user,
-            is_class: $("input[name=athena-activity-group-type-input]:checked").val() == "course"
+            is_class: is_class
         }, {
             headers: {'Authorization': 'JWT ' + token},
             success: function (model, response) {
