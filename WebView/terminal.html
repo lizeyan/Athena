@@ -10,16 +10,69 @@
     <title>Athena管理</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/signedin-navbar.css">
     <link rel="stylesheet" href="css/terminal.css">
 </head>
 <body>
+<nav id='top-nav' class="navbar navbar-default" role="navigation">
+    <div class="container central-inner-control" id="top-nav-inner">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img id="img-brand" alt="签到" src="img/index/dragon.png">
+            </a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li id="athena-terminal-config-entry" style="display: none;">
+                    <a href="terminal.html">配置终端</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="new.html#activity_group">创建活动组</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/face.png" id="athena-top-nav-avatar" class="athena-top-nav-icon">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">主页</a></li>
+                        <li><a href="settings.html">设置</a></li>
+                        <li class="divider"></li>
+                        <li><a onclick="Logout ()">登出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+
+    </div><!-- /.container-fluid -->
+</nav>
 <div class="page-header center-inner-control">
     <h1>终端设置</h1>
 </div>
 <div class="list-group center-inner-control list-unstyled" id="athena-terminal-list-div">
 </div>
-<div class="center-inner-control" id="athena-new-terminal-input">
-
+<div class="center-inner-control" id="athena-new-terminal-div">
+    <h1>添加更多</h1>
+    <form id="athena-new-terminal-form">
+        <ul class="list-group list-unstyled" id="athena-new-terminal-input-list">
+        </ul>
+        <button type="submit" class="btn btn-success btn-lg" id="athena-new-terminal-submit">提交</button>
+    </form>
 </div>
 
 
@@ -35,33 +88,19 @@
         </form>
     </li>
 </script>
-<script type="text/template" id="tmplt-new-terminal-input">
-    <li class="">
-        <input type="text" class="athena-user-input form-control " value="<%= username %>"/>
-        <div class="alert alert-danger alert-dismissible" role="alert" style="display:<%= error? 'inline': 'none' %>;">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
-                    class="sr-only">Close</span></button>
-            <strong><%= errorMsg %></strong>
-        </div>
-        <div class="panel panel-success athena-user-profile-label" style="display:<%= foundUser? 'inline':'none' %>;">
-            <label>
-                <img src="<%= icon_image %>" class="athena-inline-avatar"/>
-            </label>
-            <label class="athena-user-info-preview-label">
-                <span class="glyphicon glyphicon-user"></span><%= real_name %>
-            </label>
-            <label class="athena-user-info-preview-label">
-                <span class="glyphicon glyphicon-star"></span><%= school %>
-            </label>
-            <label class="athena-user-info-preview-label">
-                <span class="glyphicon glyphicon-th-large"></span><%= department %>
-            </label>
-        </div>
-        <button type="button" class="btn btn-info athena-user-push-input-entry"
-                style="display:<%= showAdd? 'inline':'none' %>;">更多用户
+<script type="text/template" id="tmplt-new-terminal-input-item">
+    <li class="list-group-item">
+        <input type="text" class="athena-new-terminal-name-input form-control" placeholder="终端用户名" value="<%= name %>"
+               required/>
+        <input type="password" class="athena-new-terminal-password-input form-control" placeholder="密码"
+               value="<%= password %>" pattern=".{6,20}" required/>
+        <input type="text" class="athena-new-terminal-location-input form-control " placeholder="终端所在的地点"
+               value="<%= location %>" required/>
+        <button type="button" class="btn btn-info athena-terminal-push-input-entry"
+                style="display:<%= showAdd? 'inline':'none' %>;">更多终端
         </button>
-        <button type="button" class="btn btn-info athena-user-pop-input-entry"
-                style="display:<%= showSub? 'inline':'none' %>;">减少用户
+        <button type="button" class="btn btn-info athena-terminal-pop-input-entry"
+                style="display:<%= showSub? 'inline':'none' %>;">减少终端
         </button>
     </li>
 </script>
@@ -72,6 +111,7 @@
 <script src="js/workspace.js"></script>
 <script src="js/js-cookie.js"></script>
 <script src="js/profileByToken.js"></script>
+<script src="js/fetchProfileAndSetTopNav.js"></script>
 <script src="js/terminal.js"></script>
 </body>
 </html>

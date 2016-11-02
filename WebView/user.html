@@ -30,6 +30,9 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <li id="athena-terminal-config-entry" style="display: none;">
+                    <a href="terminal.html">配置终端</a>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
@@ -76,6 +79,11 @@
                 <li role="presentation" id="athena-main-nav-normal"><a href="#normal-activity-group">参与</a></li>
             </ul>
             <div id="athena-overview-div">
+                <ul class="nav nav-pills" role="tablist">
+                    <li role="presentation"><a href="#athena-overview-recent-activity-list">最近活动</a></li>
+                    <li role="presentation"><a href="#athena-activity-total-graph">签到统计</a></li>
+                    <!--<li role="presentation"><a href="#athena-activity-group-statistic">活动组统计</a></li>-->
+                </ul>
                 <dl>
                     <dt>
                     <p class="page-header athena-overview-header">最近的活动</p>
@@ -93,6 +101,14 @@
                         <canvas id="athena-activity-total-graph"></canvas>
                     </dd>
                 </dl>
+                <!--<dl id="athena-activity-group-statistic">-->
+                <!--<dt>-->
+                <!--<p class="page-header athena-overview-header">活动组统计</p>-->
+                <!--</dt>-->
+                <!--<dd>-->
+                <!--<canvas id="athena-activity-group-number-graph"></canvas>-->
+                <!--</dd>-->
+                <!--</dl>-->
             </div>
             <div class="list-group" id="athene-admin-activity-group-list">
             </div>

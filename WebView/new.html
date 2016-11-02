@@ -30,6 +30,9 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <li id="athena-terminal-config-entry" style="display: none;">
+                    <a href="terminal.html">配置终端</a>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
@@ -70,6 +73,19 @@
                 </dt>
                 <dd>
                     <input type="text" class="form-control" id="athena-name-input" required/>
+                </dd>
+            </dl>
+            <dl style="display: none" id="athena-new-activity-group-type">
+                <dt>
+                    <label class="athena-key-label">类型</label>
+                </dt>
+                <dd>
+                    <input type="radio" class="" name="athena-activity-group-type-input" value="course" required/>
+                    <strong>课程将只能由超级管理员控制.普通管理员只能查看信息而不能做出任何修改.</strong>
+                    <br/>
+                    <input type="radio" class="" name="athena-activity-group-type-input" value="normal"
+                           checked="checked" required/>
+                    <strong>每一个管理员都可以修改全部信息.</strong>
                 </dd>
             </dl>
             <dl>
@@ -125,10 +141,10 @@
                 <span class="glyphicon glyphicon-th-large"></span><%= department %>
             </label>
         </div>
-        <button type="button" class="btn btn-info athena-participator-push-input-entry"
+        <button type="button" class="btn btn-info athena-user-push-input-entry"
                 style="display:<%= showAdd? 'inline':'none' %>;">更多用户
         </button>
-        <button type="button" class="btn btn-info athena-participator-pop-input-entry"
+        <button type="button" class="btn btn-info athena-user-pop-input-entry"
                 style="display:<%= showSub? 'inline':'none' %>;">减少用户
         </button>
     </li>

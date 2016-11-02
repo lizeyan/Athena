@@ -17,6 +17,8 @@ function CheckSuperUser() {
                 alert("你不是管理员");
                 gobackLogin();
             }
+            else
+                $("#athena-terminal-config-entry").css('display', "inline");
         },
         error: function () {
             gobackLogin();
@@ -70,7 +72,8 @@ var TerminalItemView = Backbone.View.extend({
         this.model.destroy({
             success: function () {
                 window.location.reload();
-            }
+            },
+            headers: {'Authorization': 'JWT ' + token}
         })
     }
 });
@@ -92,3 +95,103 @@ terminalLib.fetch({
     headers: {'Authorization': 'JWT ' + token},
     reset: true
 });
+
+var NewTerminalInputItemView = Backbone.View.extend({
+    tagName: "li",
+    template: _.template($("#tmplt-new-terminal-input-item").html()),
+    initialize: function () {
+        this.showAdd = true;
+        this.showSub = false;
+    },
+    render: function () {
+        var name = "", password = "", location = "";
+        if (this.$el && this.$el.find('.athena-new-terminal-name-input'))
+            name = this.$el.find('.athena-new-terminal-name-input').val();
+        if (this.$el && this.$el.find('.athena-new-terminal-password-input'))
+            password = this.$el.find('.athena-new-terminal-password-input').val();
+        if (this.$el && this.$el.find('.athena-new-terminal-location-input'))
+            location = this.$el.find('.athena-new-terminal-location-input').val();
+        this.$el.html(this.template({
+            showAdd: this.showAdd,
+            showSub: this.showSub,
+            name: name,
+            password: password,
+            location: location
+        }));
+        return this;
+    }
+});
+var CreateTerminalView = Backbone.View.extend({
+    el: $("#athena-new-terminal-div"),
+    events: {
+        "click .athena-terminal-push-input-entry": "addNewEntry",
+        "click .athena-terminal-pop-input-entry": "deleteEntry",
+        "submit #athena-new-terminal-form": "submit"
+    },
+    initialize: function () {
+        this.entryList = new Array;
+        this.$listEl = $("#athena-new-terminal-input-list");
+        this.addNewEntry();
+    },
+    addNewEntry: function () {
+        var item = new NewTerminalInputItemView();
+        item.showAdd = true;
+        if (this.entryList.length > 0) {
+            item.showSub = true;
+            var lastEntry = this.entryList[this.entryList.length - 1];
+            lastEntry.showAdd = false;
+            lastEntry.showSub = false;
+            lastEntry.render();
+        }
+        else
+            item.showSub = false;
+        this.entryList.push(item);
+        this.$listEl.append(item.render().$el);
+    },
+    deleteEntry: function () {
+        var lastEntry = this.entryList[this.entryList.length - 1];
+        lastEntry.$el.remove();
+        this.entryList.pop();
+        lastEntry = this.entryList[this.entryList.length - 1];
+        lastEntry.showAdd = true;
+        lastEntry.showSub = (this.entryList.length > 1);
+        lastEntry.render();
+    },
+    submit: function (event) {
+        event.preventDefault();
+        var locations = new Array;
+        var names = new Array;
+        var passwords = new Array;
+        _.each($(".athena-new-terminal-location-input"), function (el) {
+            locations.push($(el).val());
+        });
+        _.each($(".athena-new-terminal-name-input"), function (el) {
+            names.push($(el).val());
+        });
+        _.each($(".athena-new-terminal-password-input"), function (el) {
+            passwords.push($(el).val());
+        });
+        var length = passwords.length;
+        for (var i = 0; i < length; ++i) {
+            $.ajax({
+                headers: {'Authorization': 'JWT ' + token},
+                type: "POST",
+                url: API_ROOT + "/account/register_term/",
+                data: JSON.stringify({
+                    username: names[i],
+                    password: passwords[i],
+                    position: locations[i]
+                }),
+                contentType: "application/json",
+                success: function (msg) {
+                    if (i == length)
+                        window.location.reload();
+                },
+                error: function (response) {
+                    alert("终端" + i + "添加失败:" + response.responseText);
+                }
+            });
+        }
+    }
+});
+var createNewTerminalView = new CreateTerminalView();

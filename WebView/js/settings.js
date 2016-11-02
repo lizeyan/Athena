@@ -1,7 +1,27 @@
 /**
  * Created by zy-li14 on 16-10-13.
  */
-
+//check superuser
+var UserModel = Backbone.Model.extend({
+    url: API_ROOT + "/users/?format=json",
+    parse: function (response) {
+        return response.results[0];
+    }
+});
+var userModel = new UserModel;
+function CheckSuperUser() {
+    userModel.fetch({
+        headers: {'Authorization': 'JWT ' + token},
+        success: function (model) {
+            if (model.get('is_superuser') == true) {
+                $("#athena-terminal-config-entry").css("display", "inline");
+            }
+        },
+        error: function () {
+        }
+    });
+}
+CheckSuperUser();
 //ErrorBox是显示错误信息的页面
 var InfoBox = Backbone.View.extend({
     tagName: 'div',

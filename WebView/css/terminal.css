@@ -12,3 +12,18 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.athena-new-terminal-location-input {
+    display: inline;
+    width: 30em;
+}
+
+.athena-new-terminal-name-input {
+    width: 10em;
+    display: inline;
+}
+
+.athena-new-terminal-password-input {
+    width: 20em;
+    display: inline;
+}

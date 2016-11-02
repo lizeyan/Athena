@@ -14,7 +14,7 @@ function CheckSuperUser() {
         headers: {'Authorization': 'JWT ' + token},
         success: function (model) {
             if (model.get('is_superuser') == true) {
-                window.location = "terminal.html";
+                $("#athena-terminal-config-entry").css("display", "inline");
             }
         },
         error: function () {
@@ -203,6 +203,7 @@ var OverView = Backbone.View.extend({
     },
     render: function () {
         this.generateTotalGraph();
+        this.generateActivityGroupNumberGraph();
         return this;
     },
     generateTotalGraph: function () {
@@ -252,6 +253,9 @@ var OverView = Backbone.View.extend({
             }, this),
             data: $.param({normal: 1})
         });
+    },
+    generateActivityGroupNumberGraph: function () {
+        
     }
 });
 var overView = new OverView({model: profile});

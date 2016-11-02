@@ -28,3 +28,8 @@
 .athena-user-info-preview-label {
     min-width: 10em;
 }
+
+#athena-is-course-input {
+    display: inline;
+    width: 2em;
+}

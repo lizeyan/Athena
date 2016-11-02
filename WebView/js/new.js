@@ -1,6 +1,28 @@
 /**
  * Created by zy-li14 on 16-10-19.
  */
+//check superuser
+var UserModel = Backbone.Model.extend({
+    url: API_ROOT + "/users/?format=json",
+    parse: function (response) {
+        return response.results[0];
+    }
+});
+var userModel = new UserModel;
+function CheckSuperUser() {
+    userModel.fetch({
+        headers: {'Authorization': 'JWT ' + token},
+        success: function (model) {
+            if (model.get('is_superuser') == true) {
+                $("#athena-terminal-config-entry").css("display", "inline");
+                $("#athena-new-activity-group-type").css("display", "block");
+            }
+        },
+        error: function () {
+        }
+    });
+}
+CheckSuperUser();
 var UserInputItemView = Backbone.View.extend({
     tagName: 'li',
     template: _.template($("#tmplt-user-input").html()),
@@ -96,8 +118,8 @@ var AdministerUserView = Backbone.View.extend({
         this.addNewEntry();
     },
     events: {
-        "click .athena-participator-push-input-entry": "addNewEntry",
-        "click .athena-participator-pop-input-entry": "deleteEntry"
+        "click .athena-user-push-input-entry": "addNewEntry",
+        "click .athena-user-pop-input-entry": "deleteEntry"
     },
     addNewEntry: function () {
         var item = new UserInputItemView();
@@ -140,8 +162,8 @@ var ParticipatorUserView = Backbone.View.extend({
         this.addNewEntry();
     },
     events: {
-        "click .athena-participator-push-input-entry": "addNewEntry",
-        "click .athena-participator-pop-input-entry": "deleteEntry"
+        "click .athena-user-push-input-entry": "addNewEntry",
+        "click .athena-user-pop-input-entry": "deleteEntry"
     },
     addNewEntry: function () {
         var item = new UserInputItemView();
@@ -198,7 +220,8 @@ var ActivityGroupForm = Backbone.View.extend({
         activityGroupLib.create({
             activity_group_name: $('#athena-name-input').val(),
             admin_user: admin_user,
-            normal_user: normal_user
+            normal_user: normal_user,
+            is_class: $("input[name=athena-activity-group-type-input]:checked").val() == "course"
         }, {
             headers: {'Authorization': 'JWT ' + token},
             success: function (model, response) {
