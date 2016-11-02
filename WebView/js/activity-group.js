@@ -25,7 +25,8 @@ var ActivityGroupPageHead = Backbone.View.extend({
     render: function () {
         this.$el.html(this.template({
             url: this.model.url,
-            activity_group_name: this.model.get('activity_group_name')
+            activity_group_name: this.model.get('activity_group_name'),
+            course: this.model.get('is_classes')
         }));
         return this;
     }
@@ -356,7 +357,7 @@ var ParticipatorListItem = Backbone.View.extend({
                     rateByPersonModel.trigger('change');
                 this.$el.find('.athena-rate-span').html((rate * 100).toFixed(2));
             }, this),
-            data: $.param({user_id: this.model.pk, activity_group_id: activityGroup.get('pk')})
+            data: $.param({user_id: this.model.user_id, activity_group_id: activityGroup.get('pk')})
         });
         this.setEL({
             user: this.model.user,
