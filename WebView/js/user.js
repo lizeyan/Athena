@@ -14,7 +14,7 @@ function CheckSuperUser() {
         headers: {'Authorization': 'JWT ' + token},
         success: function (model) {
             if (model.get('is_superuser') == true) {
-                $("#athena-terminal-config-entry").css("display", "inline");
+                window.location = "root.html";
             }
         },
         error: function () {

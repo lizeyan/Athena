@@ -195,3 +195,78 @@ var CreateTerminalView = Backbone.View.extend({
     }
 });
 var createNewTerminalView = new CreateTerminalView();
+
+var ActivityGroupCard = Backbone.View.extend({
+    tagName: 'div',
+    template: _.template($('#tmplt-activity-group').html()),
+    events: {
+        "click .athena-activity-group-delete-button": "deleteActivityGroup"
+    },
+    render: function (option) {
+        this.option = option;
+        this.$el.html(this.template(this.option));
+        return this;
+    },
+    deleteActivityGroup: function () {
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            url: this.option.url + "&root=true",
+            type: "DELETE",
+            success: function () {
+                window.location.reload();
+            }
+        })
+    }
+});
+var ActivityGroupView = Backbone.View.extend({
+    el: $('#athena-activity-group-list'),
+    initialize: function () {
+        this.render();
+    },
+    render: function () {
+        this.$el.empty();
+        $.ajax({
+            type: "GET",
+            headers: {'Authorization': 'JWT ' + token},
+            url: API_ROOT + "/activity_group/?root=true&format=json&simple=true",
+            success: _.bind(function (response) {
+                var list = response.results;
+                _.each(list, function (activity_group) {
+                    this.$el.append((new ActivityGroupCard).render({
+                        'activity_group_name': activity_group.activity_group_name,
+                        'url': activity_group.url,
+                        'is_classes': activity_group.is_classes
+                    }).$el);
+                }, this);
+            }, this),
+            error: function () {
+                alert("加载失败");
+            }
+        });
+        return this;
+    }
+});
+var activityGroupView = new ActivityGroupView;
+//my router
+$(function () {
+    var Router = Backbone.Router.extend({
+        routes: {
+            "terminal": "showTerminal",
+            "activity-group": "showActivityGroup"
+        },
+        showTerminal: function () {
+            this.deactivateAll();
+            $("#athena-terminal-config").show();
+        },
+        showActivityGroup: function () {
+            this.deactivateAll();
+            $("#athena-activity-group-config").show();
+        },
+        deactivateAll: function () {
+            $("#athena-terminal-config").hide();
+            $("#athena-activity-group-config").hide();
+        }
+    });
+    var router = new Router;
+    Backbone.history.start();
+});

@@ -8,7 +8,7 @@
 }
 
 .center-inner-control {
-    max-width: 1256px;
+    max-width: 1024px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -26,4 +26,12 @@
 .athena-new-terminal-password-input {
     width: 20em;
     display: inline;
+}
+
+#athena-terminal-config-entry, #athena-activity-group-config-entry {
+    margin-top: 0.5em;
+}
+
+.athena-activity-group-delete-button {
+    float: right;
 }
