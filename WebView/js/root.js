@@ -252,7 +252,8 @@ $(function () {
     var Router = Backbone.Router.extend({
         routes: {
             "terminal": "showTerminal",
-            "activity-group": "showActivityGroup"
+            "activity-group": "showActivityGroup",
+            "*path": "showTerminal"
         },
         showTerminal: function () {
             this.deactivateAll();
