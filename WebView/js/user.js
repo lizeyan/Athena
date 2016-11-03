@@ -78,6 +78,77 @@ var AdminActivityGroupList = Backbone.View.extend({
         return this;
     }
 });
+var AdminActivityGroupView = Backbone.View.extend({
+    el: $("#athena-admin-activity-group-div"),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        //get statistics and render graph
+        var list = this.model.get('admin_activity_group');
+        var cnt = 0;
+        _.each(list, function (ag) {
+            $.ajax({
+                headers: {'Authorization': 'JWT ' + token},
+                type: 'GET',
+                url: API_ROOT + "/activity_group/register_log_statistics/?activity_group_id=" + ag.pk,
+                contentType: "application/json",
+                success: _.bind(function (response) {
+                    cnt = cnt + 1;
+                    if (response.activity_size == 0 || response.normal_user_size == 0)
+                        ag.rate = 0.0;
+                    else
+                        ag.rate = response.register_size / (response.activity_size * response.normal_user_size);
+                    if (cnt == list.length)
+                        this.renderActivityGroupGraph();
+                }, this)
+            });
+        }, this);
+        return this;
+    },
+    renderActivityGroupGraph: function () {
+        var myBarChart = new Chart(document.getElementById("athena-activity-group-statistics-graph"), {
+            type: 'bar',
+            data: {
+                labels: _.pluck(this.model.get("admin_activity_group"), "activity_group_name"),
+                datasets: [
+                    {
+                        label: "活动组出勤率",
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1,
+                        data: _.pluck(this.model.get("admin_activity_group"), "rate")
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 1,
+                            stepSize: 0.1
+                        }
+                    }]
+                }
+            }
+        });
+    }
+});
 var NormalActivityGroupList = Backbone.View.extend({
     el: $('#athene-normal-activity-group-list'),
     initialize: function () {
@@ -98,6 +169,7 @@ var NormalActivityGroupList = Backbone.View.extend({
 var namecard = new NameCard({model: profile});
 var email = new Email({model: profile});
 var adminActivityGroupList = new AdminActivityGroupList({model: profile});
+var adminActivityGroupView = new AdminActivityGroupView({model: profile});
 var normalActivityGroupList = new NormalActivityGroupList({model: profile});
 
 /************************88
@@ -255,7 +327,7 @@ var OverView = Backbone.View.extend({
         });
     },
     generateActivityGroupNumberGraph: function () {
-        
+
     }
 });
 var overView = new OverView({model: profile});
@@ -277,7 +349,7 @@ $(function () {
         },
         showAdminActivityGroup: function () {
             this.deactivateAll();
-            adminActivityGroupList.$el.show();
+            adminActivityGroupView.$el.show();
             $('#athena-main-nav-admin').addClass('active');
         },
         showNormalActivityGroup: function () {
@@ -290,7 +362,7 @@ $(function () {
                 $(li).removeClass('active');
             });
             overView.$el.hide();
-            adminActivityGroupList.$el.hide();
+            adminActivityGroupView.$el.hide();
             normalActivityGroupList.$el.hide();
         }
     });

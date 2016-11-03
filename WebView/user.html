@@ -82,7 +82,7 @@
                 <ul class="nav nav-pills" role="tablist">
                     <li role="presentation"><a href="#athena-overview-recent-activity-list">最近活动</a></li>
                     <li role="presentation"><a href="#athena-activity-total-graph">签到统计</a></li>
-                    <!--<li role="presentation"><a href="#athena-activity-group-statistic">活动组统计</a></li>-->
+                    <!--<li role="presentation"><a href="#athena-activity-group-statistics-graph">活动组统计</a></li>-->
                 </ul>
                 <dl>
                     <dt>
@@ -101,16 +101,18 @@
                         <canvas id="athena-activity-total-graph"></canvas>
                     </dd>
                 </dl>
-                <!--<dl id="athena-activity-group-statistic">-->
-                <!--<dt>-->
-                <!--<p class="page-header athena-overview-header">活动组统计</p>-->
-                <!--</dt>-->
-                <!--<dd>-->
-                <!--<canvas id="athena-activity-group-number-graph"></canvas>-->
-                <!--</dd>-->
-                <!--</dl>-->
             </div>
-            <div class="list-group" id="athene-admin-activity-group-list">
+            <div id="athena-admin-activity-group-div">
+                <div class="list-group" id="athene-admin-activity-group-list">
+                </div>
+                <dl id="athena-activity-group-statistics">
+                    <dt>
+                    <p class="page-header athena-overview-header">活动组统计</p>
+                    </dt>
+                    <dd>
+                        <canvas id="athena-activity-group-statistics-graph"></canvas>
+                    </dd>
+                </dl>
             </div>
             <div class="list-group" id="athene-normal-activity-group-list">
             </div>
