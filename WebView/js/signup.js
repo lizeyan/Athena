@@ -64,7 +64,7 @@ var SignupForm = Backbone.View.extend({
             suggestion = '错误信息:' + response.responseText;
         else
             suggestion = '我也不知道发生了什么*_*';
-        errorListBox.append((new ErrorBox).render({'suggestion': suggestion}).$el.html());
+        errorListBox.append((new ErrorBox).render({'text': suggestion}).$el.html());
 
     }
 });
