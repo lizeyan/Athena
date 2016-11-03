@@ -249,9 +249,9 @@ var FaceSettingView = Backbone.View.extend({
     render: function () {
         var $faceList = $("#athena-face-list");
         $faceList.empty();
-        _.each(profile.get('face'), function (faceUrl) {
+        _.each(profile.get('face'), function (face) {
             var faceModel = new FaceModel;
-            faceModel.url = faceUrl;
+            faceModel.url = face.url;
             faceModel.fetch({
                 headers: {'Authorization': 'JWT ' + token},
             });

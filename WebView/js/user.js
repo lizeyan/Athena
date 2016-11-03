@@ -72,7 +72,8 @@ var AdminActivityGroupList = Backbone.View.extend({
         _.each(this.model.get('admin_activity_group'), function (activity_group) {
             this.$el.append((new ActivityGroupCard).render({
                 'activity_group_name': activity_group.activity_group_name,
-                'url': activity_group.url
+                'url': activity_group.url,
+                'is_classes': activity_group.is_classes
             }).$el);
         }, this);
         return this;
@@ -157,9 +158,11 @@ var NormalActivityGroupList = Backbone.View.extend({
     render: function () {
         this.$el.empty();
         _.each(this.model.get('normal_activity_group'), function (activity_group) {
+            // alert (activity_group.is_classes);
             this.$el.append((new ActivityGroupCard).render({
                 'activity_group_name': activity_group.activity_group_name,
-                'url': activity_group.url
+                'url': activity_group.url,
+                'is_classes': activity_group.is_classes
             }).$el);
         }, this);
         return this;
@@ -258,11 +261,26 @@ var RecentActivityView = Backbone.View.extend({
             headers: {'Authorization': 'JWT ' + token},
             success: _.bind(function () {
                 this.$el.empty();
-                _.each(activityLib.models.slice(0, 6), function (model) {
+                activityLib.models.sort(function (a, b) {
+                    var x = (new Date(a.get('begin_time'))).getTime() - (new Date()).getTime();
+                    var y = (new Date(b.get('begin_time'))).getTime() - (new Date()).getTime();
+                    if (Math.abs(x) > Math.abs(y))
+                        return 1;
+                    else
+                        return -1;
+                });
+                var list = activityLib.models.slice(0, 6);
+                list.sort(function (a, b) {
+                    if ((new Date(a.get('begin_time'))).getTime() < (new Date(b.get('begin_time'))).getTime())
+                        return -1;
+                    else
+                        return 1;
+                });
+                _.each(list, function (model) {
                     this.$el.append((new ActivityPin({model: model})).render().$el);
                 }, this);
             }, this),
-            data: $.param({normal: 1})
+            data: $.param({normal: true})
         });
         return this;
     }
