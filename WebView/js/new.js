@@ -1,6 +1,28 @@
 /**
  * Created by zy-li14 on 16-10-19.
  */
+//check superuser
+var UserModel = Backbone.Model.extend({
+    url: API_ROOT + "/users/?format=json",
+    parse: function (response) {
+        return response.results[0];
+    }
+});
+var userModel = new UserModel;
+function CheckSuperUser() {
+    userModel.fetch({
+        headers: {'Authorization': 'JWT ' + token},
+        success: function (model) {
+            if (model.get('is_superuser') == true) {
+                $("#athena-terminal-config-entry").css("display", "inline");
+                $("#athena-new-activity-group-type").css("display", "block");
+            }
+        },
+        error: function () {
+        }
+    });
+}
+CheckSuperUser();
 var UserInputItemView = Backbone.View.extend({
     tagName: 'li',
     template: _.template($("#tmplt-user-input").html()),
@@ -43,10 +65,11 @@ var UserInputItemView = Backbone.View.extend({
         // alert (this.$el.html());
         // alert (username);
         (new Profile).fetch({
-            url: API_ROOT + '/profile/',
+            url: API_ROOT + '/profile/?format=json',
             headers: {'Authorization': 'JWT ' + token},
             data: $.param({username: username}),
             success: _.bind(function (model, response) {
+                // alert (JSON.stringify(model));
                 this.$el.html(this.template({
                     foundUser: true,
                     icon_image: model.get('icon_image'),
@@ -95,8 +118,8 @@ var AdministerUserView = Backbone.View.extend({
         this.addNewEntry();
     },
     events: {
-        "click .athena-participator-push-input-entry": "addNewEntry",
-        "click .athena-participator-pop-input-entry": "deleteEntry"
+        "click .athena-user-push-input-entry": "addNewEntry",
+        "click .athena-user-pop-input-entry": "deleteEntry"
     },
     addNewEntry: function () {
         var item = new UserInputItemView();
@@ -139,8 +162,8 @@ var ParticipatorUserView = Backbone.View.extend({
         this.addNewEntry();
     },
     events: {
-        "click .athena-participator-push-input-entry": "addNewEntry",
-        "click .athena-participator-pop-input-entry": "deleteEntry"
+        "click .athena-user-push-input-entry": "addNewEntry",
+        "click .athena-user-pop-input-entry": "deleteEntry"
     },
     addNewEntry: function () {
         var item = new UserInputItemView();
@@ -194,14 +217,18 @@ var ActivityGroupForm = Backbone.View.extend({
         _.each(administerUserView.$el.find(".athena-user-input"), function (input) {
             admin_user.push($(input).val());
         });
+        var is_class = '0';
+        if ($("input[name=athena-activity-group-type-input]:checked").val() == "course")
+            is_class = '1';
         activityGroupLib.create({
             activity_group_name: $('#athena-name-input').val(),
             admin_user: admin_user,
-            normal_user: normal_user
+            normal_user: normal_user,
+            is_class: is_class
         }, {
             headers: {'Authorization': 'JWT ' + token},
             success: function (model, response) {
-                alert(model.get('url'));
+                // alert(model.get('url'));
                 window.location = "activity-group.html#activities/" + model.get('url') + '/?format=json';
             },
             error: function (model, response) {

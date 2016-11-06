@@ -30,6 +30,9 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <li id="athena-terminal-config-entry" style="display: none;">
+                    <a href="root.html">配置终端</a>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
@@ -58,6 +61,12 @@
 </nav>
 
 <div class="container-fluid panel" id=athena-page-head">
+    <div class="central-inner-control" id="athena-activity-group-close-div">
+        <button class="btn btn-danger athena-super-admin-control" id="athena-activity-group-close-button"
+                data-toggle="modal" data-target="#athena-activity-group-close-modal">关闭活动组
+        </button>
+        <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button" href="#athena-activity-group-statistic">统计</a>
+    </div>
     <div class="central-inner-control" id="athena-activity-group-title">
     </div>
     <div class="container central-inner-control">
@@ -71,23 +80,146 @@
 </div>
 
 <div class="container">
+    <div id="athena-info-list" class="central-inner-control">
+    </div>
     <ul class="list-group central-inner-control list-unstyled" id="athena-activity-list">
     </ul>
     <ul class="list-group central-inner-control list-unstyled" id="athena-administer-list">
     </ul>
     <ul class="list-group central-inner-control list-unstyled" id="athena-participator-list">
     </ul>
+    <div id="athena-activity-group-settings-div">
+
+    </div>
+    <div class="central-inner-control athena-super-admin-control" id="athena-add-new-div">
+        <div class="panel panel-default central-inner-control" id="athena-user-input-div">
+            <form id="athena-user-input-form" class="panel-body">
+                <ul id="athena-user-input-list" class="list-group list-unstyled central-inner-control">
+
+                </ul>
+            </form>
+        </div>
+        <button type="button" class="btn btn-success btn-lg" data-toggle="modal"
+                data-target="#athena-new-activity-modal" id="athena-new-activity-modal-button">
+            创建新活动
+        </button>
+        <button type="button" class="btn btn-success btn-lg" id="athena-new-participator-button">
+            添加参与者
+        </button>
+        <button type="button" class="btn btn-success btn-lg" id="athena-new-administer-button">
+            添加管理员
+        </button>
+    </div>
+    <div class="athena-admin-control" id="athena-activity-group-statistic">
+        <h2 class="page-header">统计</h2>
+        <canvas id="athena-rate-activity-graph" ></canvas>
+        <canvas id="athena-rate-person-graph"></canvas>
+    </div>
+</div>
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="athena-new-activity-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="athena-new-activity-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">新活动</h4>
+                </div>
+                <div class="modal-body">
+                    <dl>
+                        <dt>
+                            <label>地点</label>
+                        </dt>
+                        <dd>
+                            <input type="text" id="athena-new-activity-location-input" class="form-control " required/>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <label>开始时间</label>
+                        </dt>
+                        <dd>
+                            <input type="datetime-local" id="athena-new-activity-begin-time-input" class="form-control"
+                                   required/>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <label>结束时间</label>
+                        </dt>
+                        <dd>
+                            <input type="datetime-local" id="athena-new-activity-end-time-input" class="form-control"
+                                   required/>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <label>循环模式</label>
+                        </dt>
+                        <dd>
+                            <select class="form-control" id="athena-new-activity-repeat-method-select">
+                                <option selected="true" value="0">不循环</option>
+                                <option value="86400000">每日</option>
+                                <option value="604800000">每周</option>
+                                <option value="1209600000">每两周</option>
+                            </select>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <label>循环次数</label>
+                        </dt>
+                        <dd>
+                            <input class="form-control" id="athena-new-activity-repeat-times-input" pattern="[1-9][0-9]*" value="1" disabled="true" required/>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="athena-activity-group-close-modal" tabindex="-1" role="dialog" aria-labelledby="closeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" >你确定要删除活动组么？</h4>
+            </div>
+            <div class="modal-body">
+                <input class="form-control" type="text" placeholder="输入活动组名称以确认" id="athena-activity-group-close-confirm-input" required/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="athena-activity-group-close-confirm-button" data-dismiss="modal">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/template" id="tmplt-activity-group-page-head">
     <h3>
         <span class="glyphicon glyphicon-leaf"></span>
         <a href="#activity-group/<%= url %>"><%= activity_group_name %></a>
+        <span class="label label-default" style="display: <%= course==true? 'inline':'none'%>;">课程</span>
     </h3>
 </script>
 <script type="text/template" id="tmplt-activity-list-item">
     <li class="list-group-item-info container panel panel-default central-inner-control">
         <div class="panel-body">
+            <button type="button"
+                    class="btn btn-danger athena-activity-close-button athena-admin-control athena-super-admin-control">
+                关闭
+            </button>
             <div class="row">
                 <div class="col-md-6">
                     <span class="glyphicon glyphicon-calendar"></span>
@@ -105,17 +237,47 @@
                     地点：<%= location %>
                 </div>
             </div>
-            <div class="row athena-register-checklist panel panel-info">
+            <div class="row athena-register-checklist panel panel-info athena-admin-control athena-super-admin-control">
                 <div class="panel-body athena-activity-checkin-list">
                 </div>
             </div>
         </div>
     </li>
 </script>
-
+<script type="text/template" id="tmplt-user-input">
+    <li class="">
+        <input type="text" class="athena-user-input form-control " value="<%= username %>"/>
+        <div class="alert alert-danger alert-dismissible" role="alert" style="display:<%= error? 'inline': 'none' %>;">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                    class="sr-only">Close</span></button>
+            <strong><%= errorMsg %></strong>
+        </div>
+        <div class="panel panel-success athena-user-profile-label" style="display:<%= foundUser? 'inline':'none' %>;">
+            <label>
+                <img src="<%= icon_image %>" class="athena-inline-avatar"/>
+            </label>
+            <label class="athena-user-info-preview-label">
+                <span class="glyphicon glyphicon-user"></span><%= real_name %>
+            </label>
+            <label class="athena-user-info-preview-label">
+                <span class="glyphicon glyphicon-star"></span><%= school %>
+            </label>
+            <label class="athena-user-info-preview-label">
+                <span class="glyphicon glyphicon-th-large"></span><%= department %>
+            </label>
+        </div>
+        <button type="button" class="btn btn-info athena-user-push-input-entry"
+                style="display:<%= showAdd? 'inline':'none' %>;">更多用户
+        </button>
+        <button type="button" class="btn btn-info athena-user-pop-input-entry"
+                style="display:<%= showSub? 'inline':'none' %>;">减少用户
+        </button>
+    </li>
+</script>
 <script type="text/template" id="tmplt-administer-list-item">
     <li class="list-group-item-info container panel panel-default central-inner-control">
         <div class="panel-body">
+            <button type="button" class="btn btn-danger athena-administer-delete-button athena-admin-control" >删除</button>
             <div class="row">
                 <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
                 <div class="col-md-6">
@@ -137,9 +299,10 @@
 <script type="text/template" id="tmplt-participator-list-item">
     <li class="list-group-item-info container panel panel-default central-inner-control">
         <div class="panel-body">
+            <button type="button" class="btn btn-danger athena-participator-delete-button athena-admin-control">删除</button>
             <div class="row">
                 <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <span class="glyphicon glyphicon-calendar"></span>
                     <label class="athena-user-list-item-info">
                         用户名：<%= user %>
@@ -154,7 +317,7 @@
                 <div class="col-md-3">
                     <span class="glyphicon glyphicon-time"></span>
                     <label class="athena-user-list-item-info">
-                        出勤率：<%= rate * 100 %>%
+                        出勤率：<span class="athena-rate-span">100</span>%
                     </label>
                 </div>
             </div>
@@ -164,7 +327,15 @@
 <script type="text/template" id="tmplt-activity-user-checkin-item">
     <div class="col-md-3">
         <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
+        <img src="<%= icon_image? icon_image:'img/face.png' %>" class="athena-inline-avatar"/>
         <%= real_name %>
+    </div>
+</script>
+<script type="text/template" id="tmplt-box-info">
+    <div class="alert alert-<%= type %> alert-dismissible box-error-top" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <%= text %>
     </div>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
@@ -176,6 +347,7 @@
 <script src="js/profileByToken.js"></script>
 <script src="js/fetchProfileAndSetTopNav.js"></script>
 <script src="js/chrono.js"></script>
+<script src="js/Chart.min.js"></script>
 <script src="js/activity-group.js"></script>
 </body>
 </html>

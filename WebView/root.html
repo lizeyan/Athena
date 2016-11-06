@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--移动设备缩放控制-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The index page of the check-in system.">
+    <meta name="author" content="zy-li14@hotmail.com">
+    <title>Athena管理</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/signedin-navbar.css">
+    <link rel="stylesheet" href="css/root.css">
+</head>
+<body>
+<nav id='top-nav' class="navbar navbar-default" role="navigation">
+    <div class="container central-inner-control" id="top-nav-inner">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img id="img-brand" alt="签到" src="img/index/dragon.png">
+            </a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li id="athena-terminal-config-entry">
+                    <a href="root.html#terminal">配置终端</a>
+                </li>
+                <li id="athena-activity-group-config-entry">
+                    <a href="root.html#activity-group">配置活动组</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="new.html#activity_group">创建活动组</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="img/face.png" id="athena-top-nav-avatar" class="athena-top-nav-icon">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <!--<li><a href="#">主页</a></li>-->
+                        <!--<li><a href="settings.html">设置</a></li>-->
+                        <!--<li class="divider"></li>-->
+                        <li><a onclick="Logout ()">登出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+
+    </div><!-- /.container-fluid -->
+</nav>
+<div id="athena-terminal-config" class="center-inner-control">
+    <div class="page-header center-inner-control">
+        <h1>终端设置</h1>
+    </div>
+    <div class="list-group center-inner-control list-unstyled" id="athena-terminal-list-div">
+    </div>
+    <div class="center-inner-control" id="athena-new-terminal-div">
+        <h1>添加更多</h1>
+        <form id="athena-new-terminal-form">
+            <ul class="list-group list-unstyled" id="athena-new-terminal-input-list">
+            </ul>
+            <button type="submit" class="btn btn-success btn-lg" id="athena-new-terminal-submit">提交</button>
+        </form>
+    </div>
+</div>
+
+<div id="athena-activity-group-config" class="center-inner-control">
+    <ul id="athena-activity-group-list" class="list-unstyled list-group-item center-inner-control">
+
+    </ul>
+</div>
+
+
+<script type="text/template" id="tmplt-terminal-item">
+    <li class="list-group-item">
+        <form class="athena-terminal-item-form form-inline">
+            <span class="glyphicon-star glyphicon"></span>
+            <label class="athena-terminal-id-label">#<%= pk %></label>
+            <input type="text" class="form-control athena-terminal-location-input" value="<%= location %>"
+                   placeholder="终端设备的位置" required/>
+            <button type="submit" class="btn btn-info athena-terminal-update-button">更新</button>
+            <button type="button" class="btn btn-danger athena-terminal-delete-button">删除</button>
+        </form>
+    </li>
+</script>
+<script type="text/template" id="tmplt-new-terminal-input-item">
+    <li class="list-group-item">
+        <input type="text" class="athena-new-terminal-name-input form-control" placeholder="终端用户名" value="<%= name %>"
+               required/>
+        <input type="password" class="athena-new-terminal-password-input form-control" placeholder="密码"
+               value="<%= password %>" pattern=".{6,20}" required/>
+        <input type="text" class="athena-new-terminal-location-input form-control " placeholder="终端所在的地点"
+               value="<%= location %>" required/>
+        <button type="button" class="btn btn-info athena-terminal-push-input-entry"
+                style="display:<%= showAdd? 'inline':'none' %>;">更多终端
+        </button>
+        <button type="button" class="btn btn-info athena-terminal-pop-input-entry"
+                style="display:<%= showSub? 'inline':'none' %>;">减少终端
+        </button>
+    </li>
+</script>
+<script type="text/template" id="tmplt-activity-group">
+    <div class="list-group-item athena-activity-groupd-list-item">
+        <a target="_blank" href="activity-group.html#activities/<%= url %>"><%= activity_group_name %></a>
+        <span class="label label-default" style="display: <%= is_classes==true? 'inline':'none' %>;">课程</span>
+        <button class="btn-danger btn athena-activity-group-delete-button">删除</button>
+    </div>
+</script>
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/underscore-min.js"></script>
+<script src="js/backbone-min.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/js-cookie.js"></script>
+<script src="js/profileByToken.js"></script>
+<script src="js/fetchProfileAndSetTopNav.js"></script>
+<script src="js/root.js"></script>
+</body>
+</html>

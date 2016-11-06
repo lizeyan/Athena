@@ -1,7 +1,27 @@
 /**
  * Created by zy-li14 on 16-10-13.
  */
-
+//check superuser
+var UserModel = Backbone.Model.extend({
+    url: API_ROOT + "/users/?format=json",
+    parse: function (response) {
+        return response.results[0];
+    }
+});
+var userModel = new UserModel;
+function CheckSuperUser() {
+    userModel.fetch({
+        headers: {'Authorization': 'JWT ' + token},
+        success: function (model) {
+            if (model.get('is_superuser') == true) {
+                $("#athena-terminal-config-entry").css("display", "inline");
+            }
+        },
+        error: function () {
+        }
+    });
+}
+CheckSuperUser();
 //ErrorBox是显示错误信息的页面
 var InfoBox = Backbone.View.extend({
     tagName: 'div',
@@ -179,14 +199,113 @@ profile.fetch({
     },
     url: API_ROOT + '/profile/?format=json'
 });
+/********************************************
+ * face setting
+ */
+var FaceModel = Backbone.Model.extend({});
+var FaceLib = Backbone.Collection.extend({
+    url: API_ROOT + "/face/"
+});
+var faceLib = new FaceLib;
+var FaceItemView = Backbone.View.extend({
+    tagName: "li",
+    template: _.template($("#tmplt-face-item").html()),
+    events: {
+        'click .athena-face-delete-button': 'deleteFace'
+    },
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        this.$el.html(this.template({face_ID: this.model.get('face_ID'), face_image: this.model.get('face_image')}));
+        return this;
+    },
+    deleteFace: function () {
+        $.ajax({
+            type: "DELETE",
+            url: this.model.url,
+            headers: {'Authorization': 'JWT ' + token},
+            success: function () {
+                window.location.reload();
+            },
+            error: function (msg) {
+                infoList.append((new InfoBox).render({
+                    type: "danger",
+                    text: "删除人脸失败\n提示\n" + msg
+                }).$el.html());
+            }
+        });
+    }
+});
 
+var FaceSettingView = Backbone.View.extend({
+    el: $("#athena-face-setting"),
+    initialize: function () {
+        this.listenTo(profile, 'change', this.render);
+    },
+    events: {
+        "change #athena-face-input": "uploadFace"
+    },
+    render: function () {
+        var $faceList = $("#athena-face-list");
+        $faceList.empty();
+        _.each(profile.get('face'), function (face) {
+            var faceModel = new FaceModel;
+            faceModel.url = face.url;
+            faceModel.fetch({
+                headers: {'Authorization': 'JWT ' + token},
+            });
+            $faceList.append((new FaceItemView({model: faceModel})).render().$el);
+        }, this);
+        return this;
+    },
+    uploadFace: function (event) {
+        var faceFile = event.currentTarget.files[0];
+        if (faceFile.size > 1024 * 1024 * 2) {
+            infoList.append((new InfoBox).render({
+                type: "danger",
+                text: "上传人脸失败\n提示\n" + "图片过大"
+            }).$el.html());
+            return;
+        }
+        var formData = new FormData;
+        formData.append('face_image', faceFile);
+        faceLib.create(null, {
+            headers: {'Authorization': 'JWT ' + token},
+            error: function (model, response) {
+                infoList.append((new InfoBox).render({
+                    type: "danger",
+                    text: "上传人脸失败\n提示\n" + response.responseText
+                }).$el.html());
+            },
+            success: function () {
+                window.location.reload();
+            },
+            data: formData,
+            patch: true,
+            wait: true,
+            emulateJSON: true,
+            contentType: false,
+            processData: false
+        });
+    }
+});
+var faceSettingView = new FaceSettingView;
+
+//==========================================================
 $(function () {
     var Router = Backbone.Router.extend({
         routes: {
             "profile": "profile",
             "security": "security",
             "email": "email",
+            "face": "face",
             "*path": "profile"
+        },
+        face: function () {
+            this.deactivateAll();
+            faceSettingView.$el.show();
+            $("#athena-face-nav-item").addClass("active");
         },
         profile: function () {
             this.deactivateAll();
@@ -207,6 +326,7 @@ $(function () {
             profileView.$el.hide();
             securityView.$el.hide();
             emailView.$el.hide();
+            faceSettingView.$el.hide();
             _.each($("#athena-side-nav-list").children("li"), function (li) {
                 $(li).removeClass("active");
             });

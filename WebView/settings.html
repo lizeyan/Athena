@@ -30,6 +30,9 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <li id="athena-terminal-config-entry" style="display: none;">
+                    <a href="root.html">配置终端</a>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="img/plus.png" id="athena-top-nav-new" class="athena-top-nav-icon">
@@ -68,6 +71,7 @@
                         <li role="presentation" id="athena-profile-nav-item"><a href="#profile">个人简介</a></li>
                         <li role="presentation" id="athena-security-nav-item"><a href="#security">安全</a></li>
                         <li role="presentation" id="athena-email-nav-item"><a href="#email">电子邮件</a></li>
+                        <li role="presentation" id="athena-face-nav-item"><a href="#face">人脸管理</a></li>
                     </ul>
                 </div>
             </div>
@@ -117,9 +121,27 @@
             </div>
             <div id="athena-email-setting" class="panel panel-default">
             </div>
+            <div id="athena-face-setting" class="panel panel-default">
+                <ul class="list-group list-unstyled panel-body" id="athena-face-list">
+                </ul>
+                <div id="athena-face-upload" class="">
+                    <a id="athena-face-upload-btn" class="btn btn-primary">
+                        上传人脸
+                        <input id="athena-face-input" type="file" accept="image/*"/>
+                    </a>
+                    <p class="text-comment">图片大小不超过2M</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<script type="text/template" id="tmplt-face-item">
+    <li class="list-group-item">
+        ID:<label class="athena-face-id"><%= face_ID %></label>
+        <img src="<%= face_image %>" class="athena-face-img"/>
+        <button class="btn btn-danger athena-face-delete-button">删除</button>
+    </li>
+</script>
 <script type="text/template" id="tmplt-box-info">
     <div class="alert alert-<%= type %> alert-dismissible box-error-top" role="alert">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
