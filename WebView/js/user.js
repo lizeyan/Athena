@@ -250,9 +250,90 @@ var ActivityPin = Backbone.View.extend({
         return this;
     }
 });
+var AdminActivityPin = Backbone.View.extend({
+    tagName: "div",
+    template: _.template($("#tmplt-admin-activity-pin").html()),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        var beginDate = new Date(this.model.get('begin_time'));
+        var endDate = new Date(this.model.get('end_time'));
+        beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
+        endDate = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
+        var type = "";
+        var msg = "";
+        var showMsg = false;
+        var showStatistics = false;
+        var duration = (new Date().getTime()) - beginDate.getTime();
+        var endDuration = (new Date().getTime()) - endDate.getTime();
+        if (duration >= 0) {
+            showStatistics = true;
+            if (endDuration >= 0) {
+                type = "info";
+                msg = "已结束";
+                showMsg = true;
+            }
+            started = true;
+            registerLib.fetch({
+                headers: {'Authorization': 'JWT ' + token},
+                success: _.bind(function (collection, response) {
+                    this.$el.html(this.template({
+                        activity_group_url: this.model.get('activity_group').url,
+                        activity_group_name: this.model.get('activity_group').activity_group_name,
+                        location: this.model.get('location'),
+                        start_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
+                        spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
+                        done: response.count,
+                        all: 100,
+                        type: type,
+                        msg: msg,
+                        showMsg: showMsg,
+                        showStatistics: showStatistics
+                    }));
+                }, this),
+                data: $.param({activity_id: this.model.get("pk")})
+            });
+        }
+        else {
+            showMsg = true;
+            if (duration > -86400000) {
+                type = "warning";
+                msg = "即将开始";
+            }
+            else {
+                type = "info";
+                msg = "尚未开始";
+            }
+            this.$el.html(this.template({
+                activity_group_url: this.model.get('activity_group').url,
+                activity_group_name: this.model.get('activity_group').activity_group_name,
+                location: this.model.get('location'),
+                start_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
+                spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
+                type: type,
+                msg: msg,
+                started: started,
+                done: null,
+                all: null,
+                showMsg: showMsg,
+                showStatistics: showStatistics
+            }));
+        }
+        return this;
+    }
+});
 var RecentActivityView = Backbone.View.extend({
     el: $('#athena-overview-recent-activity-list'),
     initialize: function () {
+        this.$header = $("#athena-overview-recent-activity-list-header");
+        this.$header.find(".athena-collapse-span").hide();
+        this.$el.on('shown.bs.collapse', _.bind(function () {
+            this.$header.find(".athena-collapse-span").hide();
+        }, this));
+        this.$el.on('hidden.bs.collapse', _.bind(function () {
+            this.$header.find(".athena-collapse-span").show();
+        }, this));
         this.listenTo(this.model, 'change', this.render);
     },
     render: function () {
@@ -285,10 +366,73 @@ var RecentActivityView = Backbone.View.extend({
         return this;
     }
 });
+var RecentAdminActivityView = Backbone.View.extend({
+    el: $('#athena-overview-recent-admin-activity-list'),
+    initialize: function () {
+        this.$header = $("#athena-overview-recent-admin-activity-list-header");
+        this.$header.find(".athena-collapse-span").hide();
+        this.$el.on('shown.bs.collapse', _.bind(function () {
+            this.$header.find(".athena-collapse-span").hide();
+        }, this));
+        this.$el.on('hidden.bs.collapse', _.bind(function () {
+            this.$header.find(".athena-collapse-span").show();
+        }, this));
+        this.listenTo(this.model, 'change', this.render);
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        var activityLib = new ActivityLib;
+        activityLib.fetch({
+            headers: {'Authorization': 'JWT ' + token},
+            success: _.bind(function () {
+                this.$el.empty();
+                activityLib.models.sort(function (a, b) {
+                    var x = (new Date(a.get('begin_time'))).getTime() - (new Date()).getTime();
+                    var y = (new Date(b.get('begin_time'))).getTime() - (new Date()).getTime();
+                    if (Math.abs(x) > Math.abs(y))
+                        return 1;
+                    else
+                        return -1;
+                });
+                var list = activityLib.models.slice(0, 6);
+                list.sort(function (a, b) {
+                    if ((new Date(a.get('begin_time'))).getTime() < (new Date(b.get('begin_time'))).getTime())
+                        return -1;
+                    else
+                        return 1;
+                });
+                _.each(list, function (model) {
+                    this.$el.append((new AdminActivityPin({model: model})).render().$el);
+                }, this);
+            }, this)
+        });
+    }
+});
 var OverView = Backbone.View.extend({
     el: $("#athena-overview-div"),
     initialize: function () {
+        var $totalGraphHeader = $("#athena-activity-total-graph-header");
+        var $totalGraph = $("#athena-activity-total-graph");
+        $totalGraphHeader.find(".athena-collapse-span").hide();
+        $totalGraph.on('shown.bs.collapse', _.bind(function () {
+            $totalGraphHeader.find(".athena-collapse-span").hide();
+        }, this));
+        $totalGraph.on('hidden.bs.collapse', _.bind(function () {
+            $totalGraphHeader.find(".athena-collapse-span").show();
+        }, this));
+        var $agGraphHeader = $("#athena-activity-group-statistics-graph-header");
+        var $agGraph = $("#athena-activity-group-statistics-graph");
+        $agGraphHeader.find(".athena-collapse-span").hide();
+        $agGraph.on('shown.bs.collapse', _.bind(function () {
+            $agGraphHeader.find(".athena-collapse-span").hide();
+        }, this));
+        $agGraph.on('hidden.bs.collapse', _.bind(function () {
+            $agGraphHeader.find(".athena-collapse-span").show();
+        }, this));
+        this.listenTo(this.model, 'change', this.render);
+        this.listenTo(this.model, 'change', this.render);
         this.recentActivityView = new RecentActivityView({model: this.model});
+        this.recentAdminActivityView = new RecentAdminActivityView({model: this.model});
         this.listenTo(this.model, "change", this.render);
     },
     render: function () {

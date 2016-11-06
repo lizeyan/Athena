@@ -79,26 +79,42 @@
                 <li role="presentation" id="athena-main-nav-normal"><a href="#normal-activity-group">参与</a></li>
             </ul>
             <div id="athena-overview-div">
-                <ul class="nav nav-pills" role="tablist">
-                    <li role="presentation"><a href="#athena-overview-recent-activity-list">最近活动</a></li>
-                    <li role="presentation"><a href="#athena-activity-total-graph">签到统计</a></li>
-                    <!--<li role="presentation"><a href="#athena-activity-group-statistics-graph">活动组统计</a></li>-->
-                </ul>
+                <!--<ul class="nav nav-pills" role="tablist">-->
+                <!--<li role="presentation"><a href="#athena-overview-recent-activity-list">最近活动</a></li>-->
+                <!--<li role="presentation"><a href="#athena-activity-total-graph">签到统计</a></li>-->
+                <!--&lt;!&ndash;<li role="presentation"><a href="#athena-activity-group-statistics-graph">活动组统计</a></li>&ndash;&gt;-->
+                <!--</ul>-->
                 <dl>
                     <dt>
-                    <p class="page-header athena-overview-header">最近的活动</p>
-                    </dt>
+                    <p class="page-header athena-overview-header" data-toggle="collapse"
+                       data-target="#athena-overview-recent-activity-list" aria-expanded="true"
+                       id="athena-overview-recent-activity-list-header">最近参加的活动<span
+                            class="caret athena-collapse-span"></span></p>
                     <dd>
-                        <div class="row" id="athena-overview-recent-activity-list">
+                        <div class="row collapse in" id="athena-overview-recent-activity-list">
                         </div>
                     </dd>
                 </dl>
                 <dl>
                     <dt>
-                    <p class="page-header athena-overview-header">签到统计</p>
+                    <p class="page-header athena-overview-header" data-toggle="collapse"
+                       data-target="#athena-overview-recent-admin-activity-list"
+                       id="athena-overview-recent-admin-activity-list-header">最近举办的活动<span
+                            class="caret athena-collapse-span"></span></p>
                     </dt>
                     <dd>
-                        <canvas id="athena-activity-total-graph"></canvas>
+                        <div class="row collapse in" id="athena-overview-recent-admin-activity-list">
+                        </div>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>
+                    <p class="page-header athena-overview-header" data-toggle="collapse"
+                       data-target="#athena-activity-total-graph" id="athena-activity-total-graph-header">签到统计<span
+                            class="caret athena-collapse-span"></span></p>
+                    </dt>
+                    <dd>
+                        <canvas id="athena-activity-total-graph" class="collapse in"></canvas>
                     </dd>
                 </dl>
             </div>
@@ -107,10 +123,13 @@
                 </div>
                 <dl id="athena-activity-group-statistics">
                     <dt>
-                    <p class="page-header athena-overview-header">活动组统计</p>
+                    <p class="page-header athena-overview-header" data-toggle="collapse"
+                       data-target="#athena-activity-group-statistics-graph"
+                       id="athena-activity-group-statistics-graph-header">活动组统计<span
+                            class="caret athena-collapse-span"></span></p>
                     </dt>
                     <dd>
-                        <canvas id="athena-activity-group-statistics-graph"></canvas>
+                        <canvas id="athena-activity-group-statistics-graph" class="collapse in"></canvas>
                     </dd>
                 </dl>
             </div>
@@ -132,6 +151,21 @@
         <label class="athena-activity-pin-end-time">时长：<%= spense_time %></label>
         <br/>
         <label class="alert-<%= type %>"><%= msg %></label>
+    </div>
+</script>
+<script type="text/template" id="tmplt-admin-activity-pin">
+    <div class="panel panel-default col-md-5 athena-overview-recent-activity-pin">
+        <label class="athena-activity-pin-group-name"><a
+                href="activity-group.html#activities/<%= activity_group_url %>"><%= activity_group_name %></a></label>
+        <label class="athena-activity-pin-location"><%= location %></label>
+        <br/>
+        <label class="athena-activity-pin-start-time">开始：<%= start_time %></label>
+        <br/>
+        <label class="athena-activity-pin-end-time">时长：<%= spense_time %></label>
+        <br/>
+        <label class="alert-<%= type %>" style="display: <%= showMsg?'inline-block':'none'%>;"><%= msg %></label>
+        <label class="athena-activity-pin-register-info" style="display: <%= showStatistics?'inherit':'none'%>;">出勤统计:<%=
+            done %>/<%= all %></label>
     </div>
 </script>
 <script type="text/template" id="tmplt-namecard">
