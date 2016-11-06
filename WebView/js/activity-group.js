@@ -80,8 +80,8 @@ var RateByPersonModel = Backbone.Model.extend({
     }
 });
 var rateByPersonModel = new RateByPersonModel;
-var RateActivityGraph = Backbone.View.extend ({
-    el: $("#athena-rate-activity-graph"),
+var RateActivityGraphView = Backbone.View.extend({
+    el: $("#athena-rate-activity-graph-div"),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     },
@@ -92,7 +92,7 @@ var RateActivityGraph = Backbone.View.extend ({
             else
                 return 1;
         });
-        var chart = new Chart (document.getElementById("athena-rate-activity-graph"), {
+        this.chart = new Chart(document.getElementById("athena-rate-activity-graph"), {
             type: 'line',
             data: {
                 labels: _.pluck(this.model.get('data'), 'label'),
@@ -136,14 +136,58 @@ var RateActivityGraph = Backbone.View.extend ({
         return this;
     }
 });
-var rateActivityGraph = new RateActivityGraph ({model: rateByActivityModel});
-var RateByPersonGraph = Backbone.View.extend({
-    el: $("#athena-rate-person-graph"),
+var rateActivityGraph = new RateActivityGraphView({model: rateByActivityModel});
+var RateByPersonGraphView = Backbone.View.extend({
+    el: $("#athena-rate-person-graph-div"),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     },
+    events: {
+        "click #athena-rate-person-graph-sort-name": 'sortName',
+        "click #athena-rate-person-graph-sort-rate": 'sortRate',
+        "click #athena-rate-person-graph-sort-shuffle": 'sortShuffle'
+    },
+    deactiveAll: function () {
+        $("#athena-rate-person-graph-sort-name").removeClass("active");
+        $("#athena-rate-person-graph-sort-rate").removeClass("active");
+        $("#athena-rate-person-graph-sort-shuffle").removeClass("active");
+    },
+    sortName: function () {
+        this.deactiveAll();
+        $("#athena-rate-person-graph-sort-name").addClass("active");
+        if (this.chart) {
+            this.model.get('data').sort(function (a, b) {
+                return a.user_name > b.user_name;
+            });
+            this.chart.data.labels = _.pluck(this.model.get('data'), 'user_name');
+            this.chart.data.datasets[0].data = _.pluck(this.model.get('data'), 'rate');
+            this.chart.update();
+        }
+    },
+    sortRate: function () {
+        this.deactiveAll();
+        $("#athena-rate-person-graph-sort-rate").addClass("active");
+        if (this.chart) {
+            this.model.get('data').sort(function (a, b) {
+                return a.rate < b.rate;
+            });
+            this.chart.data.labels = _.pluck(this.model.get('data'), 'user_name');
+            this.chart.data.datasets[0].data = _.pluck(this.model.get('data'), 'rate');
+            this.chart.update();
+        }
+    },
+    sortShuffle: function () {
+        this.deactiveAll();
+        $("#athena-rate-person-graph-sort-shuffle").addClass("active");
+        if (this.chart) {
+            this.model.set('data', _.shuffle(this.model.get('data')));
+            this.chart.data.labels = _.pluck(this.model.get('data'), 'user_name');
+            this.chart.data.datasets[0].data = _.pluck(this.model.get('data'), 'rate');
+            this.chart.update();
+        }
+    },
     render: function () {
-        var chart = new Chart(this.$el, {
+        this.chart = new Chart($("#athena-rate-person-graph").get(), {
             type: 'bar',
             data: {
                 labels: _.pluck(this.model.get('data'), 'user_name'),
@@ -186,7 +230,7 @@ var RateByPersonGraph = Backbone.View.extend({
         return this;
     }
 });
-var rateByPersonGraph = new RateByPersonGraph({model: rateByPersonModel});
+var rateByPersonGraph = new RateByPersonGraphView({model: rateByPersonModel});
 var ActivityUserCheckinItem = Backbone.View.extend({
     tagName: "div",
     template: _.template($("#tmplt-activity-user-checkin-item").html()),

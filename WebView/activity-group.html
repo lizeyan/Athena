@@ -65,7 +65,8 @@
         <button class="btn btn-danger athena-super-admin-control" id="athena-activity-group-close-button"
                 data-toggle="modal" data-target="#athena-activity-group-close-modal">关闭活动组
         </button>
-        <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button" href="#athena-activity-group-statistic">统计</a>
+        <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button"
+           href="#athena-activity-group-statistic">统计</a>
     </div>
     <div class="central-inner-control" id="athena-activity-group-title">
     </div>
@@ -112,8 +113,23 @@
     </div>
     <div class="athena-admin-control" id="athena-activity-group-statistic">
         <h2 class="page-header">统计</h2>
-        <canvas id="athena-rate-activity-graph" ></canvas>
-        <canvas id="athena-rate-person-graph"></canvas>
+        <div id="athena-rate-activity-graph-div" class="panel panel-default">
+            <canvas id="athena-rate-activity-graph" class="panel-body"></canvas>
+        </div>
+        <div id="athena-rate-person-graph-div" class="panel panel-default">
+            <canvas id="athena-rate-person-graph" class="panel-body"></canvas>
+            <div class="panel-footer">
+                <!--<div class="btn-group">-->
+                <!--<button class="btn btn-default" id="athena-rate-person-graph-sort-name">姓名</button>-->
+                <!--<button class="btn btn-default" id="athena-rate-person-graph-sort-rate">出勤率</button>-->
+                <!--</div>-->
+                <ul class="nav nav-pills nav-justified" role="tablist" style="display: inline-block;">
+                    <li role="presentation" class="active" id="athena-rate-person-graph-sort-name"><a>姓名</a></li>
+                    <li role="presentation" id="athena-rate-person-graph-sort-rate"><a>出勤率</a></li>
+                    <li role="presentation" id="athena-rate-person-graph-sort-shuffle"><a>随机</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 <!-- Button trigger modal -->
@@ -175,7 +191,8 @@
                             <label>循环次数</label>
                         </dt>
                         <dd>
-                            <input class="form-control" id="athena-new-activity-repeat-times-input" pattern="[1-9][0-9]*" value="1" disabled="true" required/>
+                            <input class="form-control" id="athena-new-activity-repeat-times-input"
+                                   pattern="[1-9][0-9]*" value="1" disabled="true" required/>
                         </dd>
                     </dl>
                 </div>
@@ -189,19 +206,24 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="athena-activity-group-close-modal" tabindex="-1" role="dialog" aria-labelledby="closeModal" aria-hidden="true">
+<div class="modal fade" id="athena-activity-group-close-modal" tabindex="-1" role="dialog" aria-labelledby="closeModal"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" >你确定要删除活动组么？</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">你确定要删除活动组么？</h4>
             </div>
             <div class="modal-body">
-                <input class="form-control" type="text" placeholder="输入活动组名称以确认" id="athena-activity-group-close-confirm-input" required/>
+                <input class="form-control" type="text" placeholder="输入活动组名称以确认"
+                       id="athena-activity-group-close-confirm-input" required/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="athena-activity-group-close-confirm-button" data-dismiss="modal">确认</button>
+                <button type="button" class="btn btn-primary" id="athena-activity-group-close-confirm-button"
+                        data-dismiss="modal">确认
+                </button>
             </div>
         </div>
     </div>
@@ -277,7 +299,8 @@
 <script type="text/template" id="tmplt-administer-list-item">
     <li class="list-group-item-info container panel panel-default central-inner-control">
         <div class="panel-body">
-            <button type="button" class="btn btn-danger athena-administer-delete-button athena-admin-control" >删除</button>
+            <button type="button" class="btn btn-danger athena-administer-delete-button athena-admin-control">删除
+            </button>
             <div class="row">
                 <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
                 <div class="col-md-6">
@@ -299,7 +322,8 @@
 <script type="text/template" id="tmplt-participator-list-item">
     <li class="list-group-item-info container panel panel-default central-inner-control">
         <div class="panel-body">
-            <button type="button" class="btn btn-danger athena-participator-delete-button athena-admin-control">删除</button>
+            <button type="button" class="btn btn-danger athena-participator-delete-button athena-admin-control">删除
+            </button>
             <div class="row">
                 <img class="user-list-item-avatar" src="<%= image? image: 'img/face.png' %>"/>
                 <div class="col-md-3">
