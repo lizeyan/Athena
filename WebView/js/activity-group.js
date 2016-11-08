@@ -239,6 +239,24 @@ var ActivityUserCheckinItem = Backbone.View.extend({
         return this;
     }
 });
+var ActivityMyCheckInView = Backbone.View.extend({
+    template: _.template($("#tmplt-me-register-status-panel").html()),
+    initialize: function () {
+    },
+    render: function () {
+        this.$el.html(this.template({check: false}));
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            type: 'GET',
+            url: API_ROOT + "/register_log/",
+            data: $.param({activity_id: this.activity_id, user_id: userModel.get('pk')}),
+            success: _.bind(function (response) {
+                this.$el.html(this.template({check: response.count > 0}))
+            }, this)
+        });
+        return this;
+    }
+});
 var ActivityListItem = Backbone.View.extend({
     tagName: "li",
     template: _.template($("#tmplt-activity-list-item").html()),
@@ -279,6 +297,9 @@ var ActivityListItem = Backbone.View.extend({
         info_panel.on('shown.bs.collapse', _.bind(function () {
             info_panel.children().show();
         }, this));
+        var me_check = new ActivityMyCheckInView;
+        me_check.activity_id = this.model.pk;
+        this.$el.find(".athena-me-register-div")[0].appendChild(me_check.render().el);
         return this;
     },
     closeActivity: function () {
