@@ -236,11 +236,17 @@
     </h3>
 </script>
 <script type="text/template" id="tmplt-activity-list-item">
-    <li class="list-group-item-info container panel panel-default central-inner-control">
+    <li class="list-group-item-info container panel panel-default central-inner-control"
+        id="athena-activity-list-item-<%= activity_id %>">
         <div class="panel-body">
             <button type="button"
-                    class="btn btn-danger athena-activity-close-button athena-admin-control athena-super-admin-control">
+                    class="btn btn-danger athena-activity-close-button athena-super-admin-control">
                 关闭
+            </button>
+            <button type="button"
+                    class="btn btn-warning athena-activity-info-button athena-admin-control athena-super-admin-control"
+                    data-toggle="collapse" data-target="#athena-register-checklist-<%= activity_id %>">
+                详细信息
             </button>
             <div class="row">
                 <div class="col-md-6">
@@ -259,7 +265,8 @@
                     地点：<%= location %>
                 </div>
             </div>
-            <div class="row athena-register-checklist panel panel-info athena-admin-control athena-super-admin-control">
+            <div class="row athena-register-checklist panel panel-info athena-admin-control athena-super-admin-control collapse in"
+                 id="athena-register-checklist-<%= activity_id %>">
                 <div class="panel-body athena-activity-checkin-list">
                 </div>
             </div>

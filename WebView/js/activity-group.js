@@ -257,6 +257,7 @@ var ActivityListItem = Backbone.View.extend({
         beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
         endDate = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
         this.$el.html(this.template({
+            activity_id: this.model.pk,
             location: this.model.location,
             begin_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
             spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString()
@@ -271,6 +272,13 @@ var ActivityListItem = Backbone.View.extend({
             }, this),
             data: $.param({activity_id: this.model.pk})
         });
+        var info_panel = $(this.$el.find(".athena-register-checklist"));
+        info_panel.on('hidden.bs.collapse', _.bind(function () {
+            info_panel.children().hide();
+        }, this));
+        info_panel.on('shown.bs.collapse', _.bind(function () {
+            info_panel.children().show();
+        }, this));
         return this;
     },
     closeActivity: function () {

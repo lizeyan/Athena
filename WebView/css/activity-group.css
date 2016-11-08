@@ -39,7 +39,7 @@
     min-width: 10em;
 }
 
-.athena-activity-close-button, .athena-administer-delete-button, .athena-participator-delete-button {
+.athena-activity-close-button, .athena-administer-delete-button, .athena-participator-delete-button, .athena-activity-info-button {
     float: right;
 }
 
