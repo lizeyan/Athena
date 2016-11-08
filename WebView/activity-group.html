@@ -66,7 +66,7 @@
                 data-toggle="modal" data-target="#athena-activity-group-close-modal">关闭活动组
         </button>
         <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button"
-           href="#athena-activity-group-statistic">统计</a>
+           href="#athena-activity-group-statistic">统计文档</a>
     </div>
     <div class="central-inner-control" id="athena-activity-group-title">
     </div>
@@ -76,6 +76,8 @@
             <li role="presentation" id="athena-activity-group-main-nav-participator"><a href="#participators">参与者</a>
             </li>
             <li role="presentation" id="athena-activity-group-main-nav-administer"><a href="#administers">管理员</a></li>
+            <li role="presentation" id="athena-activity-group-main-nav-statistics"><a href="#statistics">统计</a></li>
+
         </ul>
     </div>
 </div>
@@ -111,23 +113,33 @@
             添加管理员
         </button>
     </div>
-    <div class="athena-admin-control" id="athena-activity-group-statistic">
-        <h2 class="page-header">统计</h2>
-        <div id="athena-rate-activity-graph-div" class="panel panel-default">
-            <canvas id="athena-rate-activity-graph" class="panel-body"></canvas>
-        </div>
-        <div id="athena-rate-person-graph-div" class="panel panel-default">
-            <canvas id="athena-rate-person-graph" class="panel-body"></canvas>
-            <div class="panel-footer">
-                <!--<div class="btn-group">-->
-                <!--<button class="btn btn-default" id="athena-rate-person-graph-sort-name">姓名</button>-->
-                <!--<button class="btn btn-default" id="athena-rate-person-graph-sort-rate">出勤率</button>-->
-                <!--</div>-->
+    <div class="central-inner-control" id="athena-activity-group-statistics">
+        <div class="athena-admin-control" id="athena-admin-activity-group-statistics">
+            <h2 class="page-header">统计</h2>
+            <div id="athena-rate-activity-graph-div" class="panel panel-default">
+                <canvas id="athena-rate-activity-graph" class="panel-body"></canvas>
+                <label for="athena-rate-activity-graph" class="text-center graph-title panel-footer">
+                    活动出勤率统计折线图
+                </label>
+            </div>
+            <div id="athena-rate-person-graph-div" class="panel panel-default">
+                <div class="panel-body">
+                    <canvas id="athena-rate-person-graph" class=""></canvas>
+                </div>
+                <label for="athena-rate-person-graph" class="text-center graph-title panel-footer">
+                    用户出勤率统计图
+                </label>
                 <ul class="nav nav-pills nav-justified" role="tablist" style="display: inline-block;">
                     <li role="presentation" class="active" id="athena-rate-person-graph-sort-name"><a>姓名</a></li>
                     <li role="presentation" id="athena-rate-person-graph-sort-rate"><a>出勤率</a></li>
                     <li role="presentation" id="athena-rate-person-graph-sort-shuffle"><a>随机</a></li>
                 </ul>
+            </div>
+        </div>
+        <div id="athena-normal-activity-group-statistics" class="athena-participator-control">
+            <div class="panel panel-default">
+                <canvas class="panel-body" id="athena-register-activity-graph"></canvas>
+                <label for="athena-register-activity-graph" class="graph-title panel-footer">出勤统计图</label>
             </div>
         </div>
     </div>

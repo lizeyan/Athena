@@ -785,10 +785,12 @@ var Router = Backbone.Router.extend({
         "administers/*path": "showAdministerList",
         "participators/*path": "showParticipatorList",
         "settings/*path": "showSettings",
+        "statistics/*path": "showStatistics",
         "activities": "showActivityList",
         "administers": "showAdministerList",
         "settings": "showSettings",
-        "participators": "showParticipatorList"
+        "participators": "showParticipatorList",
+        "statistics": "showStatistics"
     },
     viewUrl: function (agUrl) {
         activityGroup.url = agUrl;
@@ -805,11 +807,16 @@ var Router = Backbone.Router.extend({
                 if (iAmAdminister) {
                     $('.athena-admin-control').css('display', 'inherit');
                 }
+                else {
+                    $(".athena-participator-control").css('display', 'inherit');
+                    rateByPersonGraph.stopListening();
+                    rateActivityGraph.stopListening();
+                }
                 if (course == false) {
                     $('.athena-super-admin-control').css('display', 'inherit');
                 }
             },
-            error: function (model, response) {
+            error: function () {
                 window.location = "user.html";
             },
             reset: true
@@ -823,6 +830,7 @@ var Router = Backbone.Router.extend({
         administerList.$el.hide();
         participatorList.$el.hide();
         $('#athena-new-activity-modal-button').hide();
+        $("#athena-activity-group-statistics").hide();
         $('#athena-new-participator-button').hide();
         $('#athena-new-administer-button').hide();
         $('#athena-user-input-div').hide();
@@ -833,17 +841,26 @@ var Router = Backbone.Router.extend({
             window.location = "#settings/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         $('#athena-activity-group-settings-div').show();
+    },
+    showStatistics: function (agUrl) {
+        if (agUrl == null) {
+            window.location = "#statistics/" + activityGroup.url;
+            return;
+        }
+        this.viewUrl(agUrl);
+        this.deactivateAll();
+        $('#athena-activity-group-statistics').show();
     },
     showActivityList: function (agUrl) {
         if (agUrl == null) {
             window.location = "#activities/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         activityList.$el.show();
         $('#athena-new-activity-modal-button').show();
         $('#athena-activity-group-main-nav-activity').addClass('active');
@@ -853,8 +870,8 @@ var Router = Backbone.Router.extend({
             window.location = "#administers/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         administerList.$el.show();
         $('#athena-new-administer-button').show();
         $('#athena-user-input-div').show();
@@ -865,8 +882,8 @@ var Router = Backbone.Router.extend({
             window.location = "#participators/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         participatorList.$el.show();
         $('#athena-user-input-div').show();
         $('#athena-new-participator-button').show();
