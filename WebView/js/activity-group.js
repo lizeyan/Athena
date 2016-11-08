@@ -74,6 +74,12 @@ var RateByActivityModel = Backbone.Model.extend ({
     }
 });
 var rateByActivityModel = new RateByActivityModel;
+var ActivityParticipatorModel = Backbone.Model.extend({
+    defaults: {
+        data: new Object({todo: 0, pass: 0, fail: 0})
+    }
+});
+var activityParticipatorModel = new ActivityParticipatorModel;
 var RateByPersonModel = Backbone.Model.extend({
     defaults: {
         data: new Array
@@ -137,6 +143,39 @@ var RateActivityGraphView = Backbone.View.extend({
     }
 });
 var rateActivityGraph = new RateActivityGraphView({model: rateByActivityModel});
+var RegisterActivityGraphView = Backbone.View.extend({
+    el: $("#athena-register-activity-graph"),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        this.chart = new Chart($("#athena-register-activity-graph"), {
+            type: 'pie',
+            data: {
+                labels: [
+                    "未开始",
+                    "未签到",
+                    "已签到"
+                ],
+                datasets: [
+                    {
+                        data: [this.model.get('data').todo, this.model.get('data').fail, this.model.get('data').pass],
+                        backgroundColor: [
+                            "#FF6384",
+                            "#36A2EB",
+                            "#FFCE56"
+                        ],
+                        hoverBackgroundColor: [
+                            "#FF6384",
+                            "#36A2EB",
+                            "#FFCE56"
+                        ]
+                    }]
+            }
+        });
+    }
+});
+var registerActivityGraph = new RegisterActivityGraphView({model: activityParticipatorModel});
 var RateByPersonGraphView = Backbone.View.extend({
     el: $("#athena-rate-person-graph-div"),
     initialize: function () {
@@ -241,19 +280,8 @@ var ActivityUserCheckinItem = Backbone.View.extend({
 });
 var ActivityMyCheckInView = Backbone.View.extend({
     template: _.template($("#tmplt-me-register-status-panel").html()),
-    initialize: function () {
-    },
-    render: function () {
-        this.$el.html(this.template({check: false}));
-        $.ajax({
-            headers: {'Authorization': 'JWT ' + token},
-            type: 'GET',
-            url: API_ROOT + "/register_log/",
-            data: $.param({activity_id: this.activity_id, user_id: userModel.get('pk')}),
-            success: _.bind(function (response) {
-                this.$el.html(this.template({check: response.count > 0}))
-            }, this)
-        });
+    render: function (args) {
+        this.$el.html(this.template({check: args.check}));
         return this;
     }
 });
@@ -274,6 +302,12 @@ var ActivityListItem = Backbone.View.extend({
         var endDate = new Date(this.model.end_time);
         beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
         endDate = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
+        if (beginDate.getTime() < (new Date()).getTime())
+            this.started = true;
+        else {
+            this.started = false;
+            activityParticipatorModel.get('data').todo += 1;
+        }
         this.$el.html(this.template({
             activity_id: this.model.pk,
             location: this.model.location,
@@ -288,7 +322,7 @@ var ActivityListItem = Backbone.View.extend({
             success: _.bind(function (collection) {
                 this.createUserCheckinList(collection);
             }, this),
-            data: $.param({activity_id: this.model.pk})
+            data: $.param({activity_id: this.model.pk, user_id: userModel.get('pk')})
         });
         var info_panel = $(this.$el.find(".athena-register-checklist"));
         info_panel.on('hidden.bs.collapse', _.bind(function () {
@@ -297,9 +331,6 @@ var ActivityListItem = Backbone.View.extend({
         info_panel.on('shown.bs.collapse', _.bind(function () {
             info_panel.children().show();
         }, this));
-        var me_check = new ActivityMyCheckInView;
-        me_check.activity_id = this.model.pk;
-        this.$el.find(".athena-me-register-div")[0].appendChild(me_check.render().el);
         return this;
     },
     closeActivity: function () {
@@ -337,11 +368,24 @@ var ActivityListItem = Backbone.View.extend({
         }, this);
         // alert (JSON.stringify(rateByActivityModel));
         rateByActivityModel.get('data').push(new Object({label:(new Date(this.model.begin_time)).toLocaleDateString(), rate: attendanceCnt}));
-        if (rateByActivityModel.get('data').length == activityGroup.get('activity').length)
+        if (rateByActivityModel.get('data').length == activityGroup.get('activity').length) {
+            activityParticipatorModel.trigger('change');
             rateByActivityModel.trigger('change');
+        }
         _.each(this.check_list, function (entry) {
             $checkList.append((new ActivityUserCheckinItem).render(entry.real_name, entry.checked, entry.icon_image).$el);
         });
+        try {
+            if (this.started) {
+                if (this.check_list[userModel.get('username')].checked)
+                    activityParticipatorModel.get('data').pass += 1;
+                else
+                    activityParticipatorModel.get('data').fail += 1;
+            }
+            this.$el.find(".athena-me-register-div")[0].appendChild((new ActivityMyCheckInView).render({check: this.check_list[userModel.get('username')].checked}).el);
+        }
+        catch (e) {
+        }
     }
 });
 var ActivityList = Backbone.View.extend({
@@ -354,6 +398,7 @@ var ActivityList = Backbone.View.extend({
         this.$el.empty();
         var userList = this.model.get('normal_user');
         //render and
+        activityParticipatorModel.set('data', {todo: 0, pass: 0, fail: 0});
         _.each(this.model.get('activity'), function (activity) {
             this.$el.append((new ActivityListItem({model: activity})).render(userList).$el);
         }, this);
@@ -814,6 +859,9 @@ var Router = Backbone.Router.extend({
         "statistics": "showStatistics"
     },
     viewUrl: function (agUrl) {
+        if (this.agUrl && this.agUrl == agUrl)
+            return;
+        this.agUrl = agUrl;
         activityGroup.url = agUrl;
         activityGroup.fetch({
             headers: {'Authorization': 'JWT ' + token},
