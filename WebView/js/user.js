@@ -270,29 +270,30 @@ var AdminActivityPin = Backbone.View.extend({
         if (duration >= 0) {
             showStatistics = true;
             if (endDuration >= 0) {
-                type = "info";
+                type = "success";
                 msg = "已结束";
                 showMsg = true;
             }
-            started = true;
-            registerLib.fetch({
+            $.ajax({
                 headers: {'Authorization': 'JWT ' + token},
-                success: _.bind(function (collection, response) {
+                type: 'GET',
+                url: API_ROOT + '/activity/register_log_statistics/',
+                data: $.param({activity_id: this.model.get('pk')}),
+                success: _.bind(function (response) {
                     this.$el.html(this.template({
                         activity_group_url: this.model.get('activity_group').url,
                         activity_group_name: this.model.get('activity_group').activity_group_name,
                         location: this.model.get('location'),
                         start_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
                         spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
-                        done: response.count,
-                        all: 100,
+                        done: response['actually_register_size'],
+                        all: response['need_register_size'],
                         type: type,
                         msg: msg,
                         showMsg: showMsg,
                         showStatistics: showStatistics
                     }));
-                }, this),
-                data: $.param({activity_id: this.model.get("pk")})
+                }, this)
             });
         }
         else {
@@ -313,7 +314,6 @@ var AdminActivityPin = Backbone.View.extend({
                 spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString(),
                 type: type,
                 msg: msg,
-                started: started,
                 done: null,
                 all: null,
                 showMsg: showMsg,
