@@ -281,7 +281,7 @@ var ActivityUserCheckinItem = Backbone.View.extend({
 var ActivityMyCheckInView = Backbone.View.extend({
     template: _.template($("#tmplt-me-register-status-panel").html()),
     render: function (args) {
-        this.$el.html(this.template({check: args.check}));
+        this.$el.html(this.template({check: args.check, started: args.started}));
         return this;
     }
 });
@@ -382,7 +382,10 @@ var ActivityListItem = Backbone.View.extend({
                 else
                     activityParticipatorModel.get('data').fail += 1;
             }
-            this.$el.find(".athena-me-register-div")[0].appendChild((new ActivityMyCheckInView).render({check: this.check_list[userModel.get('username')].checked}).el);
+            this.$el.find(".athena-me-register-div")[0].appendChild((new ActivityMyCheckInView).render({
+                check: this.check_list[userModel.get('username')].checked,
+                started: this.started
+            }).el);
         }
         catch (e) {
         }
