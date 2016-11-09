@@ -381,7 +381,9 @@
         <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
         <img src="<%= icon_image? icon_image:'img/face.png' %>" class="athena-inline-avatar"/>
         <%= real_name %>
-        <button class="btn btn-sm btn-success athena-manually-register-btn">他已到</button>
+        <button class="btn btn-sm btn-success athena-manually-register-btn"
+                style="display: <%= check? 'none':'inline-block' %>;">他已到
+        </button>
     </div>
 </script>
 <script type="text/template" id="tmplt-box-info">

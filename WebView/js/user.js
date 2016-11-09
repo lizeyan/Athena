@@ -70,11 +70,27 @@ var AdminActivityGroupList = Backbone.View.extend({
     render: function () {
         this.$el.empty();
         _.each(this.model.get('admin_activity_group'), function (activity_group) {
-            this.$el.append((new ActivityGroupCard).render({
+            var agc = new ActivityGroupCard;
+            this.$el.append(agc.render({
                 'activity_group_name': activity_group.activity_group_name,
                 'url': activity_group.url,
-                'is_classes': activity_group.is_classes
+                'is_classes': activity_group.is_classes,
+                'request': ""
             }).$el);
+            $.ajax({
+                headers: {'Authorization': 'JWT ' + token},
+                url: API_ROOT + "/register_request/?format=json",
+                data: $.param({activity_group_id: activity_group.pk}),
+                type: 'GET',
+                success: _.bind(function (response) {
+                    agc.render({
+                        'activity_group_name': activity_group.activity_group_name,
+                        'url': activity_group.url,
+                        'is_classes': activity_group.is_classes,
+                        'request': response.count
+                    })
+                }, this)
+            });
         }, this);
         return this;
     }
@@ -162,7 +178,8 @@ var NormalActivityGroupList = Backbone.View.extend({
             this.$el.append((new ActivityGroupCard).render({
                 'activity_group_name': activity_group.activity_group_name,
                 'url': activity_group.url,
-                'is_classes': activity_group.is_classes
+                'is_classes': activity_group.is_classes,
+                'request': ""
             }).$el);
         }, this);
         return this;
