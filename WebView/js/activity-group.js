@@ -841,7 +841,7 @@ var CloseActvityGroupModal = Backbone.View.extend ({
         }
     }
 });
-var closeActvityGroupModel = new CloseActvityGroupModal;
+var closeActvityGroupModal = new CloseActvityGroupModal;
 /********************************************
  * set A Router
  */

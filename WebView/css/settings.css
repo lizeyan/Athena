@@ -71,3 +71,8 @@
 #athena-face-upload {
     margin: 2em;
 }
+
+#athena-face-cropper-img {
+    max-width: 100%;
+    max-height: 100%;
+}
