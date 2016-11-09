@@ -296,6 +296,17 @@ var ActivityUserCheckinItem = Backbone.View.extend({
 });
 var ActivityMyCheckInView = Backbone.View.extend({
     template: _.template($("#tmplt-me-register-status-panel").html()),
+    events: {
+        "click .athena-register-request-btn": "request"
+    },
+    request: function () {
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            url: API_ROOT + '/register_request/',
+            type: 'POST',
+            data: $.param({activity_id: this.activity_id})
+        });
+    },
     render: function (args) {
         this.$el.html(this.template({check: args.check, started: args.started}));
         return this;
@@ -330,6 +341,9 @@ var ActivityListItem = Backbone.View.extend({
             begin_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
             spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString()
         }));
+        var args = new Object({activity_id: this.model.pk});
+        if (this.user_list.length == 1 && this.user_list[0].pk == userModel.get('pk'))
+            args.user_id = userModel.get('pk');
         this.activity_register_log = registerLog.clone();
         this.activity_register_log.fetch({
             headers: {'Authorization': 'JWT ' + token},
@@ -338,7 +352,7 @@ var ActivityListItem = Backbone.View.extend({
             success: _.bind(function (collection) {
                 this.createUserCheckinList(collection);
             }, this),
-            data: $.param({activity_id: this.model.pk})
+            data: $.param(args)
         });
         var info_panel = $(this.$el.find(".athena-register-checklist"));
         info_panel.on('hidden.bs.collapse', _.bind(function () {
@@ -402,7 +416,9 @@ var ActivityListItem = Backbone.View.extend({
                 else
                     activityParticipatorModel.get('data').fail += 1;
             }
-            this.$el.find(".athena-me-register-div")[0].appendChild((new ActivityMyCheckInView).render({
+            var my = (new ActivityMyCheckInView);
+            my.activity_id = this.model.pk;
+            this.$el.find(".athena-me-register-div")[0].appendChild(my.render({
                 check: this.check_list[userModel.get('username')].checked,
                 started: this.started
             }).el);
