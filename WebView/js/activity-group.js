@@ -273,7 +273,23 @@ var rateByPersonGraph = new RateByPersonGraphView({model: rateByPersonModel});
 var ActivityUserCheckinItem = Backbone.View.extend({
     tagName: "div",
     template: _.template($("#tmplt-activity-user-checkin-item").html()),
+    events: {
+        'click .athena-manually-register-btn': "manuallyRegister"
+    },
+    manuallyRegister: function () {
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            type: 'POST',
+            url: API_ROOT + "/register_log/",
+            data: JSON.stringify({activity_id: this.activity_id, user_id: this.user_id}),
+            success: _.bind(function () {
+                this.$el.html(this.template({'real_name': this.name, 'check': true, 'icon_image': this.icon}));
+            }, this)
+        });
+    },
     render: function (name, check, icon) {
+        this.name = name;
+        this.icon = icon;
         this.$el.html(this.template({'real_name': name, 'check': check, 'icon_image': icon}));
         return this;
     }
@@ -322,7 +338,7 @@ var ActivityListItem = Backbone.View.extend({
             success: _.bind(function (collection) {
                 this.createUserCheckinList(collection);
             }, this),
-            data: $.param({activity_id: this.model.pk, user_id: userModel.get('pk')})
+            data: $.param({activity_id: this.model.pk})
         });
         var info_panel = $(this.$el.find(".athena-register-checklist"));
         info_panel.on('hidden.bs.collapse', _.bind(function () {
@@ -358,6 +374,7 @@ var ActivityListItem = Backbone.View.extend({
             this.check_list[user.user].checked = false;
             this.check_list[user.user].real_name = user.real_name;
             this.check_list[user.user].icon_image = user.icon_image;
+            this.check_list[user.user].user_id = user.pk;
         }, this);
         var attendanceCnt = 0;
         _.each(activity_register_log.models, function (entry) {
@@ -373,8 +390,11 @@ var ActivityListItem = Backbone.View.extend({
             rateByActivityModel.trigger('change');
         }
         _.each(this.check_list, function (entry) {
-            $checkList.append((new ActivityUserCheckinItem).render(entry.real_name, entry.checked, entry.icon_image).$el);
-        });
+            var item = (new ActivityUserCheckinItem);
+            item.activity_id = this.model.pk;
+            item.user_id = entry.user_id;
+            $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
+        }, this);
         try {
             if (this.started) {
                 if (this.check_list[userModel.get('username')].checked)
