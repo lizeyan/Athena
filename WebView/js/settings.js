@@ -291,7 +291,7 @@ var FaceSettingView = Backbone.View.extend({
         this.listenTo(profile, 'change', this.render);
     },
     events: {
-        "change #athena-face-input": "uploadFace"
+        "change #athena-face-input,#athena-face-take-input": "uploadFace",
     },
     render: function () {
         var $faceList = $("#athena-face-list");

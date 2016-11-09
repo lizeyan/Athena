@@ -21,14 +21,14 @@
     padding: 0.5em 2em;
 }
 
-#athena-avatar-upload-btn, #athena-face-upload-btn {
+#athena-avatar-upload-btn, #athena-face-upload-btn, #athena-face-take-btn {
     position: relative;
     display: inline-block;
     overflow: hidden;
     margin: auto;
 }
 
-#athena-avatar-input, #athena-face-input {
+#athena-avatar-input, #athena-face-input, #athena-face-take-input {
     position: absolute;
     right: 0;
     top: 0;
