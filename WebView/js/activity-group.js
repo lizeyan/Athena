@@ -881,6 +881,49 @@ var CloseActvityGroupModal = Backbone.View.extend ({
     }
 });
 var closeActvityGroupModal = new CloseActvityGroupModal;
+/*******************************************************
+ * request
+ */
+var RequestModel = Backbone.Model.extend({});
+var RequestLib = Backbone.Collection.extend({
+    model: RequestModel,
+    url: API_ROOT + '/register_request/?format=json',
+    parse: function (response) {
+        return response.results;
+    }
+});
+var RequestListItemView = Backbone.View.extend({
+    tagName: 'li',
+    template: _.template($("#tmplt-request-list-item").html()),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    render: function () {
+        var begin_time = new Date(this.model.get('activity').begin_time);
+        var location = this.model.get('activity').location;
+        var user_name = this.model.get('request_user').user;
+        this.$el.html(this.template({
+            time: begin_time.toLocaleDateString() + begin_time.toLocaleTimeString(),
+            location: location,
+            user_name: user_name
+        }));
+        return this;
+    }
+});
+var RequestListView = Backbone.View.extend({
+    el: $("#athena-request-list"),
+    initialize: function () {
+        this.listenTo(this.collection, 'reset', this.render);
+    },
+    render: function () {
+        _.each(this.collection.models, function (model) {
+            this.$el.append((new RequestListItemView({model: model})).render().$el);
+        }, this);
+        return this;
+    }
+});
+var requestLib = new RequestLib;
+var requestListView = new RequestListView({collection: requestLib});
 /********************************************
  * set A Router
  */
@@ -914,6 +957,11 @@ var Router = Backbone.Router.extend({
                 var course = activityGroup.get('is_classes');
                 if (iAmAdminister) {
                     $('.athena-admin-control').css('display', 'inherit');
+                    requestLib.fetch({
+                        headers: {'Authorization': 'JWT ' + token},
+                        data: $.param({activity_group_id: activityGroup.get('pk')}),
+                        reset: true
+                    });
                 }
                 else {
                     $(".athena-participator-control").css('display', 'inherit');
@@ -961,6 +1009,7 @@ var Router = Backbone.Router.extend({
         this.viewUrl(agUrl);
         this.deactivateAll();
         $('#athena-activity-group-statistics').show();
+        $("#athena-activity-group-main-nav-statistics").addClass('active');
     },
     showActivityList: function (agUrl) {
         if (agUrl == null) {

@@ -113,6 +113,14 @@
             添加管理员
         </button>
     </div>
+    <div class="container list-group list-unstyled athena-admin-control athena-super-admin-control central-inner-control panel panel-default"
+         id="athena-request-list-div">
+        <div class="panel-heading">
+            <p>手动签到请求列表</p>
+        </div>
+        <ul class="panel-body list-unstyled" id="athena-request-list">
+        </ul>
+    </div>
     <div class="central-inner-control" id="athena-activity-group-statistics">
         <div class="athena-admin-control" id="athena-admin-activity-group-statistics">
             <h2 class="page-header">统计</h2>
@@ -240,6 +248,24 @@
         </div>
     </div>
 </div>
+<script type="text/template" id="tmplt-request-list-item">
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-md-4">
+                <span class="glyphicon glyphicon-calendar"></span>
+                <label>时间：<%= time %></label>
+            </div>
+            <div class="col-md-3">
+                <span class="glyphicon glyphicon-home"></span>
+                <label>地点：<%= location %></label>
+            </div>
+            <div class="col-md-3">
+                <span class="glyphicon glyphicon-user"></span>
+                <label>参与者:<%= user_name %></label>
+            </div>
+        </div>
+    </li>
+</script>
 <script type="text/template" id="tmplt-activity-group-page-head">
     <h3>
         <span class="glyphicon glyphicon-leaf"></span>
