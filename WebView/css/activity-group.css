@@ -47,7 +47,7 @@
     display: none;
 }
 
-#athena-activity-group-close-button, #athena-goto-statistic-button{
+#athena-activity-group-close-button, #athena-goto-statistic-button, #athena-request-list-modal-btn {
     float: right;
     margin: 0 0.5em;
 }

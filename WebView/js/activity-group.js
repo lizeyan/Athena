@@ -442,6 +442,9 @@ var ActivityList = Backbone.View.extend({
         var userList = this.model.get('normal_user');
         //render and
         activityParticipatorModel.set('data', {todo: 0, pass: 0, fail: 0});
+        this.model.get('activity').sort(function (a, b) {
+            return (new Date(a.begin_time)).getTime() - (new Date(b.begin_time)).getTime();
+        });
         _.each(this.model.get('activity'), function (activity) {
             this.$el.append((new ActivityListItem({model: activity})).render(userList).$el);
         }, this);
@@ -888,12 +891,28 @@ var closeActvityGroupModal = new CloseActvityGroupModal;
 /*******************************************************
  * request
  */
-var RequestModel = Backbone.Model.extend({});
+var RequestModel = Backbone.Model.extend({
+    parse: function (response) {
+        this.url = response.url;
+        return response;
+    }
+});
 var RequestLib = Backbone.Collection.extend({
     model: RequestModel,
     url: API_ROOT + '/register_request/?format=json',
     parse: function (response) {
         return response.results;
+    },
+    initialize: function () {
+        this.on('reset', this.calcUnhandled);
+    },
+    calcUnhandled: function () {
+        var cnt = 0;
+        _.each(this.models, function (model) {
+            if (model.get('confirm') == 2)
+                cnt += 1;
+        });
+        $("#athena-unhandled-request-badge").html(cnt);
     }
 });
 var RequestListItemView = Backbone.View.extend({
@@ -902,6 +921,32 @@ var RequestListItemView = Backbone.View.extend({
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     },
+    events: {
+        "click .athena-accept-request-btn": "accept",
+        "click .athena-refuse-request-btn": "refuse"
+    },
+    accept: function () {
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            type: 'POST',
+            url: API_ROOT + "/register_log/",
+            data: JSON.stringify({
+                activity_id: this.model.get('activity').pk,
+                user_id: this.model.get('request_user').pk
+            }),
+            success: _.bind(function () {
+                this.model.fetch({
+                    headers: {'Authorization': 'JWT ' + token}
+                });
+            }, this)
+        });
+    },
+    refuse: function () {
+        this.model.save({'confirm': 0}, {
+            type: 'PATCH',
+            headers: {'Authorization': 'JWT ' + token}
+        });
+    },
     render: function () {
         var begin_time = new Date(this.model.get('activity').begin_time);
         var location = this.model.get('activity').location;
@@ -909,7 +954,9 @@ var RequestListItemView = Backbone.View.extend({
         this.$el.html(this.template({
             time: begin_time.toLocaleDateString() + begin_time.toLocaleTimeString(),
             location: location,
-            user_name: user_name
+            user_name: user_name,
+            operate: (this.model.get('confirm') == 2),
+            accept: (this.model.get('confirm') == 1)
         }));
         return this;
     }
@@ -1055,6 +1102,5 @@ var Router = Backbone.Router.extend({
 $(function () {
     var router = new Router;
     Backbone.history.start();
-
 });
 

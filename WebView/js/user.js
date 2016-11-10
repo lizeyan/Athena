@@ -79,7 +79,7 @@ var AdminActivityGroupList = Backbone.View.extend({
             }).$el);
             $.ajax({
                 headers: {'Authorization': 'JWT ' + token},
-                url: API_ROOT + "/register_request/?format=json",
+                url: API_ROOT + "/register_request/?format=json&confirm=2",
                 data: $.param({activity_group_id: activity_group.pk}),
                 type: 'GET',
                 success: _.bind(function (response) {

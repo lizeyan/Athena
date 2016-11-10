@@ -67,6 +67,12 @@
         </button>
         <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button"
            href="#athena-activity-group-statistic">统计文档</a>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary athena-admin-control" data-toggle="modal"
+                data-target="#athena-request-list-modal"
+                id="athena-request-list-modal-btn">
+            签到请求<span class="badge" id="athena-unhandled-request-badge"></span>
+        </button>
     </div>
     <div class="central-inner-control" id="athena-activity-group-title">
     </div>
@@ -112,14 +118,6 @@
         <button type="button" class="btn btn-success btn-lg" id="athena-new-administer-button">
             添加管理员
         </button>
-    </div>
-    <div class="container list-group list-unstyled athena-admin-control athena-super-admin-control central-inner-control panel panel-default"
-         id="athena-request-list-div">
-        <div class="panel-heading">
-            <p>手动签到请求列表</p>
-        </div>
-        <ul class="panel-body list-unstyled" id="athena-request-list">
-        </ul>
     </div>
     <div class="central-inner-control" id="athena-activity-group-statistics">
         <div class="athena-admin-control" id="athena-admin-activity-group-statistics">
@@ -226,6 +224,26 @@
 </div>
 
 <!-- Modal -->
+<div class="modal fade" id="athena-request-list-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="athena-request-list-modal-title">签到请求列表</h4>
+            </div>
+            <div class="modal-body row">
+                <ul class="panel-body list-unstyled" id="athena-request-list">
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
 <div class="modal fade" id="athena-activity-group-close-modal" tabindex="-1" role="dialog" aria-labelledby="closeModal"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -253,22 +271,22 @@
         <div class="row">
             <div class="col-md-4">
                 <span class="glyphicon glyphicon-calendar"></span>
-                <label>时间：<%= time %></label>
+                <label><%= time %></label>
             </div>
             <div class="col-md-3">
                 <span class="glyphicon glyphicon-home"></span>
-                <label>地点：<%= location %></label>
+                <label><%= location %></label>
             </div>
             <div class="col-md-3">
                 <span class="glyphicon glyphicon-user"></span>
-                <label>参与者:<%= user_name %></label>
+                <label><%= user_name %></label>
             </div>
-            <div class="athena-request-operation-div">
+            <div class="athena-request-operation-div" style="display:<%= operate?'inline-block':'none' %>;">
                 <button type="button" class="btn btn-success athena-accept-request-btn">接受</button>
                 <button type="button" class="btn btn-danger athena-refuse-request-btn">拒绝</button>
             </div>
-            <div class="athena-request-info-div">
-                <label class="alert alert-success">已接受</label>
+            <div class="athena-request-info-div" style="display:<%= !operate?'inline-block':'none' %>;">
+                <label class="label label-<%= accept? 'success':'danger' %>"><%= accept? '已接受':'已拒绝' %></label>
             </div>
         </div>
     </li>
