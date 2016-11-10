@@ -342,8 +342,12 @@ var ActivityListItem = Backbone.View.extend({
             spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString()
         }));
         var args = new Object({activity_id: this.model.pk});
-        if (this.user_list.length == 1 && this.user_list[0].pk == userModel.get('pk'))
-            args.user_id = userModel.get('pk');
+        for (var i = 0; i < this.user_list.length; ++i) {
+            if (this.user_list[i].pk == userModel.get('pk')) {
+                args.user_id = userModel.get('pk');
+                break;
+            }
+        }
         this.activity_register_log = registerLog.clone();
         this.activity_register_log.fetch({
             headers: {'Authorization': 'JWT ' + token},
@@ -968,7 +972,7 @@ var Router = Backbone.Router.extend({
                     rateByPersonGraph.stopListening();
                     rateActivityGraph.stopListening();
                 }
-                if (course == false) {
+                if (course == false && iAmAdminister) {
                     $('.athena-super-admin-control').css('display', 'inherit');
                 }
             },
