@@ -65,8 +65,11 @@
         <button class="btn btn-danger athena-super-admin-control" id="athena-activity-group-close-button"
                 data-toggle="modal" data-target="#athena-activity-group-close-modal">关闭活动组
         </button>
-        <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button"
-           href="#athena-activity-group-statistic">统计文档</a>
+
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#athena-statistics-report-modal"
+                id="athena-statistics-report-modal-btn">
+            统计文档
+        </button>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary athena-admin-control" data-toggle="modal"
                 data-target="#athena-request-list-modal"
@@ -223,6 +226,25 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="athena-statistics-report-modal" tabindex="-1" role="dialog"
+     aria-labelledby="athena-statistics-report-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="athena-statistics-report-modal-title">统计报告</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">下载</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="athena-request-list-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">

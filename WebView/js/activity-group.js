@@ -98,6 +98,7 @@ var RateActivityGraphView = Backbone.View.extend({
             else
                 return 1;
         });
+        // alert (JSON.stringify(_.pluck(this.model.get('data'), 'rate')));
         this.chart = new Chart(document.getElementById("athena-rate-activity-graph"), {
             type: 'line',
             data: {
@@ -402,7 +403,10 @@ var ActivityListItem = Backbone.View.extend({
             }
         }, this);
         // alert (JSON.stringify(rateByActivityModel));
-        rateByActivityModel.get('data').push(new Object({label:(new Date(this.model.begin_time)).toLocaleDateString(), rate: attendanceCnt}));
+        rateByActivityModel.get('data').push(new Object({
+            label: (new Date(this.model.begin_time)).toLocaleDateString(),
+            rate: (attendanceCnt / this.user_list.length)
+        }));
         if (rateByActivityModel.get('data').length == activityGroup.get('activity').length) {
             activityParticipatorModel.trigger('change');
             rateByActivityModel.trigger('change');
