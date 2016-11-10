@@ -164,7 +164,7 @@
         <label class="athena-activity-pin-end-time">时长：<%= spense_time %></label>
         <br/>
         <label class="alert-<%= type %>" style="display: <%= showMsg?'inline-block':'none'%>;"><%= msg %></label>
-        <label class="athena-activity-pin-register-info" style="display: <%= showStatistics?'inherit':'none'%>;">出勤统计:<%=
+        <label class="athena-activity-pin-register-info" style="display: <%= showStatistics?'inline-block':'none'%>;"><%=
             done %>/<%= all %></label>
     </div>
 </script>
@@ -181,6 +181,7 @@
     <div class="list-group-item athena-activity-groupd-list-item">
         <a target="_blank" href="activity-group.html#activities/<%= url %>"><%= activity_group_name %></a>
         <span class="label label-default" style="display: <%= is_classes==true? 'inline':'none' %>;">课程</span>
+        <span class="badge"><%= request %></span>
     </div>
 </script>
 <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>

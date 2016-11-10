@@ -39,15 +39,28 @@
     min-width: 10em;
 }
 
-.athena-activity-close-button, .athena-administer-delete-button, .athena-participator-delete-button {
+.athena-activity-close-button, .athena-administer-delete-button, .athena-participator-delete-button, .athena-activity-info-button {
     float: right;
 }
 
-.athena-admin-control, .athena-super-admin-control {
+.athena-admin-control, .athena-super-admin-control, .athena-participator-control {
     display: none;
 }
 
-#athena-activity-group-close-button, #athena-goto-statistic-button{
+#athena-activity-group-close-button, #athena-goto-statistic-button, #athena-request-list-modal-btn {
     float: right;
     margin: 0 0.5em;
+}
+
+.graph-title {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.athena-me-register-div {
+    float: right;
+}
+
+#athena-request-list-div {
+    margin-top: 3em;
 }

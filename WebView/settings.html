@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/cropper.min.css">
     <link rel="stylesheet" href="css/signedin-navbar.css">
 </head>
 <body>
@@ -129,12 +130,33 @@
                         上传人脸
                         <input id="athena-face-input" type="file" accept="image/*"/>
                     </a>
-                    <p class="text-comment">图片大小不超过2M</p>
+                    <a id="athena-face-take-btn" class="btn btn-warning">
+                        现在拍摄
+                        <input id="athena-face-take-input" type="file" accept="image/*" capture="camera"/>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="athena-face-cropper-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">选择人脸区域</h4>
+            </div>
+            <div class="modal-body">
+                <img id="athena-face-cropper-img"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="athena-face-cropper-submit-btn">确定</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <script type="text/template" id="tmplt-face-item">
     <li class="list-group-item">
         ID:<label class="athena-face-id"><%= face_ID %></label>
@@ -261,6 +283,7 @@
 <script src="js/js-cookie.js"></script>
 <script src="js/profileByToken.js"></script>
 <script src="js/fetchProfileAndSetTopNav.js"></script>
+<script src="js/cropper.min.js"></script>
 <script src="js/settings.js"></script>
 </body>
 </html>

@@ -74,14 +74,20 @@ var RateByActivityModel = Backbone.Model.extend ({
     }
 });
 var rateByActivityModel = new RateByActivityModel;
+var ActivityParticipatorModel = Backbone.Model.extend({
+    defaults: {
+        data: new Object({todo: 0, pass: 0, fail: 0})
+    }
+});
+var activityParticipatorModel = new ActivityParticipatorModel;
 var RateByPersonModel = Backbone.Model.extend({
     defaults: {
         data: new Array
     }
 });
 var rateByPersonModel = new RateByPersonModel;
-var RateActivityGraph = Backbone.View.extend ({
-    el: $("#athena-rate-activity-graph"),
+var RateActivityGraphView = Backbone.View.extend({
+    el: $("#athena-rate-activity-graph-div"),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     },
@@ -92,7 +98,7 @@ var RateActivityGraph = Backbone.View.extend ({
             else
                 return 1;
         });
-        var chart = new Chart (document.getElementById("athena-rate-activity-graph"), {
+        this.chart = new Chart(document.getElementById("athena-rate-activity-graph"), {
             type: 'line',
             data: {
                 labels: _.pluck(this.model.get('data'), 'label'),
@@ -136,14 +142,91 @@ var RateActivityGraph = Backbone.View.extend ({
         return this;
     }
 });
-var rateActivityGraph = new RateActivityGraph ({model: rateByActivityModel});
-var RateByPersonGraph = Backbone.View.extend({
-    el: $("#athena-rate-person-graph"),
+var rateActivityGraph = new RateActivityGraphView({model: rateByActivityModel});
+var RegisterActivityGraphView = Backbone.View.extend({
+    el: $("#athena-register-activity-graph"),
     initialize: function () {
         this.listenTo(this.model, 'change', this.render);
     },
     render: function () {
-        var chart = new Chart(this.$el, {
+        this.chart = new Chart($("#athena-register-activity-graph"), {
+            type: 'pie',
+            data: {
+                labels: [
+                    "未开始",
+                    "未签到",
+                    "已签到"
+                ],
+                datasets: [
+                    {
+                        data: [this.model.get('data').todo, this.model.get('data').fail, this.model.get('data').pass],
+                        backgroundColor: [
+                            "#FF6384",
+                            "#36A2EB",
+                            "#FFCE56"
+                        ],
+                        hoverBackgroundColor: [
+                            "#FF6384",
+                            "#36A2EB",
+                            "#FFCE56"
+                        ]
+                    }]
+            }
+        });
+    }
+});
+var registerActivityGraph = new RegisterActivityGraphView({model: activityParticipatorModel});
+var RateByPersonGraphView = Backbone.View.extend({
+    el: $("#athena-rate-person-graph-div"),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    events: {
+        "click #athena-rate-person-graph-sort-name": 'sortName',
+        "click #athena-rate-person-graph-sort-rate": 'sortRate',
+        "click #athena-rate-person-graph-sort-shuffle": 'sortShuffle'
+    },
+    deactiveAll: function () {
+        $("#athena-rate-person-graph-sort-name").removeClass("active");
+        $("#athena-rate-person-graph-sort-rate").removeClass("active");
+        $("#athena-rate-person-graph-sort-shuffle").removeClass("active");
+    },
+    sortName: function () {
+        this.deactiveAll();
+        $("#athena-rate-person-graph-sort-name").addClass("active");
+        if (this.chart) {
+            this.model.get('data').sort(function (a, b) {
+                return a.user_name > b.user_name;
+            });
+            this.chart.data.labels = _.pluck(this.model.get('data'), 'user_name');
+            this.chart.data.datasets[0].data = _.pluck(this.model.get('data'), 'rate');
+            this.chart.update();
+        }
+    },
+    sortRate: function () {
+        this.deactiveAll();
+        $("#athena-rate-person-graph-sort-rate").addClass("active");
+        if (this.chart) {
+            this.model.get('data').sort(function (a, b) {
+                return a.rate < b.rate;
+            });
+            this.chart.data.labels = _.pluck(this.model.get('data'), 'user_name');
+            this.chart.data.datasets[0].data = _.pluck(this.model.get('data'), 'rate');
+            this.chart.update();
+        }
+    },
+    sortShuffle: function () {
+        this.deactiveAll();
+        $("#athena-rate-person-graph-sort-shuffle").addClass("active");
+        if (this.chart) {
+            this.model.set('data', _.shuffle(this.model.get('data')));
+            this.chart.data.labels = _.pluck(this.model.get('data'), 'user_name');
+            this.chart.data.datasets[0].data = _.pluck(this.model.get('data'), 'rate');
+            this.chart.update();
+        }
+    },
+    render: function () {
+        this.chart = new Chart($("#athena-rate-person-graph").get(), {
             type: 'bar',
             data: {
                 labels: _.pluck(this.model.get('data'), 'user_name'),
@@ -186,12 +269,46 @@ var RateByPersonGraph = Backbone.View.extend({
         return this;
     }
 });
-var rateByPersonGraph = new RateByPersonGraph({model: rateByPersonModel});
+var rateByPersonGraph = new RateByPersonGraphView({model: rateByPersonModel});
 var ActivityUserCheckinItem = Backbone.View.extend({
     tagName: "div",
     template: _.template($("#tmplt-activity-user-checkin-item").html()),
+    events: {
+        'click .athena-manually-register-btn': "manuallyRegister"
+    },
+    manuallyRegister: function () {
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            type: 'POST',
+            url: API_ROOT + "/register_log/",
+            data: JSON.stringify({activity_id: this.activity_id, user_id: this.user_id}),
+            success: _.bind(function () {
+                this.$el.html(this.template({'real_name': this.name, 'check': true, 'icon_image': this.icon}));
+            }, this)
+        });
+    },
     render: function (name, check, icon) {
+        this.name = name;
+        this.icon = icon;
         this.$el.html(this.template({'real_name': name, 'check': check, 'icon_image': icon}));
+        return this;
+    }
+});
+var ActivityMyCheckInView = Backbone.View.extend({
+    template: _.template($("#tmplt-me-register-status-panel").html()),
+    events: {
+        "click .athena-register-request-btn": "request"
+    },
+    request: function () {
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            url: API_ROOT + '/register_request/',
+            type: 'POST',
+            data: $.param({activity_id: this.activity_id})
+        });
+    },
+    render: function (args) {
+        this.$el.html(this.template({check: args.check, started: args.started}));
         return this;
     }
 });
@@ -212,11 +329,25 @@ var ActivityListItem = Backbone.View.extend({
         var endDate = new Date(this.model.end_time);
         beginDate = new Date(beginDate.getTime() + beginDate.getTimezoneOffset() * 60000);
         endDate = new Date(endDate.getTime() + endDate.getTimezoneOffset() * 60000);
+        if (beginDate.getTime() < (new Date()).getTime())
+            this.started = true;
+        else {
+            this.started = false;
+            activityParticipatorModel.get('data').todo += 1;
+        }
         this.$el.html(this.template({
+            activity_id: this.model.pk,
             location: this.model.location,
             begin_time: beginDate.toLocaleDateString() + beginDate.toLocaleTimeString(),
             spense_time: (new Duration(endDate.getTime() - beginDate.getTime())).toString()
         }));
+        var args = new Object({activity_id: this.model.pk});
+        for (var i = 0; i < this.user_list.length; ++i) {
+            if (this.user_list[i].pk == userModel.get('pk')) {
+                args.user_id = userModel.get('pk');
+                break;
+            }
+        }
         this.activity_register_log = registerLog.clone();
         this.activity_register_log.fetch({
             headers: {'Authorization': 'JWT ' + token},
@@ -225,8 +356,15 @@ var ActivityListItem = Backbone.View.extend({
             success: _.bind(function (collection) {
                 this.createUserCheckinList(collection);
             }, this),
-            data: $.param({activity_id: this.model.pk})
+            data: $.param(args)
         });
+        var info_panel = $(this.$el.find(".athena-register-checklist"));
+        info_panel.on('hidden.bs.collapse', _.bind(function () {
+            info_panel.children().hide();
+        }, this));
+        info_panel.on('shown.bs.collapse', _.bind(function () {
+            info_panel.children().show();
+        }, this));
         return this;
     },
     closeActivity: function () {
@@ -254,6 +392,7 @@ var ActivityListItem = Backbone.View.extend({
             this.check_list[user.user].checked = false;
             this.check_list[user.user].real_name = user.real_name;
             this.check_list[user.user].icon_image = user.icon_image;
+            this.check_list[user.user].user_id = user.pk;
         }, this);
         var attendanceCnt = 0;
         _.each(activity_register_log.models, function (entry) {
@@ -264,11 +403,32 @@ var ActivityListItem = Backbone.View.extend({
         }, this);
         // alert (JSON.stringify(rateByActivityModel));
         rateByActivityModel.get('data').push(new Object({label:(new Date(this.model.begin_time)).toLocaleDateString(), rate: attendanceCnt}));
-        if (rateByActivityModel.get('data').length == activityGroup.get('activity').length)
+        if (rateByActivityModel.get('data').length == activityGroup.get('activity').length) {
+            activityParticipatorModel.trigger('change');
             rateByActivityModel.trigger('change');
+        }
         _.each(this.check_list, function (entry) {
-            $checkList.append((new ActivityUserCheckinItem).render(entry.real_name, entry.checked, entry.icon_image).$el);
-        });
+            var item = (new ActivityUserCheckinItem);
+            item.activity_id = this.model.pk;
+            item.user_id = entry.user_id;
+            $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
+        }, this);
+        try {
+            if (this.started) {
+                if (this.check_list[userModel.get('username')].checked)
+                    activityParticipatorModel.get('data').pass += 1;
+                else
+                    activityParticipatorModel.get('data').fail += 1;
+            }
+            var my = (new ActivityMyCheckInView);
+            my.activity_id = this.model.pk;
+            this.$el.find(".athena-me-register-div")[0].appendChild(my.render({
+                check: this.check_list[userModel.get('username')].checked,
+                started: this.started
+            }).el);
+        }
+        catch (e) {
+        }
     }
 });
 var ActivityList = Backbone.View.extend({
@@ -281,6 +441,10 @@ var ActivityList = Backbone.View.extend({
         this.$el.empty();
         var userList = this.model.get('normal_user');
         //render and
+        activityParticipatorModel.set('data', {todo: 0, pass: 0, fail: 0});
+        this.model.get('activity').sort(function (a, b) {
+            return (new Date(a.begin_time)).getTime() - (new Date(b.begin_time)).getTime();
+        });
         _.each(this.model.get('activity'), function (activity) {
             this.$el.append((new ActivityListItem({model: activity})).render(userList).$el);
         }, this);
@@ -723,7 +887,94 @@ var CloseActvityGroupModal = Backbone.View.extend ({
         }
     }
 });
-var closeActvityGroupModel = new CloseActvityGroupModal;
+var closeActvityGroupModal = new CloseActvityGroupModal;
+/*******************************************************
+ * request
+ */
+var RequestModel = Backbone.Model.extend({
+    parse: function (response) {
+        this.url = response.url;
+        return response;
+    }
+});
+var RequestLib = Backbone.Collection.extend({
+    model: RequestModel,
+    url: API_ROOT + '/register_request/?format=json',
+    parse: function (response) {
+        return response.results;
+    },
+    initialize: function () {
+        this.on('reset', this.calcUnhandled);
+    },
+    calcUnhandled: function () {
+        var cnt = 0;
+        _.each(this.models, function (model) {
+            if (model.get('confirm') == 2)
+                cnt += 1;
+        });
+        $("#athena-unhandled-request-badge").html(cnt);
+    }
+});
+var RequestListItemView = Backbone.View.extend({
+    tagName: 'li',
+    template: _.template($("#tmplt-request-list-item").html()),
+    initialize: function () {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    events: {
+        "click .athena-accept-request-btn": "accept",
+        "click .athena-refuse-request-btn": "refuse"
+    },
+    accept: function () {
+        $.ajax({
+            headers: {'Authorization': 'JWT ' + token},
+            type: 'POST',
+            url: API_ROOT + "/register_log/",
+            data: JSON.stringify({
+                activity_id: this.model.get('activity').pk,
+                user_id: this.model.get('request_user').pk
+            }),
+            success: _.bind(function () {
+                this.model.fetch({
+                    headers: {'Authorization': 'JWT ' + token}
+                });
+            }, this)
+        });
+    },
+    refuse: function () {
+        this.model.save({'confirm': 0}, {
+            type: 'PATCH',
+            headers: {'Authorization': 'JWT ' + token}
+        });
+    },
+    render: function () {
+        var begin_time = new Date(this.model.get('activity').begin_time);
+        var location = this.model.get('activity').location;
+        var user_name = this.model.get('request_user').user;
+        this.$el.html(this.template({
+            time: begin_time.toLocaleDateString() + begin_time.toLocaleTimeString(),
+            location: location,
+            user_name: user_name,
+            operate: (this.model.get('confirm') == 2),
+            accept: (this.model.get('confirm') == 1)
+        }));
+        return this;
+    }
+});
+var RequestListView = Backbone.View.extend({
+    el: $("#athena-request-list"),
+    initialize: function () {
+        this.listenTo(this.collection, 'reset', this.render);
+    },
+    render: function () {
+        _.each(this.collection.models, function (model) {
+            this.$el.append((new RequestListItemView({model: model})).render().$el);
+        }, this);
+        return this;
+    }
+});
+var requestLib = new RequestLib;
+var requestListView = new RequestListView({collection: requestLib});
 /********************************************
  * set A Router
  */
@@ -733,12 +984,17 @@ var Router = Backbone.Router.extend({
         "administers/*path": "showAdministerList",
         "participators/*path": "showParticipatorList",
         "settings/*path": "showSettings",
+        "statistics/*path": "showStatistics",
         "activities": "showActivityList",
         "administers": "showAdministerList",
         "settings": "showSettings",
-        "participators": "showParticipatorList"
+        "participators": "showParticipatorList",
+        "statistics": "showStatistics"
     },
     viewUrl: function (agUrl) {
+        if (this.agUrl && this.agUrl == agUrl)
+            return;
+        this.agUrl = agUrl;
         activityGroup.url = agUrl;
         activityGroup.fetch({
             headers: {'Authorization': 'JWT ' + token},
@@ -752,12 +1008,22 @@ var Router = Backbone.Router.extend({
                 var course = activityGroup.get('is_classes');
                 if (iAmAdminister) {
                     $('.athena-admin-control').css('display', 'inherit');
+                    requestLib.fetch({
+                        headers: {'Authorization': 'JWT ' + token},
+                        data: $.param({activity_group_id: activityGroup.get('pk')}),
+                        reset: true
+                    });
                 }
-                if (course == false) {
+                else {
+                    $(".athena-participator-control").css('display', 'inherit');
+                    rateByPersonGraph.stopListening();
+                    rateActivityGraph.stopListening();
+                }
+                if (course == false && iAmAdminister) {
                     $('.athena-super-admin-control').css('display', 'inherit');
                 }
             },
-            error: function (model, response) {
+            error: function () {
                 window.location = "user.html";
             },
             reset: true
@@ -771,6 +1037,7 @@ var Router = Backbone.Router.extend({
         administerList.$el.hide();
         participatorList.$el.hide();
         $('#athena-new-activity-modal-button').hide();
+        $("#athena-activity-group-statistics").hide();
         $('#athena-new-participator-button').hide();
         $('#athena-new-administer-button').hide();
         $('#athena-user-input-div').hide();
@@ -781,17 +1048,27 @@ var Router = Backbone.Router.extend({
             window.location = "#settings/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         $('#athena-activity-group-settings-div').show();
+    },
+    showStatistics: function (agUrl) {
+        if (agUrl == null) {
+            window.location = "#statistics/" + activityGroup.url;
+            return;
+        }
+        this.viewUrl(agUrl);
+        this.deactivateAll();
+        $('#athena-activity-group-statistics').show();
+        $("#athena-activity-group-main-nav-statistics").addClass('active');
     },
     showActivityList: function (agUrl) {
         if (agUrl == null) {
             window.location = "#activities/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         activityList.$el.show();
         $('#athena-new-activity-modal-button').show();
         $('#athena-activity-group-main-nav-activity').addClass('active');
@@ -801,8 +1078,8 @@ var Router = Backbone.Router.extend({
             window.location = "#administers/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         administerList.$el.show();
         $('#athena-new-administer-button').show();
         $('#athena-user-input-div').show();
@@ -813,8 +1090,8 @@ var Router = Backbone.Router.extend({
             window.location = "#participators/" + activityGroup.url;
             return;
         }
-        this.deactivateAll();
         this.viewUrl(agUrl);
+        this.deactivateAll();
         participatorList.$el.show();
         $('#athena-user-input-div').show();
         $('#athena-new-participator-button').show();
@@ -825,6 +1102,5 @@ var Router = Backbone.Router.extend({
 $(function () {
     var router = new Router;
     Backbone.history.start();
-
 });
 
