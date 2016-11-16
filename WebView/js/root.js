@@ -55,7 +55,11 @@ var TerminalItemView = Backbone.View.extend({
         this.listenTo(this.model, 'change', this.render);
     },
     render: function () {
-        this.$el.html(this.template({pk: this.model.get('pk'), location: this.model.get('term_position')}));
+        this.$el.html(this.template({
+            pk: this.model.get('pk'),
+            location: this.model.get('term_position'),
+            username: this.model.get('username')
+        }));
         return this;
     },
     updateTerminal: function (event) {

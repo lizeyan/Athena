@@ -92,6 +92,9 @@
         <form class="athena-terminal-item-form form-inline">
             <span class="glyphicon-star glyphicon"></span>
             <label class="athena-terminal-id-label">#<%= pk %></label>
+            <span class="glyphicon-credit-card glyphicon"></span>
+            <label class="athena-terminal-username-label"><%= username %></label>
+            <span class="glyphicon-home glyphicon"></span>
             <input type="text" class="form-control athena-terminal-location-input" value="<%= location %>"
                    placeholder="终端设备的位置" required/>
             <button type="submit" class="btn btn-info athena-terminal-update-button">更新</button>
@@ -108,10 +111,10 @@
         <input type="text" class="athena-new-terminal-location-input form-control " placeholder="终端所在的地点"
                value="<%= location %>" required/>
         <button type="button" class="btn btn-info athena-terminal-push-input-entry"
-                style="display:<%= showAdd? 'inline':'none' %>;">更多终端
+                style="display:<%= showAdd? 'inline-block':'none' %>;">更多终端
         </button>
-        <button type="button" class="btn btn-info athena-terminal-pop-input-entry"
-                style="display:<%= showSub? 'inline':'none' %>;">减少终端
+        <button type="button" class="btn btn-danger athena-terminal-pop-input-entry"
+                style="display:<%= showSub? 'inline-block':'none' %>;">减少终端
         </button>
     </li>
 </script>
