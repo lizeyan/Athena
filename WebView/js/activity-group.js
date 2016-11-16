@@ -844,6 +844,7 @@ var NewActvityModel = Backbone.View.extend({
                         type: "danger",
                         text: "添加失败：" + response.responseText
                     }).$el);
+                    $("#athena-new-activity-modal").modal('hide');
                 }
             });
             times -= 1;
