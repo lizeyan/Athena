@@ -415,7 +415,15 @@ var ActivityListItem = Backbone.View.extend({
             var item = (new ActivityUserCheckinItem);
             item.activity_id = this.model.pk;
             item.user_id = entry.user_id;
-            $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
+            if (!entry.checked)
+                $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
+        }, this);
+        _.each(this.check_list, function (entry) {
+            var item = (new ActivityUserCheckinItem);
+            item.activity_id = this.model.pk;
+            item.user_id = entry.user_id;
+            if (entry.checked)
+                $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
         }, this);
         try {
             if (this.started) {
@@ -979,21 +987,6 @@ var RequestListView = Backbone.View.extend({
 });
 var requestLib = new RequestLib;
 var requestListView = new RequestListView({collection: requestLib});
-/************************************************************
- * document viewer
- */
-var DocumentModal = Backbone.View.extend({
-    el: $("#athena-statistics-report-modal"),
-    events: {
-        "click #athena-download-report-btn": "download"
-    },
-    download: function () {
-        var doc = new jsPDF();
-        doc.fromHTML($("#athena-report-body").get(0), 15, 15, {width: 180});
-        doc.output("dataurlnewwindow");
-    }
-});
-var documentModal = new DocumentModal;
 /********************************************
  * set A Router
  */
