@@ -236,11 +236,12 @@
                         class="sr-only">Close</span></button>
                 <h4 class="modal-title" id="athena-statistics-report-modal-title">统计报告</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="athena-report-body">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary">下载</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="athena-download-report-btn">下载
+                </button>
             </div>
         </div>
     </div>
@@ -476,6 +477,7 @@
 <script src="js/fetchProfileAndSetTopNav.js"></script>
 <script src="js/chrono.js"></script>
 <script src="js/Chart.min.js"></script>
+<script src="js/jspdf.min.js"></script>
 <script src="js/activity-group.js"></script>
 </body>
 </html>

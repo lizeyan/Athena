@@ -979,6 +979,21 @@ var RequestListView = Backbone.View.extend({
 });
 var requestLib = new RequestLib;
 var requestListView = new RequestListView({collection: requestLib});
+/************************************************************
+ * document viewer
+ */
+var DocumentModal = Backbone.View.extend({
+    el: $("#athena-statistics-report-modal"),
+    events: {
+        "click #athena-download-report-btn": "download"
+    },
+    download: function () {
+        var doc = new jsPDF();
+        doc.fromHTML($("#athena-report-body").get(0), 15, 15, {width: 180});
+        doc.output("dataurlnewwindow");
+    }
+});
+var documentModal = new DocumentModal;
 /********************************************
  * set A Router
  */
