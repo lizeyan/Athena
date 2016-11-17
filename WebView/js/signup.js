@@ -70,23 +70,23 @@ var SignupForm = Backbone.View.extend({
 });
 var signupForm = new SignupForm;
 
-if (Cookies.get('username')) {
-    $('#input-username').val(Cookies.get('username'));
-}
-if (Cookies.get('realname')) {
-    $('#input-realname').val(Cookies.get('realname'));
-}
-if (Cookies.get('password')) {
-    $('#input-password').val(Cookies.get('password'));
-}
-if (Cookies.get('email')) {
-    $('#input-email').val(Cookies.get('email'));
-}
-if (Cookies.get('typed-signup-msg'))
-    $('#btn-signup').trigger('click');
-else
-    $('body').css('display', 'block');
 $(function () {
+    if (Cookies.get('username')) {
+        $('#input-username').val(Cookies.get('username'));
+    }
+    if (Cookies.get('realname')) {
+        $('#input-realname').val(Cookies.get('realname'));
+    }
+    if (Cookies.get('password')) {
+        $('#input-password').val(Cookies.get('password'));
+    }
+    if (Cookies.get('email')) {
+        $('#input-email').val(Cookies.get('email'));
+    }
+    if (Cookies.get('typed-signup-msg'))
+        $('#btn-signup').trigger('click');
+    else
+        $('body').css('display', 'block');
     Cookies.remove('username');
     Cookies.remove('realname');
     Cookies.remove('password');

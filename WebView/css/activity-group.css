@@ -64,3 +64,8 @@
 #athena-request-list-div {
     margin-top: 3em;
 }
+
+.athena-user-checkin-item {
+    height: 4em;
+    width: 15em;
+}

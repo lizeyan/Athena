@@ -393,7 +393,7 @@ var ActivityListItem = Backbone.View.extend({
             this.check_list[user.user].checked = false;
             this.check_list[user.user].real_name = user.real_name;
             this.check_list[user.user].icon_image = user.icon_image;
-            this.check_list[user.user].user_id = user.pk;
+            this.check_list[user.user].user_id = user.user_id;
         }, this);
         var attendanceCnt = 0;
         _.each(activity_register_log.models, function (entry) {
