@@ -15,13 +15,13 @@ function CheckSuperUser() {
             if (model.get('is_superuser') == true) {
                 $("#athena-terminal-config-entry").css("display", "inline");
                 $('.athena-super-admin-control').css('display', 'inherit');
+                $('.athena-admin-control').css('display', 'inherit');
             }
         },
         error: function () {
         }
     });
 }
-CheckSuperUser();
 
 var ActivityGroup = Backbone.Model.extend({
     parse: function (response) {
@@ -461,6 +461,7 @@ var ActivityList = Backbone.View.extend({
             this.$el.append((new ActivityListItem({model: activity})).render(userList).$el);
         }, this);
         //render graph
+        CheckSuperUser();
         return this;
     }
 });
@@ -1013,9 +1014,9 @@ var Router = Backbone.Router.extend({
             headers: {'Authorization': 'JWT ' + token},
             success: function (model) {
                 var admin_user_list = model.get('admin_user');
-                var myid = profile.get('pk');
+                var myid = profile.get('user').pk;
                 _.each(admin_user_list, function (user) {
-                    if (user.pk == myid)
+                    if (user.user_id == myid)
                         iAmAdminister = true;
                 });
                 var course = activityGroup.get('is_classes');
@@ -1039,6 +1040,7 @@ var Router = Backbone.Router.extend({
             error: function () {
                 window.location = "user.html";
             },
+            data: $.param({root: true}),
             reset: true
         });
     },
@@ -1115,5 +1117,6 @@ var Router = Backbone.Router.extend({
 $(function () {
     var router = new Router;
     Backbone.history.start();
+    CheckSuperUser();
 });
 
