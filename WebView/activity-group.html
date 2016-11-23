@@ -431,7 +431,9 @@
     <div class="col-md-3 athena-user-checkin-item">
         <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
         <img src="<%= icon_image? icon_image:'img/face.png' %>" class="athena-inline-avatar"/>
-        <%= real_name %>
+        <label class="athena-user-checkin-item-name">
+            <%= real_name %>
+        </label>
         <button class="btn btn-sm btn-success athena-manually-register-btn"
                 style="display: <%= check? 'none':'inline-block' %>;">他已到
         </button>
