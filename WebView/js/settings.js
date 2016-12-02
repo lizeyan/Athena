@@ -1,6 +1,38 @@
 /**
  * Created by zy-li14 on 16-10-13.
  */
+var CropperModal = Backbone.View.extend({
+    el: $("#athena-face-cropper-modal"),
+    events: {
+        "click #athena-face-cropper-submit-btn": "submit"
+    },
+    submit: function () {
+        var output = $("#athena-face-cropper-img").cropper("getCroppedCanvas");
+        var radio = (1024 * 1024 * 2 / (output.width * output.height));
+        radio = radio > 1.0 ? 1.0 : radio;
+        radio = Math.sqrt(radio);
+        var image = new Image;
+        image.src = output.toDataURL('image/png');
+        image.onload = _.bind(function () {
+            var canvas = document.createElement('canvas');
+            canvas.width = image.width * radio;
+            canvas.height = image.height * radio;
+            canvas.getContext('2d').drawImage(image, 0, 0, image.width * radio, image.height * radio);
+            var blobBin = atob(canvas.toDataURL('image/jpeg').split(',')[1]);
+            var array = [];
+            for (var i = 0; i < blobBin.length; i++) {
+                array.push(blobBin.charCodeAt(i));
+            }
+            var file = new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+            this.submitMethod(file, image.src);
+            this.$el.modal('hide');
+        }, this);
+    },
+    submitMethod: function (file, image) {
+
+    }
+});
+var cropperModal = new CropperModal;
 //check superuser
 var UserModel = Backbone.Model.extend({
     url: API_ROOT + "/users/?format=json",
@@ -59,9 +91,15 @@ var PublicProfileView = Backbone.View.extend({
         // alert (file);
         var reader = new FileReader();
         reader.onload = function (fileEvent) {
-            $('#athena-avatar-img').attr('src', fileEvent.target.result);
+            $('#athena-face-cropper-img').attr('src', fileEvent.target.result);
         }.bind(this);
         reader.readAsDataURL(this.imgFile);
+        cropperModal.faceFile = this.imgFile;
+        cropperModal.submitMethod = _.bind(function (file, image) {
+            $('#athena-avatar-img').attr('src', image);
+            this.imgFile = file;
+        }, this);
+        $("#athena-face-cropper-modal").modal();
     },
     uploadProfile: function (event) {
         infoList.empty();
@@ -237,54 +275,6 @@ var FaceItemView = Backbone.View.extend({
         });
     }
 });
-var FaceCropperModal = Backbone.View.extend({
-    el: $("#athena-face-cropper-modal"),
-    events: {
-        "click #athena-face-cropper-submit-btn": "submit"
-    },
-    submit: function () {
-        var formData = new FormData;
-        var output = $("#athena-face-cropper-img").cropper("getCroppedCanvas");
-        var radio = (1024 * 1024 * 2 / (output.width * output.height));
-        radio = radio > 1.0 ? 1.0 : radio;
-        radio = Math.sqrt(radio);
-        var image = new Image;
-        image.src = output.toDataURL('image/png');
-        image.onload = _.bind(function () {
-            var canvas = document.createElement('canvas');
-            canvas.width = image.width * radio;
-            canvas.height = image.height * radio;
-            canvas.getContext('2d').drawImage(image, 0, 0, image.width * radio, image.height * radio);
-            var blobBin = atob(canvas.toDataURL('image/jpeg').split(',')[1]);
-            var array = [];
-            for (var i = 0; i < blobBin.length; i++) {
-                array.push(blobBin.charCodeAt(i));
-            }
-            var file = new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
-            formData.append('face_image', file);
-            faceLib.create(null, {
-                headers: {'Authorization': 'JWT ' + token},
-                error: function (model, response) {
-                    infoList.append((new InfoBox).render({
-                        type: "danger",
-                        text: "上传人脸失败\n提示\n" + response.responseText
-                    }).$el.html());
-                },
-                success: function () {
-                    window.location.reload();
-                },
-                data: formData,
-                patch: true,
-                wait: true,
-                emulateJSON: true,
-                contentType: false,
-                processData: false
-            });
-            this.$el.modal('hide');
-        }, this);
-    }
-});
-var faceCropperModal = new FaceCropperModal;
 var FaceSettingView = Backbone.View.extend({
     el: $("#athena-face-setting"),
     initialize: function () {
@@ -308,19 +298,34 @@ var FaceSettingView = Backbone.View.extend({
     },
     uploadFace: function (event) {
         var faceFile = event.currentTarget.files[0];
-        // if (faceFile.size > 1024 * 1024 * 2) {
-        //     infoList.append((new InfoBox).render({
-        //         type: "danger",
-        //         text: "上传人脸失败\n提示\n" + "图片过大"
-        //     }).$el.html());
-        //     return;
-        // }
         var reader = new FileReader();
         reader.onload = function (fileEvent) {
             $('#athena-face-cropper-img').attr('src', fileEvent.target.result);
         }.bind(this);
         reader.readAsDataURL(faceFile);
-        faceCropperModal.faceFile = faceFile;
+        cropperModal.faceFile = faceFile;
+        cropperModal.submitMethod = _.bind(function (file) {
+            var formData = new FormData;
+            formData.append('face_image', file);
+            faceLib.create(null, {
+                headers: {'Authorization': 'JWT ' + token},
+                error: function (model, response) {
+                    infoList.append((new InfoBox).render({
+                        type: "danger",
+                        text: "上传人脸失败\n提示\n" + response.responseText
+                    }).$el.html());
+                },
+                success: function () {
+                    window.location.reload();
+                },
+                data: formData,
+                patch: true,
+                wait: true,
+                emulateJSON: true,
+                contentType: false,
+                processData: false
+            });
+        }, this);
         $("#athena-face-cropper-modal").modal();
     }
 });

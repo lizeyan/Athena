@@ -65,10 +65,10 @@
         <button class="btn btn-danger athena-super-admin-control" id="athena-activity-group-close-button"
                 data-toggle="modal" data-target="#athena-activity-group-close-modal">关闭活动组
         </button>
-        <a class="athena-admin-control btn btn-info" id="athena-goto-statistic-button"
-           href="#athena-activity-group-statistic">统计文档</a>
+
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary athena-admin-control" data-toggle="modal"
+        <button type="button" class="btn btn-primary athena-admin-control athena-super-admin-control"
+                data-toggle="modal"
                 data-target="#athena-request-list-modal"
                 id="athena-request-list-modal-btn">
             签到请求<span class="badge" id="athena-unhandled-request-badge"></span>
@@ -428,10 +428,12 @@
     </li>
 </script>
 <script type="text/template" id="tmplt-activity-user-checkin-item">
-    <div class="col-md-3">
+    <div class="col-md-3 athena-user-checkin-item">
         <img src="img/<%= check? 'check' : 'error' %>.png" class="athena-checkin-status"/>
         <img src="<%= icon_image? icon_image:'img/face.png' %>" class="athena-inline-avatar"/>
-        <%= real_name %>
+        <label class="athena-user-checkin-item-name">
+            <%= real_name %>
+        </label>
         <button class="btn btn-sm btn-success athena-manually-register-btn"
                 style="display: <%= check? 'none':'inline-block' %>;">他已到
         </button>
@@ -454,6 +456,7 @@
 <script src="js/fetchProfileAndSetTopNav.js"></script>
 <script src="js/chrono.js"></script>
 <script src="js/Chart.min.js"></script>
+<script src="js/jspdf.min.js"></script>
 <script src="js/activity-group.js"></script>
 </body>
 </html>

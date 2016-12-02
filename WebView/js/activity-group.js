@@ -15,13 +15,13 @@ function CheckSuperUser() {
             if (model.get('is_superuser') == true) {
                 $("#athena-terminal-config-entry").css("display", "inline");
                 $('.athena-super-admin-control').css('display', 'inherit');
+                $('.athena-admin-control').css('display', 'inherit');
             }
         },
         error: function () {
         }
     });
 }
-CheckSuperUser();
 
 var ActivityGroup = Backbone.Model.extend({
     parse: function (response) {
@@ -98,6 +98,7 @@ var RateActivityGraphView = Backbone.View.extend({
             else
                 return 1;
         });
+        // alert (JSON.stringify(_.pluck(this.model.get('data'), 'rate')));
         this.chart = new Chart(document.getElementById("athena-rate-activity-graph"), {
             type: 'line',
             data: {
@@ -392,7 +393,7 @@ var ActivityListItem = Backbone.View.extend({
             this.check_list[user.user].checked = false;
             this.check_list[user.user].real_name = user.real_name;
             this.check_list[user.user].icon_image = user.icon_image;
-            this.check_list[user.user].user_id = user.pk;
+            this.check_list[user.user].user_id = user.user_id;
         }, this);
         var attendanceCnt = 0;
         _.each(activity_register_log.models, function (entry) {
@@ -402,7 +403,10 @@ var ActivityListItem = Backbone.View.extend({
             }
         }, this);
         // alert (JSON.stringify(rateByActivityModel));
-        rateByActivityModel.get('data').push(new Object({label:(new Date(this.model.begin_time)).toLocaleDateString(), rate: attendanceCnt}));
+        rateByActivityModel.get('data').push(new Object({
+            label: (new Date(this.model.begin_time)).toLocaleDateString(),
+            rate: (attendanceCnt / this.user_list.length)
+        }));
         if (rateByActivityModel.get('data').length == activityGroup.get('activity').length) {
             activityParticipatorModel.trigger('change');
             rateByActivityModel.trigger('change');
@@ -411,7 +415,15 @@ var ActivityListItem = Backbone.View.extend({
             var item = (new ActivityUserCheckinItem);
             item.activity_id = this.model.pk;
             item.user_id = entry.user_id;
-            $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
+            if (!entry.checked)
+                $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
+        }, this);
+        _.each(this.check_list, function (entry) {
+            var item = (new ActivityUserCheckinItem);
+            item.activity_id = this.model.pk;
+            item.user_id = entry.user_id;
+            if (entry.checked)
+                $checkList.append(item.render(entry.real_name, entry.checked, entry.icon_image).$el);
         }, this);
         try {
             if (this.started) {
@@ -449,6 +461,7 @@ var ActivityList = Backbone.View.extend({
             this.$el.append((new ActivityListItem({model: activity})).render(userList).$el);
         }, this);
         //render graph
+        CheckSuperUser();
         return this;
     }
 });
@@ -832,6 +845,7 @@ var NewActvityModel = Backbone.View.extend({
                         type: "danger",
                         text: "添加失败：" + response.responseText
                     }).$el);
+                    $("#athena-new-activity-modal").modal('hide');
                 }
             });
             times -= 1;
@@ -1000,9 +1014,9 @@ var Router = Backbone.Router.extend({
             headers: {'Authorization': 'JWT ' + token},
             success: function (model) {
                 var admin_user_list = model.get('admin_user');
-                var myid = profile.get('pk');
+                var myid = profile.get('user').pk;
                 _.each(admin_user_list, function (user) {
-                    if (user.pk == myid)
+                    if (user.user_id == myid)
                         iAmAdminister = true;
                 });
                 var course = activityGroup.get('is_classes');
@@ -1026,6 +1040,7 @@ var Router = Backbone.Router.extend({
             error: function () {
                 window.location = "user.html";
             },
+            data: $.param({root: true}),
             reset: true
         });
     },
@@ -1102,5 +1117,6 @@ var Router = Backbone.Router.extend({
 $(function () {
     var router = new Router;
     Backbone.history.start();
+    CheckSuperUser();
 });
 

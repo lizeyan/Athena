@@ -47,7 +47,7 @@
     display: none;
 }
 
-#athena-activity-group-close-button, #athena-goto-statistic-button, #athena-request-list-modal-btn {
+#athena-activity-group-close-button, #athena-statistics-report-download-btn, #athena-request-list-modal-btn {
     float: right;
     margin: 0 0.5em;
 }
@@ -63,4 +63,13 @@
 
 #athena-request-list-div {
     margin-top: 3em;
+}
+
+.athena-user-checkin-item {
+    height: 4em;
+    width: 15em;
+}
+
+.athena-user-checkin-item-name {
+    width: 4em;
 }
